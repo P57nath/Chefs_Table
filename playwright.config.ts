@@ -30,7 +30,7 @@ export default defineConfig({
   projects: [
     {
       name: "guest-phone",
-      testMatch: [/smoke\.spec\.ts/, /guest\.spec\.ts/],
+      testMatch: [/smoke\.spec\.ts/, /guest\.spec\.ts/, /payments\.spec\.ts/],
       use: { ...devices["Desktop Chrome"], viewport: { width: 390, height: 844 }, hasTouch: true },
     },
     {

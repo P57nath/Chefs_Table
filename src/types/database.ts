@@ -563,6 +563,8 @@ export type Database = {
           paid_at: string | null;
           received_by: string | null;
           restaurant_id: string;
+          reviewed_at: string | null;
+          reviewed_by: string | null;
           session_id: string;
           status: Database["public"]["Enums"]["payment_status"];
           tran_id: string | null;
@@ -581,6 +583,8 @@ export type Database = {
           paid_at?: string | null;
           received_by?: string | null;
           restaurant_id: string;
+          reviewed_at?: string | null;
+          reviewed_by?: string | null;
           session_id: string;
           status?: Database["public"]["Enums"]["payment_status"];
           tran_id?: string | null;
@@ -598,6 +602,8 @@ export type Database = {
           paid_at?: string | null;
           received_by?: string | null;
           restaurant_id?: string;
+          reviewed_at?: string | null;
+          reviewed_by?: string | null;
           session_id?: string;
           status?: Database["public"]["Enums"]["payment_status"];
           tran_id?: string | null;
@@ -968,6 +974,8 @@ export type Database = {
           paid_at: string | null;
           received_by: string | null;
           restaurant_id: string;
+          reviewed_at: string | null;
+          reviewed_by: string | null;
           session_id: string;
           status: Database["public"]["Enums"]["payment_status"];
           tran_id: string | null;
@@ -998,8 +1006,37 @@ export type Database = {
         };
         Returns: string;
       };
+      review_gateway_payment: {
+        Args: { p_approve: boolean; p_payment_id: string };
+        Returns: {
+          amount_minor: number;
+          channel: string | null;
+          client_request_id: string | null;
+          created_at: string;
+          gateway_payload: Json | null;
+          gateway_val_id: string | null;
+          id: string;
+          method: Database["public"]["Enums"]["payment_method"];
+          paid_at: string | null;
+          received_by: string | null;
+          restaurant_id: string;
+          reviewed_at: string | null;
+          reviewed_by: string | null;
+          session_id: string;
+          status: Database["public"]["Enums"]["payment_status"];
+          tran_id: string | null;
+          updated_at: string;
+        };
+        SetofOptions: {
+          from: "*";
+          to: "payments";
+          isOneToOne: true;
+          isSetofReturn: false;
+        };
+      };
       sales_report: { Args: { p_from: string; p_to: string }; Returns: Json };
       session_bill: { Args: { p_session_id: string }; Returns: Json };
+      session_due_internal: { Args: { p_session_id: string }; Returns: number };
       set_item_availability: {
         Args: { p_available: boolean; p_item_id: string };
         Returns: undefined;
@@ -1008,9 +1045,47 @@ export type Database = {
         Args: { p_done: boolean; p_order_item_id: string };
         Returns: undefined;
       };
+      settle_gateway_payment: {
+        Args: {
+          p_amount_minor: number;
+          p_payload: Json;
+          p_status: Database["public"]["Enums"]["payment_status"];
+          p_tran_id: string;
+          p_val_id: string;
+        };
+        Returns: {
+          amount_minor: number;
+          channel: string | null;
+          client_request_id: string | null;
+          created_at: string;
+          gateway_payload: Json | null;
+          gateway_val_id: string | null;
+          id: string;
+          method: Database["public"]["Enums"]["payment_method"];
+          paid_at: string | null;
+          received_by: string | null;
+          restaurant_id: string;
+          reviewed_at: string | null;
+          reviewed_by: string | null;
+          session_id: string;
+          status: Database["public"]["Enums"]["payment_status"];
+          tran_id: string | null;
+          updated_at: string;
+        };
+        SetofOptions: {
+          from: "*";
+          to: "payments";
+          isOneToOne: true;
+          isSetofReturn: false;
+        };
+      };
       staff_role_of: {
         Args: { p_restaurant: string };
         Returns: Database["public"]["Enums"]["staff_role"];
+      };
+      start_gateway_payment: {
+        Args: { p_amount_minor?: number; p_channel?: string; p_session_id: string };
+        Returns: Json;
       };
       submit_feedback: {
         Args: { p_comment?: string; p_rating: number; p_session_id: string };

@@ -5,11 +5,11 @@ import { createClient } from "@supabase/supabase-js";
 import type { Database } from "../../src/types/database";
 
 /**
- * Creates dedicated tables for e2e tests (tokens `e2e-01` … `e2e-24`, labels
- * `E1` … `E24`) so parallel tests never share a table with each other or with
+ * Creates dedicated tables for e2e tests (tokens `e2e-01` … `e2e-32`, labels
+ * `E1` … `E32`) so parallel tests never share a table with each other or with
  * the demo tables you click around in. Idempotent.
  */
-export const E2E_TABLES = 24;
+export const E2E_TABLES = 32;
 
 export default async function globalSetup() {
   if (fs.existsSync(".env.local")) process.loadEnvFile(".env.local");

@@ -10,6 +10,7 @@ import { PULSE_CLASS, STATUS_VISUALS, type TableState } from "@/lib/status";
 import { localizeDigits } from "@/lib/digits";
 import { cn } from "@/lib/utils";
 
+import { ReviewBadge } from "./review-badge";
 import { STATE_PRIORITY, type TableStatus } from "./status";
 import type { FloorTable } from "./types";
 
@@ -59,7 +60,10 @@ export function FloorList({
                     type="button"
                     data-table={table.label}
                     onClick={() => onOpen(table)}
-                    aria-label={t("openTable", { label: table.label, state: tState(status.state) })}
+                    aria-label={
+                      t("openTable", { label: table.label, state: tState(status.state) }) +
+                      (status.counts.toReview > 0 ? ` · ${t("toReview")}` : "")
+                    }
                     className={cn(
                       "surface-raised flex w-full items-start gap-3 rounded-2xl border bg-card p-4 text-left outline-none focus-visible:ring-3 focus-visible:ring-ring/50",
                       status.overdue
@@ -77,9 +81,12 @@ export function FloorList({
                       <span className="text-foreground">{table.label}</span>
                     </span>
                     <span className="min-w-0 flex-1 space-y-1.5 text-foreground">
-                      <StatusPill kind="table" state={status.state} size="sm">
-                        {status.since ? <Timer since={status.since} toned={false} /> : null}
-                      </StatusPill>
+                      <span className="flex flex-wrap items-center gap-1.5">
+                        <StatusPill kind="table" state={status.state} size="sm">
+                          {status.since ? <Timer since={status.since} toned={false} /> : null}
+                        </StatusPill>
+                        {status.counts.toReview > 0 ? <ReviewBadge /> : null}
+                      </span>
                       {table.session ? (
                         <span className="flex items-center justify-between gap-2 text-sm text-muted-foreground">
                           <span className="inline-flex items-center gap-1">

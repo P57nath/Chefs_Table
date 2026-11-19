@@ -28,7 +28,15 @@ export interface TableStatus {
   priority: number;
   /** When the current state started (for age timers); null for free tables. */
   since: string | null;
-  counts: { newOrders: number; ready: number; cooking: number; calls: number; items: number };
+  counts: {
+    newOrders: number;
+    ready: number;
+    cooking: number;
+    calls: number;
+    items: number;
+    /** Online payments a manager must verify. */
+    toReview: number;
+  };
   /** New order waiting longer than 2 minutes (pulses red). */
   overdue: boolean;
 }
@@ -43,7 +51,7 @@ const oldest = (values: (string | null | undefined)[]): string | null =>
 
 export function tableStatus(row: FloorTable, nowMs: number): TableStatus {
   const s = row.session;
-  const counts = { newOrders: 0, ready: 0, cooking: 0, calls: 0, items: 0 };
+  const counts = { newOrders: 0, ready: 0, cooking: 0, calls: 0, items: 0, toReview: 0 };
   if (!s)
     return {
       state: "free",
@@ -65,6 +73,7 @@ export function tableStatus(row: FloorTable, nowMs: number): TableStatus {
   counts.cooking = cooking.length;
   counts.calls = calls.length;
   counts.items = s.orders.reduce((n, o) => n + o.item_count, 0);
+  counts.toReview = s.pending_review ?? 0;
 
   const paid = s.bill.total_minor > 0 && s.bill.due_minor === 0 && s.bill.unconfirmed_orders === 0;
 

@@ -6,6 +6,7 @@ import { useTranslations } from "next-intl";
 import { EmberMark } from "@/components/brand/logo";
 import { LanguageToggle } from "@/components/common/language-toggle";
 import { Button } from "@/components/ui/button";
+import { FeedbackCard } from "@/features/guest/bill/feedback-card";
 
 function Frame({ children }: { children: React.ReactNode }) {
   return (
@@ -56,6 +57,7 @@ export function ClosedScreen({
         <h1 className="font-display text-3xl font-semibold">{t("closedTitle")}</h1>
         <p className="text-muted-foreground">{t("closedBody")}</p>
       </div>
+      <FeedbackCard className="w-full max-w-sm text-left" />
       <Button size="lg" variant="secondary" onClick={onRestart} loading={restarting}>
         {t("startNewOrder")}
       </Button>

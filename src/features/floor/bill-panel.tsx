@@ -25,6 +25,7 @@ import { formatBps, formatMoney, toDecimalString, toMinor } from "@/lib/money";
 import { cn } from "@/lib/utils";
 
 import { useBill, useCloseSession, useRecordCash } from "./floor-data";
+import { SessionPayments } from "./session-payments";
 
 interface BillPanelProps {
   sessionId: string;
@@ -98,6 +99,8 @@ export function BillPanel({ sessionId, tableLabel, onClosed }: BillPanelProps) {
           </p>
         ) : null}
       </div>
+
+      <SessionPayments sessionId={sessionId} />
 
       {due > 0 ? (
         <div className="space-y-3 rounded-2xl border border-border p-4">

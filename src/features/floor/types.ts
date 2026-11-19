@@ -38,6 +38,8 @@ export interface FloorSession {
   opened_at: string;
   orders: FloorOrder[];
   open_requests: FloorRequest[];
+  /** Online payments waiting for a manager (risk / overpayment). */
+  pending_review: number;
   bill: FloorBill;
 }
 

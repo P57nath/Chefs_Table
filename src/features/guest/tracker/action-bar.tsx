@@ -3,13 +3,10 @@
 import { Hand, Plus, Receipt } from "lucide-react";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
-import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
-import { asAppError } from "@/lib/errors";
 
 import type { GuestRequest } from "./types";
-import { useCreateRequest } from "./use-guest-data";
 
 interface ActionBarProps {
   menuHref: string;
@@ -17,23 +14,11 @@ interface ActionBarProps {
   onCallWaiter: () => void;
 }
 
-/** Call waiter · Order more · Request bill. */
+/** Call waiter · Order more · Bill & pay. */
 export function ActionBar({ menuHref, openRequests, onCallWaiter }: ActionBarProps) {
   const t = useTranslations("guest");
-  const tErr = useTranslations("errors");
-  const create = useCreateRequest();
   const billOpen = openRequests.some((r) => r.type === "request_bill");
   const callOpen = openRequests.some((r) => r.type !== "request_bill");
-
-  async function requestBill() {
-    try {
-      await create.mutateAsync({ type: "request_bill" });
-      toast.success(t("billRequested"));
-    } catch (err) {
-      const e = asAppError(err);
-      toast.error(tErr(e.key, e.params));
-    }
-  }
 
   return (
     <div className="pb-safe pointer-events-none fixed inset-x-0 bottom-0 z-40 px-4">
@@ -53,14 +38,14 @@ export function ActionBar({ menuHref, openRequests, onCallWaiter }: ActionBarPro
           </Link>
         </Button>
         <Button
+          asChild
           variant={billOpen ? "secondary" : "ghost"}
           className="h-14 flex-col gap-0.5 text-xs whitespace-normal"
-          onClick={requestBill}
-          disabled={billOpen}
-          loading={create.isPending && create.variables?.type === "request_bill"}
         >
-          <Receipt className="size-5" aria-hidden />
-          {billOpen ? t("billRequested") : t("requestBill")}
+          <Link href={`${menuHref}/bill`}>
+            <Receipt className="size-5" aria-hidden />
+            {t("billAndPay")}
+          </Link>
         </Button>
       </div>
     </div>

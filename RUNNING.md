@@ -88,6 +88,12 @@ tracker changes to "The chef is cooking". Sign in as `kitchen@demo.local` in a t
 to see the ticket on the kitchen display, press **Start** and **Ready**, and watch the guest's
 tracker follow along.
 
+**Pay the bill:** on the guest's tracker press **Bill & pay**. Online tiles (bKash, Nagad,
+Card, Internet banking) open a *test checkout* page — press **Pay now** (or try *risky card*,
+*Decline*, *Cancel*). No real money moves while `PAYMENT_GATEWAY=mock`. A risky payment shows
+**Verify payment** on the floor; sign in as `manager@demo.local` to approve it. **Cash** asks the
+waiter to bring the bill. Once nothing is due, the guest can leave a rating.
+
 Tip: to be a guest and staff at the same time, use a normal window for one and a
 private/incognito window for the other.
 
@@ -131,6 +137,23 @@ To go back to normal Wi-Fi mode in the same terminal: `Remove-Item Env:LAN_IP`.
 
 ---
 
+## 4b. Real SSLCommerz sandbox (optional)
+1. Register a free sandbox store at https://developer.sslcommerz.com/registration/ — you get a
+   *Store ID* and *Store Password*.
+2. SSLCommerz must be able to reach your app, so `NEXT_PUBLIC_APP_URL` has to be a public **https**
+   address (a tunnel such as `cloudflared tunnel --url http://localhost:3000`, or a Vercel preview).
+3. In `.env.local`:
+   ```
+   PAYMENT_GATEWAY=sslcommerz
+   SSLCOMMERZ_MODE=sandbox
+   SSLCOMMERZ_STORE_ID=your_store_id
+   SSLCOMMERZ_STORE_PASSWORD=your_store_password
+   NEXT_PUBLIC_APP_URL=https://your-tunnel.example
+   ```
+4. Restart `pnpm dev`. Use SSLCommerz's sandbox test cards / wallets on their page.
+
+---
+
 ## 5. Checks and tests
 
 | Command | What it does |
@@ -138,7 +161,7 @@ To go back to normal Wi-Fi mode in the same terminal: `Remove-Item Env:LAN_IP`.
 | `pnpm gate` | Everything required before a commit: types, lint, format, secret check, unit tests, DB smoke test, production build |
 | `pnpm test` | Unit tests only (fast) |
 | `pnpm db:test` | Database security tests (needs the database running) |
-| `pnpm e2e` | Browser tests against a production build (needs the database running; creates its own tables `E1…E24`) |
+| `pnpm e2e` | Browser tests against a production build (needs the database running; creates its own tables `E1…E32`) |
 
 ---
 

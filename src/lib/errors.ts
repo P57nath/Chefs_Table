@@ -21,6 +21,14 @@ export type ErrorKey =
   | "tableNotFound"
   | "notFound"
   | "authRequired"
+  | "unconfirmedOrders"
+  | "nothingDue"
+  | "invalidAmount"
+  | "amountTooSmall"
+  | "tooManyPaymentAttempts"
+  | "gatewayUnavailable"
+  | "notPendingReview"
+  | "paymentNotFound"
   | "network"
   | "unknown";
 
@@ -54,6 +62,14 @@ const EXACT: Record<string, ErrorKey> = {
   TABLE_NOT_FOUND: "tableNotFound",
   NOT_FOUND: "notFound",
   AUTH_REQUIRED: "authRequired",
+  UNCONFIRMED_ORDERS: "unconfirmedOrders",
+  NOTHING_DUE: "nothingDue",
+  INVALID_AMOUNT: "invalidAmount",
+  AMOUNT_TOO_SMALL: "amountTooSmall",
+  TOO_MANY_PAYMENT_ATTEMPTS: "tooManyPaymentAttempts",
+  GATEWAY_UNAVAILABLE: "gatewayUnavailable",
+  NOT_PENDING_REVIEW: "notPendingReview",
+  PAYMENT_NOT_FOUND: "paymentNotFound",
 };
 
 function messageOf(err: unknown): string {

@@ -48,6 +48,7 @@ function table(session: Partial<FloorSession> | null): FloorTable {
             status: "open",
             guest_count: 2,
             opened_at: "2026-11-19T11:50:00Z",
+            pending_review: 0,
             orders: [],
             open_requests: [],
             bill: {

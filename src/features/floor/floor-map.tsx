@@ -114,7 +114,11 @@ export function FloorMap({
               role="button"
               tabIndex={0}
               data-table={table.label}
-              aria-label={t("openTable", { label: table.label, state: tState(status.state) })}
+              aria-label={
+                status.counts.toReview > 0
+                  ? `${t("openTable", { label: table.label, state: tState(status.state) })} · ${t("toReview")}`
+                  : t("openTable", { label: table.label, state: tState(status.state) })
+              }
               onClick={() => onOpen(table)}
               onKeyDown={(e) => onKey(e, table)}
               className={cn(
@@ -207,6 +211,18 @@ export function FloorMap({
                 >
                   {table.label}
                 </text>
+                {status.counts.toReview > 0 ? (
+                  <g transform={`translate(${f.hx * U - 4} ${-f.hz * U + 4})`} aria-hidden>
+                    <circle r={13} className="fill-ember" />
+                    <text
+                      textAnchor="middle"
+                      dominantBaseline="central"
+                      className="fill-white text-[17px] font-bold"
+                    >
+                      !
+                    </text>
+                  </g>
+                ) : null}
                 {elapsed ? (
                   <text
                     textAnchor="middle"

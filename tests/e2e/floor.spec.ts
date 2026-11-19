@@ -3,6 +3,7 @@ import { expect, test, type Browser, type Page } from "@playwright/test";
 
 import { admin, advance, liveSession, ordersForTable, resetTable, staff } from "./helpers/db";
 import { openMenu, placeOrderViaKeyboard, quickAdd, skipWelcome } from "./helpers/guest";
+import { guestWithBill, mockValId, postIpn, startPayment } from "./helpers/payments";
 import { loginAs } from "./helpers/staff";
 
 async function guestOrder(browser: Browser, token: string, item = "Firni") {
@@ -16,12 +17,12 @@ async function guestOrder(browser: Browser, token: string, item = "Firni") {
   return { ctx, page };
 }
 
-async function floorAs(page: Page, view: "3d" | "2d" | "list") {
+async function floorAs(page: Page, view: "3d" | "2d" | "list", email = "waiter@demo.local") {
   // Only seed the view once, so a choice made in the test survives reloads.
   await page.addInitScript((v) => {
     if (!localStorage.getItem("es-floor-view")) localStorage.setItem("es-floor-view", v);
   }, view);
-  await loginAs(page, "waiter@demo.local");
+  await loginAs(page, email);
   await expect(page).toHaveURL(/\/staff$/);
   await expect(page.getByRole("heading", { name: "Floor", level: 1 })).toBeVisible();
 }
@@ -158,5 +159,69 @@ test.describe("live floor (1180×820)", () => {
     await page.getByRole("radio", { name: "Map" }).click();
     await expect(page.getByRole("group", { name: "Tables" })).toBeVisible();
     expect(await scan()).toEqual([]);
+  });
+
+  test("an online payment shows Paid on the floor live", async ({ page, browser, request }) => {
+    const token = "e2e-23";
+    const guest = await guestWithBill(browser, token);
+    await floorAs(page, "list");
+    const card = tableCard(page, "E23");
+    await expect(card).toContainText("In kitchen");
+
+    const session = await liveSession(token);
+    const { json } = await startPayment(guest.page, session!.id);
+    const { data: bill } = await (
+      await staff("waiter@demo.local")
+    ).rpc("session_bill", {
+      p_session_id: session!.id,
+    });
+    const due = (bill as { due_minor: number }).due_minor;
+    await postIpn(request, {
+      tran_id: json.tran_id!,
+      val_id: mockValId(json.tran_id!, due),
+      status: "VALID",
+    });
+    await expect(card).toContainText("Paid");
+    await guest.ctx.close();
+  });
+
+  test("a risky payment waits for a manager, who approves it", async ({
+    page,
+    browser,
+    request,
+  }) => {
+    const token = "e2e-24";
+    const guest = await guestWithBill(browser, token);
+    const session = await liveSession(token);
+    const { json } = await startPayment(guest.page, session!.id);
+    const { data: bill } = await (
+      await staff("waiter@demo.local")
+    ).rpc("session_bill", {
+      p_session_id: session!.id,
+    });
+    const due = (bill as { due_minor: number }).due_minor;
+    await postIpn(request, {
+      tran_id: json.tran_id!,
+      val_id: mockValId(json.tran_id!, due, 1),
+      status: "VALID",
+    });
+
+    await floorAs(page, "list", "manager@demo.local");
+    const card = tableCard(page, "E24");
+    await expect(card).toContainText("Verify payment");
+    await expect(card).not.toContainText("Paid");
+    await card.click();
+    const sheet = page.getByRole("dialog", { name: "Table E24" });
+    await expect(sheet.getByText(/Flagged as risky/)).toBeVisible();
+    await sheet.getByRole("button", { name: "Approve" }).click();
+    await page
+      .getByRole("alertdialog")
+      .or(page.getByRole("dialog", { name: "Count this payment?" }))
+      .getByRole("button", { name: "Approve" })
+      .click();
+    await expect(page.getByText("Payment approved")).toBeVisible();
+    await expect(card).toContainText("Paid");
+    await expect(card).not.toContainText("Verify payment");
+    await guest.ctx.close();
   });
 });
