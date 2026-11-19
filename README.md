@@ -51,15 +51,10 @@ commits after every phase, so nothing is lost if you stop and continue later.
 Demo table links: `http://localhost:3000/t/demo-table-01` … `demo-table-12`.
 
 ## Local development (while the build is in progress)
-```bash
-pnpm install
-cp .env.example .env.local      # then paste the keys printed by `pnpm db:start`
-pnpm db:start                   # Docker Desktop must be running
-pnpm db:reset                   # migrations + demo seed
-pnpm seed:staff                 # demo staff accounts (idempotent)
-pnpm dev                        # http://localhost:3000
-pnpm dev:lan                    # same, plus phones on your Wi-Fi (prints the URL)
+Quick start (full guide with troubleshooting: [RUNNING.md](RUNNING.md)):
+```powershell
+pnpm db:start      # Docker Desktop must be running
+pnpm dev           # http://localhost:3000
+pnpm dev:lan       # same, plus phones on your Wi-Fi (prints the link)
 ```
-Checks: `pnpm gate` (typecheck, lint, format, secret-key check, unit tests, DB smoke test, build),
-`pnpm db:test` (pgTAP RLS tests), `pnpm e2e` (Playwright; creates its own `e2e-01…24` tables).
-Staff screens: http://localhost:3000/login (demo accounts above). Build status: see `PROGRESS.md`.
+Build status: see `PROGRESS.md`.
