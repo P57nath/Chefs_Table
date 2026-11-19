@@ -1,11 +1,11 @@
 "use client";
 
-import { Ban, ChefHat, ClipboardList, Hand, LayoutGrid } from "lucide-react";
+import { Ban, ChefHat, ClipboardList, Hand, LayoutGrid, Settings2 } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useLocale, useTranslations } from "next-intl";
 
-import { canUse, FLOOR_ROLES, KITCHEN_ROLES } from "@/features/auth/roles";
+import { canUse, FLOOR_ROLES, KITCHEN_ROLES, MANAGEMENT_ROLES } from "@/features/auth/roles";
 import { localizeDigits } from "@/lib/digits";
 import { cn } from "@/lib/utils";
 
@@ -42,6 +42,14 @@ const ITEMS = [
     floorOnly: false,
     kitchenOnly: true,
   },
+  {
+    href: "/admin",
+    icon: Settings2,
+    label: "navAdmin",
+    count: null,
+    floorOnly: false,
+    managementOnly: true,
+  },
 ] as const;
 
 /** Left rail on tablets, bottom bar on phones. */
@@ -53,7 +61,8 @@ export function StaffNav({ counts, variant }: { counts: NavCounts; variant: "rai
   const items = ITEMS.filter(
     (i) =>
       (!i.floorOnly || canUse(staff.role, FLOOR_ROLES)) &&
-      (!("kitchenOnly" in i) || canUse(staff.role, KITCHEN_ROLES)),
+      (!("kitchenOnly" in i) || canUse(staff.role, KITCHEN_ROLES)) &&
+      (!("managementOnly" in i) || canUse(staff.role, MANAGEMENT_ROLES)),
   );
 
   return (

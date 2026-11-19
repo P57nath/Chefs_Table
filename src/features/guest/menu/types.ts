@@ -60,4 +60,8 @@ export interface TableInfo {
   currency: string;
   vat_bps: number;
   service_charge_bps: number;
+  /** Brand accent preset key (src/config/accents.ts); null = default. */
+  accent?: string | null;
+  wifi?: string | null;
+  opening_hours?: string | null;
 }

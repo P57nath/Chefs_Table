@@ -6,7 +6,7 @@ import { useTranslations } from "next-intl";
 import { useEffect, useState, useSyncExternalStore } from "react";
 
 import { EmberField } from "@/components/brand/ember-field";
-import { EmberMark } from "@/components/brand/logo";
+import { BrandMark } from "@/components/brand/brand-mark";
 import { LanguageToggle } from "@/components/common/language-toggle";
 import { Button } from "@/components/ui/button";
 import { spring } from "@/lib/motion";
@@ -40,10 +40,12 @@ export function WelcomeOverlay({
   token,
   restaurantName,
   tableLabel,
+  logoPath,
 }: {
   token: string;
   restaurantName: string;
   tableLabel: string;
+  logoPath: string | null;
 }) {
   const t = useTranslations("guest");
   const reduce = useReducedMotion();
@@ -93,7 +95,10 @@ export function WelcomeOverlay({
             transition={spring.soft}
             className="relative"
           >
-            <EmberMark className="text-7xl drop-shadow-[0_0_30px_rgba(245,165,36,0.45)]" />
+            <BrandMark
+              logoPath={logoPath}
+              className="text-7xl drop-shadow-[0_0_30px_rgba(245,165,36,0.45)]"
+            />
           </motion.div>
           <motion.h1
             id="welcome-title"

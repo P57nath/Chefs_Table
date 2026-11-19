@@ -14,8 +14,8 @@ Gate per phase: `pnpm gate` = typecheck · lint · format:check · check:secrets
 | 5 | Kitchen display | ✅ done | `/kitchen`: New · Preparing · Ready (10 min), huge-type tickets with 10/20-min timers, tap-to-tick lines, Start / Ready, all-day panel, chime + slide-in, extra-contrast dark theme; 1920×1080 and 1280×800. 126 unit, 46 e2e |
 | 6 | Live floor (2D/list/3D) | ✅ done | `/staff`: 3D diorama (lazy chunk), 2D map, list; zone filter, occupancy, priority states, table sheet (requests, orders + actions, bill, idempotent cash/card-machine, close / force-close). 134 unit, 53 pgTAP, 53 e2e |
 | 7 | Bill & payments | ✅ done (sandbox pending credentials) | Guest bill (itemised, split/custom amount, tiles, cash → waiter), SSLCommerz + mock gateways, init/IPN/return routes, result page polling 30 s, pending-review badge + manager approve/reject, feedback, `/api/health`. 178 unit, 80 pgTAP, 61 e2e |
-| 8 | Admin | ⏳ next | |
-| 9 | Reports | ☐ | |
+| 8 | Admin | ✅ done | `/admin`: overview, menu editor (photos crop→WebP, modifiers, drag/▲▼ reorder, duplicate, archive), tables/zones + 2D layout editor with 3D preview, QR (PNG/SVG, A4 tents, rotate), staff (create, role, deactivate, reset password), orders history + timeline, payments + review + CSV, settings (brand, logo, accent presets, taxes, default language). 201 unit, 96 pgTAP, 69 e2e |
+| 9 | Reports | ⏳ next | |
 | 10 | Hardening | ☐ | |
 | 11 | Deploy | ☐ | |
 
@@ -236,3 +236,49 @@ CLI 3.2 · R3F 9.8 / drei 10.7 · motion 14 · next-intl 4.15 · TanStack Query 
   (free at developer.sslcommerz.com → sandbox registration) and a public HTTPS `NEXT_PUBLIC_APP_URL`
   (e.g. a tunnel or the Vercel preview) because SSLCommerz must reach the IPN. Everything else is
   verified with the mock gateway.
+
+### Phase 8 (admin)
+- **Data flow**: admin pages are Server Components reading with the signed-in user's client (RLS:
+  owner/manager write policies already exist for menu, tables, zones, restaurant). Writes are **server
+  actions** that re-check the role (`requireManager`) and validate with shared Zod schemas
+  (`src/features/admin/schemas.ts`, also used client-side for inline errors), then
+  `revalidateTag('menu')` / `revalidatePath`. Money and percentages are typed as text and converted to
+  integers (poisha / basis points) in the schema — no floats.
+- **New migration 0007** (`admin_*`, 14 pgTAP checks): **SECURITY INVOKER** functions, so RLS still
+  decides, but multi-row edits are atomic — `admin_save_menu_item` (item + groups + options; missing
+  ones deleted, order history keeps its snapshots), `admin_duplicate_menu_item`, `admin_reorder`,
+  `admin_save_floor_layout` (rotation normalised to 0–359), `admin_rotate_qr` (new 32-hex token, old
+  prints stop working). Every function also pins rows to the caller's restaurant (e.g. a category id
+  from another restaurant is rejected even though the FK would allow it).
+- **New migration 0006**: `guest_table_info()` also returns `accent`, `wifi`, `opening_hours` (never
+  the whole settings object; pgTAP checks it).
+- **Brand accent = presets, not a free colour picker** (6 presets, `src/config/accents.ts`): a free
+  colour can't guarantee WCAG AA for dark ink on fills, text on cream and fills on near-black. Applied on
+  guest pages as a tiny `<style>` overriding `--primary-fill/--primary-text` (`:root:not(.dark)` /
+  `:root.dark`). An e2e test switches through all 6 presets × dark/light and runs axe on the guest menu.
+- **Logo** (Settings) and **menu photos**: client-side crop (fixed aspect, drag / arrow keys + zoom) →
+  canvas → WebP (JPEG fallback where the browser can't encode WebP) → upload with the manager's own
+  Storage session to `menu-images/{restaurant_id}/…` (existing storage policies). Replaced files are not
+  deleted yet (Phase 10 cleanup job candidate). Guest header, welcome and print tents show the logo.
+- **Default guest language** (Settings) is used when the visitor has no language cookie. One restaurant
+  per deployment, so `src/i18n/request.ts` reads the first restaurant's setting (cached 60 s, tag `menu`).
+- **Admin UI is English-only** (spec §8 allows); `admin.en.json` is merged into both locales so Bangla
+  users see English there instead of missing keys. Guest/staff/kitchen stay fully bilingual.
+- **Staff accounts**: `staff_members` has no client write policy, so staff actions use the server-only
+  secret-key client after checking: caller is owner/manager of the same restaurant; managers can't
+  create, edit or promote to **owner**; you can't deactivate or re-role yourself; the last active owner
+  can't be removed. Deactivating also **bans** the auth user (blocks sign-in and token refresh), and
+  reactivating lifts it. If creating the staff row fails, the new auth user is deleted again.
+  Temporary passwords: 12 chars from `crypto.getRandomValues`.
+- **Reorder**: Motion `Reorder` with a drag handle (works with touch) **plus ▲/▼ buttons** for keyboard
+  and screen readers. **Layout editor**: drag on a 0.5 m grid, keyboard (arrows, Shift = 2 m, R/Shift+R
+  rotate), live announcements, saves only changed tables in one transaction, optional lazy 3D preview
+  using the live floor's scene.
+- **Tables are deactivated, not deleted** (sessions/orders reference them); deactivating also makes the
+  QR invalid. Zones can be deleted (tables keep their place, zone becomes empty).
+- **Orders / payments lists** use URL filters (plain GET forms, Dhaka calendar days, max 1 year range,
+  50 per page). **CSV export** `/admin/payments/export` re-checks the role, adds a UTF-8 BOM (Excel +
+  Bangla) and neutralises spreadsheet formulas (`=`, `+`, `-`, `@`).
+- shadcn **tab** text raised to `foreground/80` (axe contrast).
+- E2E admin tests restore their fixtures (layout position, rotated QR token, created staff user, menu
+  rows, settings).

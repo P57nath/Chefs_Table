@@ -4,10 +4,11 @@ import { Search, X } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useEffect, useRef } from "react";
 
-import { EmberMark } from "@/components/brand/logo";
+import { BrandMark } from "@/components/brand/brand-mark";
 import { IconButton } from "@/components/common/icon-button";
 import { LanguageToggle } from "@/components/common/language-toggle";
 import { Input } from "@/components/ui/input";
+import { useGuestSession } from "@/features/guest/session/guest-session";
 
 interface GuestHeaderProps {
   restaurantName: string;
@@ -31,6 +32,7 @@ export function GuestHeader({
 }: GuestHeaderProps) {
   const t = useTranslations("guest");
   const inputRef = useRef<HTMLInputElement>(null);
+  const { table } = useGuestSession();
 
   useEffect(() => {
     if (searching) inputRef.current?.focus();
@@ -61,7 +63,7 @@ export function GuestHeader({
         ) : (
           <>
             <div className="flex min-w-0 flex-1 items-center gap-2">
-              <EmberMark className="text-2xl" />
+              <BrandMark logoPath={table.logo_path} className="text-2xl" />
               <span className="truncate font-display text-lg font-semibold">{restaurantName}</span>
               <span className="shrink-0 rounded-full bg-primary px-2.5 py-1 text-sm font-semibold text-primary-foreground tabular-nums">
                 <span className="sr-only">{t("table", { table: tableLabel })}</span>

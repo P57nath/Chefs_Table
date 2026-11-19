@@ -335,7 +335,8 @@
     "nowSoldOut": "{name} marked sold out",
     "nowAvailable": "{name} is available again",
     "elapsedSince": "{time} ago",
-    "navKitchen": "Kitchen"
+    "navKitchen": "Kitchen",
+    "navAdmin": "Admin"
   },
   "kitchen": {
     "title": "Kitchen",

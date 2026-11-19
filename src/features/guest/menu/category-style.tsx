@@ -44,6 +44,9 @@ const ICONS: Record<string, LucideIcon> = {
   wheat: Wheat,
 };
 
+/** Icon names an admin can pick for a category. */
+export const CATEGORY_ICON_NAMES = Object.keys(ICONS);
+
 /** Renders the category's icon (static components from the allow-list above). */
 export function CategoryIcon({
   icon,

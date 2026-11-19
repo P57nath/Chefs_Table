@@ -68,6 +68,7 @@ You only do this once per computer.
 | Guest menu (a table's QR code) | http://localhost:3000/t/demo-table-01 … `demo-table-12` |
 | Staff login | http://localhost:3000/login |
 | Kitchen display (kitchen / manager / owner) | http://localhost:3000/kitchen |
+| Admin (manager / owner): menu, tables & floor, QR codes, staff, orders, payments, settings | http://localhost:3000/admin |
 | Component showcase (dev only) | http://localhost:3000/dev/ui |
 | Database admin (Supabase Studio) | http://127.0.0.1:54323 |
 

@@ -899,6 +899,12 @@ export type Database = {
       [_ in never]: never;
     };
     Functions: {
+      admin_duplicate_menu_item: { Args: { p_item_id: string }; Returns: string };
+      admin_reorder: { Args: { p_ids: string[]; p_kind: string }; Returns: undefined };
+      admin_require_manager: { Args: Record<PropertyKey, never>; Returns: string };
+      admin_rotate_qr: { Args: { p_table_id: string }; Returns: string };
+      admin_save_floor_layout: { Args: { p: Json }; Returns: number };
+      admin_save_menu_item: { Args: { p: Json }; Returns: string };
       advance_order: {
         Args: {
           p_order_id: string;

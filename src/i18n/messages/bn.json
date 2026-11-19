@@ -335,7 +335,8 @@
     "nowSoldOut": "{name} শেষ হিসেবে চিহ্নিত",
     "nowAvailable": "{name} আবার পাওয়া যাচ্ছে",
     "elapsedSince": "{time} আগে",
-    "navKitchen": "কিচেন"
+    "navKitchen": "কিচেন",
+    "navAdmin": "অ্যাডমিন"
   },
   "kitchen": {
     "title": "কিচেন",
