@@ -22,9 +22,21 @@ const nextConfig: NextConfig = {
   // and the root layout reads the locale cookie. See PROGRESS.md decisions.
   poweredByHeader: false,
   reactStrictMode: true,
+  // `pnpm dev:lan` (phones on the same Wi-Fi) sets DEV_LAN_HOST; dev-only setting.
+  allowedDevOrigins: process.env.DEV_LAN_HOST ? [process.env.DEV_LAN_HOST] : [],
   images: {
     remotePatterns: [
       { protocol: "http", hostname: "127.0.0.1", port: "54321", pathname: "/storage/v1/**" },
+      ...(process.env.DEV_LAN_HOST
+        ? [
+            {
+              protocol: "http" as const,
+              hostname: process.env.DEV_LAN_HOST,
+              port: "54321",
+              pathname: "/storage/v1/**",
+            },
+          ]
+        : []),
       { protocol: "https", hostname: "*.supabase.co", pathname: "/storage/v1/**" },
     ],
   },
