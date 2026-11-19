@@ -8,8 +8,8 @@ Gate per phase: `pnpm gate` = typecheck · lint · format:check · check:secrets
 |---|---|---|---|
 | 0 | Scaffold & tooling | ✅ done | Gate green, 43/43 DB smoke checks, e2e smoke green on 3 viewports |
 | 1 | Database | ✅ done | Migrations + seed apply cleanly, types generated, 37/37 pgTAP RLS checks, demo staff seeded and can log in |
-| 2 | Design system & app shell | ⏳ next | |
-| 3 | Guest app | ☐ | |
+| 2 | Design system & app shell | ✅ done | Tokens (OKLCH, dark/light), fonts, i18n en/bn, providers, custom components, `/dev/ui`, landing; 57 unit tests, e2e incl. axe AA on landing (both themes, 3 viewports) |
+| 3 | Guest app | ⏳ next | |
 | 4 | Staff auth & orders | ☐ | |
 | 5 | Kitchen display | ☐ | |
 | 6 | Live floor (2D/list/3D) | ☐ | |
@@ -31,9 +31,29 @@ CLI 3.2 · R3F 9.8 / drei 10.7 · motion 14 · next-intl 4.15 · TanStack Query 
   typescript-eslint supports TS 7.
 - **ESLint 9, not 10.** `eslint-plugin-react`, `-import`, `-jsx-a11y` (inside `eslint-config-next`) don't
   declare ESLint 10 support yet.
-- **Cache Components kept on** (Next 16.4 scaffold default). Request-time data (cookies, Supabase
-  session) must sit under `<Suspense>`; menu reads can use `"use cache"` + `cacheTag('menu')`
-  (replaces `revalidateTag('menu')` wording in the docs — same intent).
+- **Cache Components turned OFF (Phase 2).** With it on, reading the locale cookie for `<html lang>` in
+  the root layout is a build error (cookies must sit behind `<Suspense>`), and almost every screen is
+  per-user (guest session, staff auth). Classic dynamic rendering + `revalidateTag('menu')` matches the
+  architecture doc as written.
+- **Light-mode contrast fix.** Design doc's light primary `#C97A06` with white text is 3.35:1 (fails AA).
+  Safer choice: saffron fills keep `#C97A06` but use dark ink `#1A1206` (5.5:1); saffron *text* on cream
+  (prices, links) uses `--primary-text` `#9A5D04` (5.0:1). Dark mode unchanged. Light-mode status colours
+  use slightly deeper variants of orange/teal; status pills keep text in the foreground colour.
+- **Token naming**: shadcn's `--accent` is a hover surface, so the design's ember accent is `--ember`
+  (`bg-ember`, `text-ember`). Status colours: `free, seated, primary, info, cooking, success, eating,
+  violet, ember`.
+- **Themes per surface** (`SurfaceTheme`): next-themes ignores nested providers, so each surface mounts
+  its own — guest dark default (light/system selectable), staff light default, kitchen forced dark.
+- **Fonts**: Fraunces + Inter + Noto Sans/Serif Bengali via `next/font`; Bengali fonts not preloaded.
+  Noto Sans Bengali is also a fallback in the English stack because Inter/Fraunces lack the `৳` glyph.
+- **Money formatting**: `en` uses en-US grouping (৳1,234,567), `bn` uses bn-BD (lakh grouping + Bangla
+  digits). Poisha shown only when non-zero. `toDecimalString()` is the exact string for gateways.
+- **SlideToConfirm**: keyboard/assistive activation (click with `detail === 0`) confirms immediately;
+  a plain mouse tap only nudges the handle; double activation while pending is ignored.
+- **Landing**: brand name/tagline come from `config/brand.ts` until the restaurant row is read (Phase 3
+  adds the server Supabase client). Staff-login link is added in Phase 4 together with `/login`
+  (no dead link before then).
+- **`/dev/ui`** returns 404 in production builds (e2e asserts it).
 - **Env split into three files**: `lib/env-schema.ts` (pure Zod schemas, unit-tested), `lib/env.ts`
   (public, client-safe), `lib/env.server.ts` (`server-only`). Keeps the secret key's *name* out of client
   bundles. `check:secrets` allows `SUPABASE_SECRET_KEY` only in these server files + `lib/supabase/admin.ts`.

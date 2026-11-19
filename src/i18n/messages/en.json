@@ -1,0 +1,90 @@
+{
+  "common": {
+    "loading": "Loading…",
+    "retry": "Try again",
+    "close": "Close",
+    "cancel": "Cancel",
+    "confirm": "Confirm",
+    "back": "Back",
+    "done": "Done",
+    "saving": "Saving…",
+    "skipToContent": "Skip to content"
+  },
+  "states": {
+    "emptyTitle": "Nothing here yet",
+    "emptyBody": "When something arrives, you’ll see it here.",
+    "errorTitle": "Something went wrong",
+    "errorBody": "We couldn’t load this. Check your connection and try again.",
+    "networkError": "You seem to be offline. We’ll keep trying.",
+    "reconnecting": "Reconnecting…",
+    "reconnected": "Back online",
+    "notFoundTitle": "We couldn’t find that page",
+    "notFoundBody": "The link may be old or mistyped.",
+    "goHome": "Go to the start"
+  },
+  "language": {
+    "label": "Language",
+    "en": "English",
+    "bn": "বাংলা",
+    "switchTo": "Switch language to {language}"
+  },
+  "theme": {
+    "label": "Theme",
+    "light": "Light",
+    "dark": "Dark",
+    "system": "System"
+  },
+  "tableState": {
+    "free": "Free",
+    "seated": "Seated",
+    "new_order": "New order",
+    "confirmed": "Confirmed",
+    "cooking": "In kitchen",
+    "ready": "Ready to serve",
+    "eating": "Eating",
+    "bill_requested": "Bill requested",
+    "call_waiter": "Call waiter",
+    "paid": "Paid"
+  },
+  "orderStatus": {
+    "placed": "Sent",
+    "confirmed": "Confirmed",
+    "in_kitchen": "In the kitchen",
+    "preparing": "Cooking",
+    "ready": "Ready",
+    "served": "Served",
+    "cancelled": "Cancelled"
+  },
+  "controls": {
+    "slideToPlace": "Slide to place order",
+    "slideHint": "Slide all the way to confirm",
+    "placeOrderButton": "Place order",
+    "confirmed": "Done!",
+    "decrease": "Decrease quantity",
+    "increase": "Increase quantity",
+    "quantity": "Quantity",
+    "quantityOf": "Quantity of {name}"
+  },
+  "timer": {
+    "elapsed": "{time} elapsed"
+  },
+  "landing": {
+    "eyebrow": "Dine-in, made effortless",
+    "title": "Order from your table.",
+    "subtitle": "Scan the QR code on your table to browse the menu, order, follow your food live and pay — no app, no waiting.",
+    "scanTitle": "Scan the QR at your table",
+    "scanBody": "Point your phone camera at the code on the table tent. Your table opens instantly.",
+    "step1Title": "Scan",
+    "step1Body": "Open your table’s menu in a second.",
+    "step2Title": "Order",
+    "step2Body": "Add dishes, tweak them, send it to your waiter.",
+    "step3Title": "Relax",
+    "step3Body": "Watch it cook live, then pay with bKash, Nagad, card or cash.",
+    "staffLogin": "Staff login",
+    "footer": "Made for dine-in guests. No sign-up, no app download."
+  },
+  "dev": {
+    "title": "UI kit",
+    "subtitle": "Every component in both themes and both languages."
+  }
+}

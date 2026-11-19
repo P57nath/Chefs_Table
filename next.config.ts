@@ -1,4 +1,7 @@
 import type { NextConfig } from "next";
+import createNextIntlPlugin from "next-intl/plugin";
+
+const withNextIntl = createNextIntlPlugin("./src/i18n/request.ts");
 
 /**
  * Baseline security headers. The full Content-Security-Policy (Supabase https/wss,
@@ -15,10 +18,16 @@ const securityHeaders = [
 ];
 
 const nextConfig: NextConfig = {
-  cacheComponents: true,
-  partialPrefetching: true,
+  // Cache Components is off: almost every screen is per-user (guest session, staff auth)
+  // and the root layout reads the locale cookie. See PROGRESS.md decisions.
   poweredByHeader: false,
   reactStrictMode: true,
+  images: {
+    remotePatterns: [
+      { protocol: "http", hostname: "127.0.0.1", port: "54321", pathname: "/storage/v1/**" },
+      { protocol: "https", hostname: "*.supabase.co", pathname: "/storage/v1/**" },
+    ],
+  },
   turbopack: {
     rules: {
       "*.css": {
@@ -32,4 +41,4 @@ const nextConfig: NextConfig = {
   },
 };
 
-export default nextConfig;
+export default withNextIntl(nextConfig);
