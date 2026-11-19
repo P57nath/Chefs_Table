@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { formatAge, formatClock, formatElapsed, timerTone } from "@/lib/time";
+import { formatAge, formatClock, formatElapsed, startOfDayDhaka, timerTone } from "@/lib/time";
 
 describe("time helpers (Asia/Dhaka)", () => {
   it("shows clock time in Dhaka regardless of the machine time zone", () => {
@@ -22,6 +22,13 @@ describe("time helpers (Asia/Dhaka)", () => {
     expect(formatAge("2026-11-19T11:59:30Z", now, "en")).toBe("now");
     expect(formatAge("2026-11-19T11:58:00Z", now, "en")).toBe("2 min. ago");
     expect(formatAge("2026-11-19T10:00:00Z", now, "en")).toBe("2 hr. ago");
+  });
+
+  it("finds the start of the Dhaka business day", () => {
+    // 19 Nov 01:30 Dhaka = 18 Nov 19:30 UTC → day starts 18 Nov 18:00 UTC
+    expect(startOfDayDhaka("2026-11-18T19:30:00Z").toISOString()).toBe("2026-11-18T18:00:00.000Z");
+    // 19 Nov 23:59 Dhaka = 19 Nov 17:59 UTC → same day start
+    expect(startOfDayDhaka("2026-11-19T17:59:00Z").toISOString()).toBe("2026-11-18T18:00:00.000Z");
   });
 
   it("bands timers into ok / warn / late", () => {

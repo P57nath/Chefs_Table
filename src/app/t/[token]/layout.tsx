@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 
+import { HeadScript } from "@/components/providers/head-script";
 import { SurfaceTheme } from "@/components/providers/surface-theme";
 import { getTableInfo } from "@/features/guest/server/table-data";
 import { InvalidQrScreen } from "@/features/guest/session/guest-screens";
@@ -26,7 +27,7 @@ export default async function GuestLayout({ children, params }: LayoutProps<"/t/
       {info ? (
         <GuestSessionProvider token={token} table={info}>
           {/* Hide the welcome overlay before paint if this tab already saw it. */}
-          <script dangerouslySetInnerHTML={{ __html: welcomeSeenScript(token) }} />
+          <HeadScript html={welcomeSeenScript(token)} />
           <WelcomeOverlay
             token={token}
             restaurantName={info.restaurant_name}

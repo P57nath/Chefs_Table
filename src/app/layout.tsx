@@ -31,7 +31,7 @@ export default async function RootLayout({ children }: LayoutProps<"/">) {
   const t = await getTranslations("common");
 
   return (
-    // suppressHydrationWarning: next-themes sets the theme class before hydration.
+    // suppressHydrationWarning: the theme script sets the class on <html> before hydration.
     <html lang={locale} suppressHydrationWarning className={`${fontVariables} h-full antialiased`}>
       <body className="flex min-h-full flex-col">
         <a

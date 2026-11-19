@@ -51,6 +51,16 @@ export function formatAge(from: DateInput, now: DateInput, locale: Locale): stri
   return rtf.format(-Math.round(hours / 24), "day");
 }
 
+/** Asia/Dhaka is UTC+6 all year (no DST). */
+const DHAKA_OFFSET_MS = 6 * 60 * 60 * 1000;
+
+/** Start of the current business day in Dhaka, as a UTC instant. */
+export function startOfDayDhaka(now: DateInput = Date.now()): Date {
+  const local = new Date(toDate(now).getTime() + DHAKA_OFFSET_MS);
+  const midnightLocal = Date.UTC(local.getUTCFullYear(), local.getUTCMonth(), local.getUTCDate());
+  return new Date(midnightLocal - DHAKA_OFFSET_MS);
+}
+
 export type TimerTone = "ok" | "warn" | "late";
 
 /** Colour band for age timers; KDS default: green < 10 min, amber < 20 min, red ≥ 20 min. */

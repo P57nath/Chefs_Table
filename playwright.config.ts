@@ -14,6 +14,7 @@ const baseURL = process.env.E2E_BASE_URL ?? `http://localhost:${PORT}`;
  */
 export default defineConfig({
   testDir: "./tests/e2e",
+  globalSetup: "./tests/e2e/global-setup.ts",
   fullyParallel: true,
   forbidOnly: !!process.env.CI,
   retries: process.env.CI ? 2 : 0,
@@ -33,7 +34,7 @@ export default defineConfig({
     },
     {
       name: "staff-tablet",
-      testMatch: [/smoke\.spec\.ts/],
+      testMatch: [/smoke\.spec\.ts/, /staff\.spec\.ts/],
       use: { ...devices["Desktop Chrome"], viewport: { width: 1180, height: 820 }, hasTouch: true },
     },
     {

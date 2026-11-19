@@ -33,6 +33,24 @@ export async function resetTable(token: string): Promise<void> {
     .eq("qr_token", token)
     .single();
   if (error) throw error;
+  // Mirror close_session(): unconfirmed orders of the live session are cancelled.
+  const { data: live } = await admin()
+    .from("table_sessions")
+    .select("id")
+    .eq("table_id", table.id)
+    .neq("status", "closed");
+  for (const s of live ?? []) {
+    await admin()
+      .from("orders")
+      .update({
+        status: "cancelled",
+        cancelled_at: new Date().toISOString(),
+        cancel_reason: "Test reset",
+      })
+      .eq("session_id", s.id)
+      .in("status", ["placed", "confirmed"]);
+    await admin().from("service_requests").update({ status: "resolved" }).eq("session_id", s.id);
+  }
   const { error: updErr } = await admin()
     .from("table_sessions")
     .update({ status: "closed", closed_at: new Date().toISOString() })

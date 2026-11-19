@@ -2,12 +2,10 @@
 
 import { Monitor, Moon, Sun } from "lucide-react";
 import { useTranslations } from "next-intl";
-import { useTheme } from "next-themes";
+import { useTheme, type ThemeChoice } from "@/components/providers/theme";
 import { useSyncExternalStore } from "react";
 
 import { SegmentedControl } from "./segmented-control";
-
-type ThemeChoice = "light" | "dark" | "system";
 
 const subscribe = () => () => {};
 
@@ -28,7 +26,7 @@ export function ThemeToggle() {
     <SegmentedControl<ThemeChoice>
       label={t("label")}
       size="sm"
-      value={(theme as ThemeChoice | undefined) ?? "system"}
+      value={theme}
       onChange={setTheme}
       options={[
         { value: "light", label: null, icon: <Sun aria-hidden />, ariaLabel: t("light") },

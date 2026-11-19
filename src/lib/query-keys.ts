@@ -8,7 +8,12 @@ export const qk = {
   sessionOrders: (sessionId: string) => ["session", sessionId, "orders"] as const,
   sessionRequests: (sessionId: string) => ["session", sessionId, "requests"] as const,
   bill: (sessionId: string) => ["session", sessionId, "bill"] as const,
-  floor: () => ["floor"] as const,
+  /** Prefix of every staff-side key (realtime on the floor channel invalidates it). */
+  staff: () => ["staff"] as const,
+  staffOrders: () => ["staff", "orders"] as const,
+  staffRequests: () => ["staff", "requests"] as const,
+  staffMenu: () => ["staff", "menu"] as const,
+  floor: () => ["staff", "floor"] as const,
   kitchen: () => ["kitchen"] as const,
 } as const;
 

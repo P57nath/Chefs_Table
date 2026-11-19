@@ -1,5 +1,6 @@
 import { HandPlatter, ScanLine, Sparkles } from "lucide-react";
 import type { Metadata } from "next";
+import Link from "next/link";
 import { getLocale, getTranslations } from "next-intl/server";
 
 import { EmberField } from "@/components/brand/ember-field";
@@ -8,6 +9,7 @@ import { TableTentIllustration } from "@/components/brand/table-tent";
 import { LanguageToggle } from "@/components/common/language-toggle";
 import { ThemeToggle } from "@/components/common/theme-toggle";
 import { SurfaceTheme } from "@/components/providers/surface-theme";
+import { Button } from "@/components/ui/button";
 import { brand } from "@/config/brand";
 import { localizeDigits } from "@/lib/digits";
 
@@ -39,6 +41,9 @@ export default async function LandingPage() {
         <header className="relative z-10 mx-auto flex w-full max-w-6xl items-center justify-between gap-3 px-4 py-4 sm:px-6 lg:px-8">
           <Logo name={name} className="text-lg sm:text-xl" />
           <div className="flex items-center gap-2">
+            <Button asChild variant="ghost" size="sm" className="hidden sm:inline-flex">
+              <Link href="/login">{t("staffLogin")}</Link>
+            </Button>
             <LanguageToggle />
             <div className="hidden sm:block">
               <ThemeToggle />
@@ -102,6 +107,9 @@ export default async function LandingPage() {
           <p>
             {name} · {t("footer")}
           </p>
+          <Link href="/login" className="mt-2 inline-block underline-offset-4 hover:underline">
+            {t("staffLogin")}
+          </Link>
         </footer>
       </div>
     </SurfaceTheme>

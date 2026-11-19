@@ -15,12 +15,12 @@ import { openMenu, placeOrderViaKeyboard, quickAdd, skipWelcome } from "./helper
 // Each test owns one demo table so tests can run in parallel.
 test.describe("guest app (390×844)", () => {
   test("welcome → menu → cart → order → live tracker through every stage", async ({ page }) => {
-    const token = "demo-table-01";
+    const token = "e2e-01";
     await resetTable(token);
 
     await page.goto(`/t/${token}`);
     await expect(page.getByRole("dialog", { name: /Welcome to Ember & Spice/ })).toBeVisible();
-    await expect(page.getByRole("dialog").getByText("Table T1")).toBeVisible();
+    await expect(page.getByRole("dialog").getByText("Table E1")).toBeVisible();
     await page.getByRole("button", { name: "View menu" }).click();
     await expect(page.getByRole("heading", { name: "Chef’s specials" })).toBeVisible();
 
@@ -56,7 +56,7 @@ test.describe("guest app (390×844)", () => {
     page,
     context,
   }) => {
-    const token = "demo-table-02";
+    const token = "e2e-02";
     await resetTable(token);
     await skipWelcome(context, token);
     await openMenu(page, token);
@@ -84,7 +84,7 @@ test.describe("guest app (390×844)", () => {
   });
 
   test("double-activating the slide control places one order", async ({ page, context }) => {
-    const token = "demo-table-03";
+    const token = "e2e-03";
     await resetTable(token);
     await skipWelcome(context, token);
     await openMenu(page, token);
@@ -102,7 +102,7 @@ test.describe("guest app (390×844)", () => {
     page,
     context,
   }) => {
-    const token = "demo-table-04";
+    const token = "e2e-04";
     await resetTable(token);
     await skipWelcome(context, token);
     await setItemAvailable("Plain Polao", true);
@@ -121,7 +121,7 @@ test.describe("guest app (390×844)", () => {
   });
 
   test("two phones at the same table see each other's orders live", async ({ browser }) => {
-    const token = "demo-table-05";
+    const token = "e2e-05";
     await resetTable(token);
     const phoneA = await browser.newContext({ viewport: { width: 390, height: 844 } });
     const phoneB = await browser.newContext({ viewport: { width: 390, height: 844 } });
@@ -145,7 +145,7 @@ test.describe("guest app (390×844)", () => {
   });
 
   test("guest can cancel while unconfirmed and call the waiter once", async ({ page, context }) => {
-    const token = "demo-table-06";
+    const token = "e2e-06";
     await resetTable(token);
     await skipWelcome(context, token);
     await openMenu(page, token);
@@ -166,7 +166,7 @@ test.describe("guest app (390×844)", () => {
   });
 
   test("closed table shows thank-you and can start a new order", async ({ page, context }) => {
-    const token = "demo-table-07";
+    const token = "e2e-07";
     await resetTable(token);
     await skipWelcome(context, token);
     await openMenu(page, token);
@@ -192,7 +192,7 @@ test.describe("guest app (390×844)", () => {
   });
 
   test("Bangla menu with Bangla digits", async ({ page, context }) => {
-    const token = "demo-table-08";
+    const token = "e2e-08";
     await skipWelcome(context, token);
     await context.addCookies([{ name: "NEXT_LOCALE", value: "bn", url: "http://localhost:3100" }]);
     await page.goto(`/t/${token}`);
@@ -207,7 +207,7 @@ test.describe("guest app (390×844)", () => {
       reducedMotion: "reduce",
     });
     const page = await ctx.newPage();
-    await page.goto("/t/demo-table-08");
+    await page.goto("/t/e2e-08");
     await expect(page.getByRole("dialog", { name: /Welcome/ })).toBeVisible();
     await expect(page.locator("[data-welcome-overlay] .motion-reduce\\:hidden")).toBeHidden();
     await expect(page.getByRole("dialog", { name: /Welcome/ })).toBeHidden({ timeout: 5_000 });
@@ -219,7 +219,7 @@ test.describe("guest app (390×844)", () => {
 test.describe("guest accessibility", () => {
   for (const theme of ["dark", "light"] as const) {
     test(`menu and tracker pass axe WCAG AA (${theme})`, async ({ page, context }) => {
-      const token = "demo-table-12";
+      const token = "e2e-12";
       await skipWelcome(context, token);
       await context.addInitScript((t) => localStorage.setItem("es-theme-guest", t), theme);
       const scan = async () =>

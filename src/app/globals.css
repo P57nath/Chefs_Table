@@ -26,9 +26,9 @@
   --success: oklch(0.527 0.137 150.1); /* #15803D */
   --info: oklch(0.488 0.217 264.4); /* #1D4ED8 */
   --violet: oklch(0.491 0.241 292.6); /* #6D28D9 */
-  --cooking: oklch(0.646 0.18 47); /* deeper #FB923C for light surfaces */
+  --cooking: oklch(0.555 0.146 49.1); /* #B45309 — amber dark enough for text on white (5:1) */
   --eating: oklch(0.511 0.086 186.4); /* #0F766E */
-  --neutral-free: oklch(0.715 0 0);
+  --neutral-free: oklch(0.62 0 0); /* ≥ 3:1 for icons on white */
   --neutral-seated: oklch(0.556 0 0);
   --glow: 0 0 0 1px oklch(0.65 0.144 65.8 / 18%), 0 8px 28px -10px oklch(0.65 0.144 65.8 / 28%);
   --elevation:

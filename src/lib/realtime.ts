@@ -2,6 +2,7 @@
 
 import type { QueryKey } from "@tanstack/react-query";
 import { useQueryClient } from "@tanstack/react-query";
+import type { REALTIME_SUBSCRIBE_STATES } from "@supabase/supabase-js";
 import { useEffect, useRef, useState } from "react";
 
 import type { ConnectionStatus } from "@/components/states/connection-banner";
@@ -61,6 +62,7 @@ export function useRealtimeInvalidate({
       timer = setTimeout(invalidateAll, debounceMs);
     };
 
+    let cancelled = false;
     let ch = supabase.channel(channel);
     for (const l of JSON.parse(listenersKey) as RealtimeListener[]) {
       ch = ch.on(
@@ -69,7 +71,7 @@ export function useRealtimeInvalidate({
         schedule,
       );
     }
-    ch.subscribe((state) => {
+    const onState = (state: `${REALTIME_SUBSCRIBE_STATES}`) => {
       if (state === "SUBSCRIBED") {
         // Catch up on anything missed before (first join) or while disconnected.
         invalidateAll();
@@ -87,7 +89,18 @@ export function useRealtimeInvalidate({
           typeof navigator !== "undefined" && !navigator.onLine ? "offline" : "reconnecting",
         );
       }
-    });
+    };
+
+    // Realtime applies RLS with the socket's JWT. On a fresh page load the client
+    // may not have read the session cookie yet, so join with the user's token
+    // explicitly — otherwise the channel joins as `anon` and silently gets nothing.
+    void (async () => {
+      const { data } = await supabase.auth.getSession();
+      if (cancelled) return;
+      if (data.session) await supabase.realtime.setAuth(data.session.access_token);
+      if (cancelled) return;
+      ch.subscribe(onState);
+    })();
 
     const onVisible = () => {
       if (document.visibilityState === "visible") invalidateAll();
@@ -99,6 +112,7 @@ export function useRealtimeInvalidate({
     window.addEventListener("offline", onOffline);
 
     return () => {
+      cancelled = true;
       if (timer) clearTimeout(timer);
       if (restoredTimer) clearTimeout(restoredTimer);
       document.removeEventListener("visibilitychange", onVisible);

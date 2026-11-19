@@ -10,8 +10,8 @@ Gate per phase: `pnpm gate` = typecheck · lint · format:check · check:secrets
 | 1 | Database | ✅ done | Migrations + seed apply cleanly, types generated, 37/37 pgTAP RLS checks, demo staff seeded and can log in |
 | 2 | Design system & app shell | ✅ done | Tokens (OKLCH, dark/light), fonts, i18n en/bn, providers, custom components, `/dev/ui`, landing; 57 unit tests, e2e incl. axe AA on landing (both themes, 3 viewports) |
 | 3 | Guest app | ✅ done | Welcome, menu (specials, scroll-spy chips, search, veg/spice filters, sold-out live), item sheet, cart (fly-to-cart, swipe remove), idempotent place order, live tracker (illustrated stages, ETA, rounds, cancel), call waiter / request bill, closed-table + invalid-QR screens. 101 unit tests, 43 pgTAP, 33 e2e incl. axe AA on menu + tracker |
-| 4 | Staff auth & orders | ⏳ next | Add staff-login link to landing |
-| 5 | Kitchen display | ☐ | |
+| 4 | Staff auth & orders | ✅ done | Login, proxy guard, role-checked layouts/pages, start-shift (audio unlock + wake lock), orders kanban with optimistic actions (edit lines, confirm, send, confirm & send, reject with reason, served), requests, sold-out toggle, diff-based alerts, connection banner + polling. 123 unit, 43 pgTAP, 43 e2e |
+| 5 | Kitchen display | ⏳ next | Switch kitchen's post-login home to `/kitchen` |
 | 6 | Live floor (2D/list/3D) | ☐ | |
 | 7 | Bill & payments | ☐ | |
 | 8 | Admin | ☐ | |
@@ -81,6 +81,34 @@ CLI 3.2 · R3F 9.8 / drei 10.7 · motion 14 · next-intl 4.15 · TanStack Query 
 - **Light-mode chips** (table chip, "Required" badge) use solid saffron + dark ink: tinted saffron with
   saffron text measured below 4.5:1 in axe.
 - **Guest JS budget** (< 200 KB gzip) is measured and enforced in Phase 10 (bundle analysis).
+
+### Phase 4 (staff)
+- **Route guard layers**: `src/proxy.ts` refreshes the session and sends signed-out *and anonymous*
+  visitors of `/staff`, `/kitchen`, `/admin` to `/login?next=…` (validated by `safeNext` — same-origin,
+  staff paths only). Server layouts/pages re-check the role (`requireStaff`); the DB is the real guard.
+- **Staff layout admits every active staff role; pages check their own roles**, because the spec lets
+  kitchen staff 86 items (`/staff/menu`) while the board/requests are floor-only. Kitchen lands on
+  `/staff/menu` until the KDS exists (Phase 5).
+- **`/staff` redirects to `/staff/orders`** until the live floor replaces it in Phase 6.
+- **Line removal has no stored reason**: `waiter_adjust_items` takes no reason and the tested SQL is not
+  rewritten; removal is an explicit, reversible draft + "Save changes". Rejecting a whole order requires
+  a reason (stored, shown to the guest).
+- **Board data**: all active orders are always loaded (never truncated) + latest 50 served today
+  (Dhaka day). An earlier single query with `limit` could drop new orders on a busy day — caught by e2e.
+- **Realtime auth bug fixed** (caught by e2e): on a fresh load the channel could join before the client
+  read the session cookie, i.e. as `anon`, so RLS delivered nothing. `useRealtimeInvalidate` now awaits
+  the session and calls `realtime.setAuth(token)` before subscribing.
+- **Replaced `next-themes`** with a 100-line provider (`components/providers/theme.tsx`): its inline
+  script was rendered on client navigations, which React 19 reports as a console error. Our pre-paint
+  scripts (theme, guest welcome) are inserted only into SSR HTML via `useServerInsertedHTML`.
+- **Light-mode amber** (`--cooking`) darkened to `#B45309` (5:1) and the "Free" grey to ≥ 3:1 after axe
+  flagged timers on the board.
+- **Sign-out clears the TanStack cache** so a shared tablet never shows the previous user's data.
+- **E2E isolation**: a Playwright global setup upserts 24 dedicated tables (`e2e-01…24`, labels
+  `E1…E24`) so parallel tests never share a table; `resetTable` mirrors `close_session`. These tables
+  exist in the local DB only.
+- **`pnpm dev:lan`** serves the app to phones on the same Wi-Fi (Supabase URL switched to the PC's LAN
+  IP, `allowedDevOrigins` set). Development only.
 - **Env split into three files**: `lib/env-schema.ts` (pure Zod schemas, unit-tested), `lib/env.ts`
   (public, client-safe), `lib/env.server.ts` (`server-only`). Keeps the secret key's *name* out of client
   bundles. `check:secrets` allows `SUPABASE_SECRET_KEY` only in these server files + `lib/supabase/admin.ts`.
