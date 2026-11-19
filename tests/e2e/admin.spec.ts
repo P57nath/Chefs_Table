@@ -94,7 +94,12 @@ test.describe("admin (1180×820)", () => {
       .single();
     await asManager(page, "/admin/floor");
     const handle = page.locator('g[data-table="E30"]');
-    await handle.focus();
+    // Wait until the editor is interactive: focusing selects the table.
+    await expect(async () => {
+      await handle.blur();
+      await handle.focus();
+      await expect(handle).toHaveAttribute("aria-pressed", "true", { timeout: 500 });
+    }).toPass();
     await page.keyboard.press("ArrowRight");
     await page.keyboard.press("ArrowRight");
     await page.getByRole("button", { name: "Save 1 change" }).click();
@@ -234,5 +239,39 @@ test.describe("admin (1180×820)", () => {
         .update({ logo_path: original!.logo_path, settings: original!.settings })
         .eq("id", rid);
     }
+  });
+
+  test("dashboard: ranges, table view and report CSV", async ({ page }) => {
+    await asManager(page, "/admin");
+    await expect(page.getByRole("heading", { name: "Dashboard", level: 1 })).toBeVisible();
+    await expect(page.getByText("Revenue", { exact: true })).toBeVisible();
+    await page.getByRole("link", { name: "Last 7 days" }).click();
+    await expect(page).toHaveURL(/range=7d/);
+    await expect(page.getByRole("link", { name: "Last 7 days" })).toHaveAttribute(
+      "aria-current",
+      "page",
+    );
+    await expect(page.getByRole("heading", { name: "Revenue by day" })).toBeVisible();
+
+    const card = page.locator("section", {
+      has: page.getByRole("heading", { name: "Orders by hour" }),
+    });
+    const toggle = card.getByRole("button", { name: /Show Orders by hour as a table/ });
+    if (await toggle.isVisible()) {
+      await toggle.click();
+      await expect(card.getByRole("columnheader", { name: "Hour" })).toBeVisible();
+    }
+
+    const res = await page.request.get("/admin/reports/export?from=2026-01-01&to=2026-01-03");
+    expect(res.status()).toBe(200);
+    const csv = await res.text();
+    expect(csv).toMatch(/^﻿section,key,value,extra/);
+    expect(csv.match(/^by_day,/gm)).toHaveLength(3);
+    expect(csv.match(/^by_hour,/gm)).toHaveLength(24);
+
+    const scan = await new AxeBuilder({ page })
+      .withTags(["wcag2a", "wcag2aa", "wcag21aa", "wcag22aa"])
+      .analyze();
+    expect(scan.violations.map((v) => v.id)).toEqual([]);
   });
 });

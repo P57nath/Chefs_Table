@@ -31,7 +31,7 @@ test.describe("bill & payments (390×844, mock gateway)", () => {
 
     await page.getByRole("link", { name: "Bill & pay" }).click();
     await expect(page.getByRole("heading", { name: "Your bill", level: 1 })).toBeVisible();
-    await expect(page.getByText("Mishti Doi")).toBeVisible();
+    await expect(page.getByText("Mishti Doi", { exact: true })).toBeVisible();
     const scan = await new AxeBuilder({ page })
       .withTags(["wcag2a", "wcag2aa", "wcag21aa", "wcag22aa"])
       .analyze();

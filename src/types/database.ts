@@ -1040,6 +1040,7 @@ export type Database = {
           isSetofReturn: false;
         };
       };
+      sales_daily: { Args: { p_from: string; p_to: string }; Returns: Json };
       sales_report: { Args: { p_from: string; p_to: string }; Returns: Json };
       session_bill: { Args: { p_session_id: string }; Returns: Json };
       session_due_internal: { Args: { p_session_id: string }; Returns: number };

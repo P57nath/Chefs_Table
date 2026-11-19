@@ -77,3 +77,14 @@ export function formatBps(bps: number, locale: Locale): string {
     rest === 0 ? `${whole}` : `${whole}.${String(rest).padStart(2, "0").replace(/0$/, "")}`;
   return `${localizeDigits(text, locale)}%`;
 }
+
+/** Axis / tile shorthand: 1250000 → "৳12.5K" (whole taka, never used for exact amounts). */
+export function formatMoneyCompact(minor: Minor, locale: Locale): string {
+  assertMinor(minor);
+  const taka = Math.trunc(minor / 100);
+  const text = new Intl.NumberFormat(intlLocale(locale), {
+    notation: "compact",
+    maximumFractionDigits: 1,
+  }).format(taka);
+  return `${CURRENCY_SYMBOL}${text}`;
+}

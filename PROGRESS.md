@@ -15,8 +15,8 @@ Gate per phase: `pnpm gate` = typecheck · lint · format:check · check:secrets
 | 6 | Live floor (2D/list/3D) | ✅ done | `/staff`: 3D diorama (lazy chunk), 2D map, list; zone filter, occupancy, priority states, table sheet (requests, orders + actions, bill, idempotent cash/card-machine, close / force-close). 134 unit, 53 pgTAP, 53 e2e |
 | 7 | Bill & payments | ✅ done (sandbox pending credentials) | Guest bill (itemised, split/custom amount, tiles, cash → waiter), SSLCommerz + mock gateways, init/IPN/return routes, result page polling 30 s, pending-review badge + manager approve/reject, feedback, `/api/health`. 178 unit, 80 pgTAP, 61 e2e |
 | 8 | Admin | ✅ done | `/admin`: overview, menu editor (photos crop→WebP, modifiers, drag/▲▼ reorder, duplicate, archive), tables/zones + 2D layout editor with 3D preview, QR (PNG/SVG, A4 tents, rotate), staff (create, role, deactivate, reset password), orders history + timeline, payments + review + CSV, settings (brand, logo, accent presets, taxes, default language). 201 unit, 96 pgTAP, 69 e2e |
-| 9 | Reports | ⏳ next | |
-| 10 | Hardening | ☐ | |
+| 9 | Reports | ✅ done | `/admin` dashboard: Today / 7 / 30 days / custom (Dhaka days), KPIs with change vs previous period, revenue-by-day line, orders-by-hour columns, payment-method and top-dish ranked bars, table view per chart, report CSV. 211 unit, 101 pgTAP, 70 e2e |
+| 10 | Hardening | ⏳ next | |
 | 11 | Deploy | ☐ | |
 
 ## Toolchain (installed 2026-11-19)
@@ -282,3 +282,27 @@ CLI 3.2 · R3F 9.8 / drei 10.7 · motion 14 · next-intl 4.15 · TanStack Query 
 - shadcn **tab** text raised to `foreground/80` (axe contrast).
 - E2E admin tests restore their fixtures (layout position, rotated QR token, created staff user, menu
   rows, settings).
+
+### Phase 9 (reports)
+- **Dashboard lives at `/admin`** (replaces the Phase 8 overview): the spec's §7 "Dashboard" and the
+  build plan's "Reports" are the same screen.
+- **New migration 0008**: `sales_daily(from, to)` — zero-filled per-day revenue (paid payments by
+  `paid_at`) and orders (by `placed_at`) in the restaurant's time zone; owner/manager only; ranges over
+  400 days refused. 5 pgTAP checks. Everything else comes from the tested `sales_report()`.
+- **Ranges** are Dhaka calendar days (presets Today / Last 7 / Last 30 + custom), each compared with the
+  same number of days immediately before; "No earlier data to compare" when the previous period is 0.
+  For waiting times a decrease shows as good. Deltas use an arrow icon + signed text, never colour only.
+- **Charts are hand-written SVG** (no chart library: ~3 small components, admin-only bundle).
+  Followed the data-viz method: forms picked by job (line for trend, columns for hour of day, ranked
+  horizontal bars for payment split and top dishes instead of donuts), one series per chart so no legend
+  (the title names it), a single validated mark colour (`--viz-series`: `#C97A06` light / `#C27A0A`
+  dark — checked with the palette validator for lightness band and ≥ 3:1 on the card; the bright UI
+  saffron failed the dark band), 2px line + 10% area wash, ≤ 24px columns with 4px rounded data end,
+  hairline grid, value at the line end only, crosshair / per-column tooltip on hover **and** arrow keys
+  (one tab stop per chart), and a **Table** switch on every chart. SVGs are measured with
+  `ResizeObserver` so axis text keeps its real size.
+- **Payment split** maps legacy `sslcommerz` to card; shares use largest-remainder rounding so they add
+  to exactly 100%.
+- **Report CSV** `/admin/reports/export?from&to`: one file with a `section` column (summary, by_day,
+  by_hour, payment_split, top_items), amounts in BDT decimals, same BOM / formula protection as payments.
+- "Tables in use" counts only live sessions on **active** tables.

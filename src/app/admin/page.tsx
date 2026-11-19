@@ -1,68 +1,108 @@
-import { ArrowRight, Armchair, ClipboardList, ShieldAlert, Star, Wallet } from "lucide-react";
+import { ArrowRight, Download, ShieldAlert } from "lucide-react";
 import Link from "next/link";
 import { getLocale, getTranslations } from "next-intl/server";
 
+import { Button } from "@/components/ui/button";
+import { param } from "@/features/admin/date-range";
 import { AdminPageHeader } from "@/features/admin/page-header";
-import { requireStaff } from "@/features/auth/staff-server";
+import { DashboardCharts } from "@/features/admin/reports/dashboard-charts";
+import { Kpi } from "@/features/admin/reports/kpi";
+import {
+  delta,
+  formatDuration,
+  normaliseReport,
+  reportRange,
+  type DailyPoint,
+} from "@/features/admin/reports/model";
+import { RangePicker } from "@/features/admin/reports/range-picker";
 import { MANAGEMENT_ROLES } from "@/features/auth/roles";
+import { requireStaff } from "@/features/auth/staff-server";
 import type { Locale } from "@/i18n/config";
 import { localizeDigits } from "@/lib/digits";
 import { formatMoney } from "@/lib/money";
 import { getServerSupabase } from "@/lib/supabase/server";
-import { startOfDayDhaka } from "@/lib/time";
 
-/** Today at a glance (full reports in Phase 9). */
-export default async function AdminOverviewPage() {
+/** Dashboard (spec §7): KPIs vs the previous period and charts, in Dhaka days. */
+export default async function AdminDashboardPage({ searchParams }: PageProps<"/admin">) {
   const access = await requireStaff(MANAGEMENT_ROLES, "/admin");
   if (!access.ok) return null;
-  const t = await getTranslations("admin.overview");
+  const t = await getTranslations("admin.reports");
   const locale = (await getLocale()) as Locale;
+  const sp = await searchParams;
+  const { preset, current, previous, days } = reportRange({
+    range: param(sp.range),
+    from: param(sp.from),
+    to: param(sp.to),
+  });
   const supabase = await getServerSupabase();
-  const from = startOfDayDhaka();
-  const to = new Date(from.getTime() + 24 * 3600_000);
+  const iso = (d: Date) => d.toISOString();
 
-  const [report, tables, live, review] = await Promise.all([
-    supabase.rpc("sales_report", { p_from: from.toISOString(), p_to: to.toISOString() }),
+  const [now, prev, daily, tables, live, review] = await Promise.all([
+    supabase.rpc("sales_report", { p_from: iso(current.start), p_to: iso(current.end) }),
+    supabase.rpc("sales_report", { p_from: iso(previous.start), p_to: iso(previous.end) }),
+    days > 1
+      ? supabase.rpc("sales_daily", { p_from: iso(current.start), p_to: iso(current.end) })
+      : Promise.resolve({ data: null, error: null }),
     supabase
       .from("dining_tables")
       .select("id", { count: "exact", head: true })
       .eq("is_active", true),
     supabase
       .from("table_sessions")
-      .select("id", { count: "exact", head: true })
-      .neq("status", "closed"),
+      .select("id, dining_tables!inner ( is_active )", { count: "exact", head: true })
+      .neq("status", "closed")
+      .eq("dining_tables.is_active", true),
     supabase
       .from("payments")
       .select("id", { count: "exact", head: true })
       .eq("status", "pending_review"),
   ]);
-  if (report.error) throw report.error;
-  const r = report.data as {
-    revenue_minor: number;
-    orders: number;
-    avg_ticket_minor: number;
-    avg_rating: number | null;
-  };
+  if (now.error) throw now.error;
+  if (prev.error) throw prev.error;
+  if (daily.error) throw daily.error;
+  const r = normaliseReport(now.data);
+  const p = normaliseReport(prev.data);
+  const series = daily.data
+    ? (daily.data as unknown as DailyPoint[]).map((d) => ({
+        day: d.day,
+        revenue_minor: Number(d.revenue_minor),
+        orders: Number(d.orders),
+      }))
+    : null;
 
-  const tiles = [
-    { icon: Wallet, label: t("revenue"), value: formatMoney(r.revenue_minor, locale) },
-    { icon: ClipboardList, label: t("orders"), value: localizeDigits(r.orders, locale) },
-    { icon: Wallet, label: t("avgTicket"), value: formatMoney(r.avg_ticket_minor, locale) },
-    {
-      icon: Armchair,
-      label: t("occupancy"),
-      value: `${localizeDigits(live.count ?? 0, locale)} / ${localizeDigits(tables.count ?? 0, locale)}`,
-    },
-    {
-      icon: Star,
-      label: t("rating"),
-      value: r.avg_rating ? localizeDigits(Number(r.avg_rating).toFixed(1), locale) : "—",
-    },
-  ];
+  const versus = preset === "today" ? t("vsYesterday") : t("vsPrevious", { count: days });
+  const change = (cur: number, before: number) => {
+    const d = delta(cur, before);
+    return {
+      delta: d,
+      deltaText:
+        d === null
+          ? t("noComparison")
+          : `${d > 0 ? "+" : ""}${localizeDigits(d, locale)}% ${versus}`,
+    };
+  };
+  const rangeText =
+    current.from === current.to
+      ? current.from
+      : t("rangeText", { from: current.from, to: current.to });
+  const exportHref = `/admin/reports/export?from=${current.from}&to=${current.to}`;
 
   return (
     <>
-      <AdminPageHeader title={t("title")} description={t("description")} />
+      <AdminPageHeader
+        title={t("title")}
+        description={t("description", { range: rangeText })}
+        actions={
+          <Button asChild variant="secondary">
+            <a href={exportHref} download>
+              <Download aria-hidden />
+              {t("exportCsv")}
+            </a>
+          </Button>
+        }
+      />
+      <RangePicker preset={preset} from={current.from} to={current.to} />
+
       {(review.count ?? 0) > 0 ? (
         <Link
           href="/admin/payments?status=pending_review"
@@ -73,37 +113,53 @@ export default async function AdminOverviewPage() {
           <ArrowRight className="size-5" aria-hidden />
         </Link>
       ) : null}
-      <dl className="grid grid-cols-2 gap-4 lg:grid-cols-5">
-        {tiles.map((tile) => (
-          <div key={tile.label} className="rounded-2xl border border-border bg-card p-5">
-            <dt className="flex items-center gap-2 text-sm text-muted-foreground">
-              <tile.icon className="size-4" aria-hidden />
-              {tile.label}
-            </dt>
-            <dd className="mt-2 font-display text-3xl font-semibold tabular-nums">{tile.value}</dd>
-          </div>
-        ))}
+
+      <dl className="mb-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        <Kpi
+          hero
+          label={t("revenue")}
+          value={formatMoney(r.revenue_minor, locale)}
+          {...change(r.revenue_minor, p.revenue_minor)}
+        />
+        <Kpi
+          label={t("orders")}
+          value={localizeDigits(r.orders, locale)}
+          {...change(r.orders, p.orders)}
+        />
+        <Kpi
+          label={t("avgTicket")}
+          value={formatMoney(r.avg_ticket_minor, locale)}
+          {...change(r.avg_ticket_minor, p.avg_ticket_minor)}
+        />
+        <Kpi
+          label={t("avgConfirm")}
+          value={r.avg_confirm_seconds ? formatDuration(r.avg_confirm_seconds) : "—"}
+          upIsGood={false}
+          {...change(r.avg_confirm_seconds, p.avg_confirm_seconds)}
+        />
+        <Kpi
+          label={t("avgKitchen")}
+          value={r.avg_kitchen_seconds ? formatDuration(r.avg_kitchen_seconds) : "—"}
+          upIsGood={false}
+          {...change(r.avg_kitchen_seconds, p.avg_kitchen_seconds)}
+        />
+        <Kpi
+          label={t("rating")}
+          value={
+            r.avg_rating
+              ? `${localizeDigits(r.avg_rating.toFixed(1), locale)} / ${localizeDigits(5, locale)}`
+              : "—"
+          }
+          note={r.avg_rating ? undefined : t("noRatings")}
+        />
+        <Kpi
+          label={t("occupancy")}
+          value={`${localizeDigits(live.count ?? 0, locale)} / ${localizeDigits(tables.count ?? 0, locale)}`}
+          note={t("occupancyNote")}
+        />
       </dl>
-      <h2 className="mt-10 mb-3 font-semibold">{t("quickLinks")}</h2>
-      <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-        {(
-          [
-            ["/admin/menu", "linkMenu"],
-            ["/admin/floor", "linkFloor"],
-            ["/admin/qr", "linkQr"],
-            ["/admin/staff", "linkStaff"],
-          ] as const
-        ).map(([href, key]) => (
-          <Link
-            key={href}
-            href={href}
-            className="flex min-h-14 items-center justify-between gap-2 rounded-2xl border border-border bg-card px-4 font-medium outline-none hover:border-primary/60 focus-visible:ring-3 focus-visible:ring-ring/50"
-          >
-            {t(key)}
-            <ArrowRight className="size-4 text-muted-foreground" aria-hidden />
-          </Link>
-        ))}
-      </div>
+
+      <DashboardCharts report={r} daily={series} />
     </>
   );
 }

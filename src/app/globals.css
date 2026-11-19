@@ -55,6 +55,8 @@
   --input: oklch(0.206 0.012 55.6 / 16%);
   --ring: var(--primary-fill);
   --chart-1: var(--primary-fill);
+  /* Data-viz mark colour (validated: lightness band + ≥3:1 on the card surface). */
+  --viz-series: #c97a06;
   --chart-2: var(--ember);
   --chart-3: var(--success);
   --chart-4: var(--info);
@@ -71,6 +73,7 @@
 }
 
 .dark {
+  --viz-series: #c27a0a;
   --bg: oklch(0.149 0.01 61.6); /* #0E0A07 */
   --surface: oklch(0.184 0.013 55.5); /* #17110D */
   --surface-2: oklch(0.221 0.017 58.6); /* #211913 */
@@ -123,6 +126,7 @@
   --color-input: var(--input);
   --color-ring: var(--ring);
   --color-chart-1: var(--chart-1);
+  --color-viz-series: var(--viz-series);
   --color-chart-2: var(--chart-2);
   --color-chart-3: var(--chart-3);
   --color-chart-4: var(--chart-4);
