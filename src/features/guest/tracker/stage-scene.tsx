@@ -1,6 +1,7 @@
 "use client";
 
-import { AnimatePresence, motion, useReducedMotion } from "motion/react";
+import { AnimatePresence, useReducedMotion } from "motion/react";
+import * as m from "motion/react-m";
 
 import type { Stage } from "./tracker-model";
 
@@ -37,14 +38,9 @@ export function StageScene({ stage, label }: { stage: Stage; label: string }) {
       {/* flames */}
       <AnimatePresence>
         {stage === "cooking" ? (
-          <motion.g
-            key="flames"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-          >
+          <m.g key="flames" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
             {[214, 238, 262].map((x, i) => (
-              <motion.path
+              <m.path
                 key={x}
                 d={`M${x} 132c-4-6 0-12 4-16 0 6 6 8 6 14a5 5 0 0 1-10 2Z`}
                 fill="#F5A524"
@@ -53,12 +49,12 @@ export function StageScene({ stage, label }: { stage: Stage; label: string }) {
                 transition={{ ...loop(0.6), delay: i * 0.12 }}
               />
             ))}
-          </motion.g>
+          </m.g>
         ) : null}
       </AnimatePresence>
 
       {/* pan */}
-      <motion.g
+      <m.g
         animate={
           stage === "cooking" && !reduce
             ? { rotate: [0, -4, 3, 0], x: [0, -2, 2, 0] }
@@ -77,19 +73,14 @@ export function StageScene({ stage, label }: { stage: Stage; label: string }) {
           fill="#E5533D"
           opacity={stage === "cooking" ? 0.9 : 0.4}
         />
-      </motion.g>
+      </m.g>
 
       {/* steam */}
       <AnimatePresence>
         {stage === "cooking" ? (
-          <motion.g
-            key="steam"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-          >
+          <m.g key="steam" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
             {[228, 246, 264].map((x, i) => (
-              <motion.path
+              <m.path
                 key={x}
                 d={`M${x} 104c-6-8 6-14 0-22s6-14 0-22`}
                 fill="none"
@@ -100,7 +91,7 @@ export function StageScene({ stage, label }: { stage: Stage; label: string }) {
                 transition={{ ...loop(1.8), delay: i * 0.4 }}
               />
             ))}
-          </motion.g>
+          </m.g>
         ) : null}
       </AnimatePresence>
 
@@ -110,7 +101,7 @@ export function StageScene({ stage, label }: { stage: Stage; label: string }) {
         <rect x="88" y="128" width="40" height="34" rx="10" fill="#F4EDE4" />
         <circle cx="97" cy="140" r="2.5" fill="#E5533D" />
         <circle cx="97" cy="152" r="2.5" fill="#E5533D" />
-        <motion.g
+        <m.g
           animate={stage === "confirmed" && !reduce ? { rotate: [0, 10, 0, 10, 0] } : { rotate: 0 }}
           transition={
             reduce ? { duration: 0 } : { duration: 1.4, repeat: Infinity, repeatDelay: 1.2 }
@@ -135,11 +126,11 @@ export function StageScene({ stage, label }: { stage: Stage; label: string }) {
           />
           <circle cx="94" cy="106" r="3.5" fill="#E5533D" opacity="0.35" />
           <circle cx="122" cy="106" r="3.5" fill="#E5533D" opacity="0.35" />
-        </motion.g>
+        </m.g>
       </g>
 
       {/* bell */}
-      <motion.g
+      <m.g
         animate={stage === "ready" && !reduce ? { rotate: [0, -16, 14, -10, 6, 0] } : { rotate: 0 }}
         transition={
           reduce ? { duration: 0 } : { duration: 0.9, repeat: Infinity, repeatDelay: 1.4 }
@@ -149,12 +140,12 @@ export function StageScene({ stage, label }: { stage: Stage; label: string }) {
         <path d="M302 160a16 16 0 0 1 32 0Z" fill="#F5A524" />
         <circle cx="318" cy="142" r="3" fill="#F5A524" />
         <rect x="298" y="158" width="40" height="4" rx="2" fill="#C97A06" />
-      </motion.g>
+      </m.g>
 
       {/* ticket (sent) */}
       <AnimatePresence>
         {stage === "sent" ? (
-          <motion.g
+          <m.g
             key="ticket"
             initial={reduce ? { opacity: 1 } : { x: -60, y: 20, opacity: 0, rotate: -20 }}
             animate={
@@ -170,14 +161,14 @@ export function StageScene({ stage, label }: { stage: Stage; label: string }) {
             {[96, 106, 116].map((y) => (
               <rect key={y} x="40" y={y} width="24" height="4" rx="2" fill="#B9A897" />
             ))}
-          </motion.g>
+          </m.g>
         ) : null}
       </AnimatePresence>
 
       {/* confirmed check */}
       <AnimatePresence>
         {stage === "confirmed" ? (
-          <motion.g
+          <m.g
             key="check"
             initial={{ scale: 0, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
@@ -193,14 +184,14 @@ export function StageScene({ stage, label }: { stage: Stage; label: string }) {
               strokeLinecap="round"
               strokeLinejoin="round"
             />
-          </motion.g>
+          </m.g>
         ) : null}
       </AnimatePresence>
 
       {/* plate on the pass (ready) / served */}
       <AnimatePresence>
         {stage === "ready" || stage === "served" ? (
-          <motion.g
+          <m.g
             key="plate"
             initial={reduce ? { opacity: 1 } : { y: -24, opacity: 0 }}
             animate={
@@ -217,14 +208,14 @@ export function StageScene({ stage, label }: { stage: Stage; label: string }) {
             <path d="M240 158a20 14 0 0 1 40 0Z" fill="#C97A06" />
             <circle cx="252" cy="150" r="3" fill="#3FB37F" />
             <circle cx="266" cy="148" r="2.5" fill="#E5533D" />
-          </motion.g>
+          </m.g>
         ) : null}
       </AnimatePresence>
 
       {/* sparkles (served) */}
       <AnimatePresence>
         {stage === "served" ? (
-          <motion.g
+          <m.g
             key="sparkle"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -235,7 +226,7 @@ export function StageScene({ stage, label }: { stage: Stage; label: string }) {
               [290, 176],
               [262, 196],
             ].map(([x, y], i) => (
-              <motion.path
+              <m.path
                 key={i}
                 d={`M${x} ${(y ?? 0) - 7}l2 5 5 2-5 2-2 5-2-5-5-2 5-2Z`}
                 fill="#F5A524"
@@ -244,7 +235,7 @@ export function StageScene({ stage, label }: { stage: Stage; label: string }) {
                 style={{ originX: `${x}px`, originY: `${y}px` }}
               />
             ))}
-          </motion.g>
+          </m.g>
         ) : null}
       </AnimatePresence>
     </svg>

@@ -6,7 +6,8 @@ import type { REALTIME_SUBSCRIBE_STATES } from "@supabase/supabase-js";
 import { useEffect, useRef, useState } from "react";
 
 import type { ConnectionStatus } from "@/components/states/connection-banner";
-import { getBrowserSupabase } from "@/lib/supabase/client";
+import type { BrowserSupabase } from "@/lib/supabase/client";
+import { loadSupabase } from "@/lib/supabase/lazy";
 
 export interface RealtimeListener {
   table: string;
@@ -48,7 +49,7 @@ export function useRealtimeInvalidate({
 
   useEffect(() => {
     if (!enabled) return;
-    const supabase = getBrowserSupabase();
+    let supabase: BrowserSupabase | null = null;
     let timer: ReturnType<typeof setTimeout> | null = null;
     let restoredTimer: ReturnType<typeof setTimeout> | null = null;
     let everSubscribed = false;
@@ -63,14 +64,7 @@ export function useRealtimeInvalidate({
     };
 
     let cancelled = false;
-    let ch = supabase.channel(channel);
-    for (const l of JSON.parse(listenersKey) as RealtimeListener[]) {
-      ch = ch.on(
-        "postgres_changes",
-        { event: "*", schema: "public", table: l.table, ...(l.filter ? { filter: l.filter } : {}) },
-        schedule,
-      );
-    }
+    let ch: ReturnType<BrowserSupabase["channel"]> | null = null;
     const onState = (state: `${REALTIME_SUBSCRIBE_STATES}`) => {
       if (state === "SUBSCRIBED") {
         // Catch up on anything missed before (first join) or while disconnected.
@@ -95,11 +89,28 @@ export function useRealtimeInvalidate({
     // may not have read the session cookie yet, so join with the user's token
     // explicitly — otherwise the channel joins as `anon` and silently gets nothing.
     void (async () => {
-      const { data } = await supabase.auth.getSession();
+      const sb = await loadSupabase();
       if (cancelled) return;
-      if (data.session) await supabase.realtime.setAuth(data.session.access_token);
+      supabase = sb;
+      let channelRef = sb.channel(channel);
+      for (const l of JSON.parse(listenersKey) as RealtimeListener[]) {
+        channelRef = channelRef.on(
+          "postgres_changes",
+          {
+            event: "*",
+            schema: "public",
+            table: l.table,
+            ...(l.filter ? { filter: l.filter } : {}),
+          },
+          schedule,
+        );
+      }
+      ch = channelRef;
+      const { data } = await sb.auth.getSession();
       if (cancelled) return;
-      ch.subscribe(onState);
+      if (data.session) await sb.realtime.setAuth(data.session.access_token);
+      if (cancelled) return;
+      channelRef.subscribe(onState);
     })();
 
     const onVisible = () => {
@@ -118,7 +129,7 @@ export function useRealtimeInvalidate({
       document.removeEventListener("visibilitychange", onVisible);
       window.removeEventListener("online", onOnline);
       window.removeEventListener("offline", onOffline);
-      void supabase.removeChannel(ch);
+      if (supabase && ch) void supabase.removeChannel(ch);
     };
   }, [channel, listenersKey, enabled, debounceMs, qc]);
 

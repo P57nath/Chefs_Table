@@ -1,7 +1,10 @@
 import type { Metadata, Viewport } from "next";
+import { headers } from "next/headers";
 import { NextIntlClientProvider } from "next-intl";
 import { getLocale, getTranslations } from "next-intl/server";
 
+import { MotionProvider } from "@/components/providers/motion-provider";
+import { NonceProvider } from "@/components/providers/nonce";
 import { QueryProvider } from "@/components/providers/query-provider";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { brand } from "@/config/brand";
@@ -29,6 +32,7 @@ export const viewport: Viewport = {
 export default async function RootLayout({ children }: LayoutProps<"/">) {
   const locale = await getLocale();
   const t = await getTranslations("common");
+  const nonce = (await headers()).get("x-nonce") ?? undefined;
 
   return (
     // suppressHydrationWarning: the theme script sets the class on <html> before hydration.
@@ -40,11 +44,15 @@ export default async function RootLayout({ children }: LayoutProps<"/">) {
         >
           {t("skipToContent")}
         </a>
-        <NextIntlClientProvider>
-          <QueryProvider>
-            <TooltipProvider delayDuration={300}>{children}</TooltipProvider>
-          </QueryProvider>
-        </NextIntlClientProvider>
+        <NonceProvider nonce={nonce}>
+          <NextIntlClientProvider>
+            <QueryProvider>
+              <MotionProvider>
+                <TooltipProvider delayDuration={300}>{children}</TooltipProvider>
+              </MotionProvider>
+            </QueryProvider>
+          </NextIntlClientProvider>
+        </NonceProvider>
       </body>
     </html>
   );

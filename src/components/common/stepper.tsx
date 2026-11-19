@@ -1,7 +1,8 @@
 "use client";
 
 import { Minus, Plus } from "lucide-react";
-import { AnimatePresence, motion, useReducedMotion } from "motion/react";
+import { AnimatePresence, useReducedMotion } from "motion/react";
+import * as m from "motion/react-m";
 import { useLocale, useTranslations } from "next-intl";
 
 import { localizeDigits } from "@/lib/digits";
@@ -65,7 +66,7 @@ export function Stepper({
         aria-live="polite"
       >
         <AnimatePresence initial={false} mode="popLayout">
-          <motion.span
+          <m.span
             key={value}
             initial={reduce ? { opacity: 0 } : { y: -12, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
@@ -73,7 +74,7 @@ export function Stepper({
             transition={spring.snappy}
           >
             {localizeDigits(value, locale)}
-          </motion.span>
+          </m.span>
         </AnimatePresence>
       </span>
       <button

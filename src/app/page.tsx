@@ -15,7 +15,14 @@ import { localizeDigits } from "@/lib/digits";
 
 export async function generateMetadata(): Promise<Metadata> {
   const t = await getTranslations("landing");
-  return { title: { absolute: `${brand.name} — ${t("title")}` }, description: t("subtitle") };
+  const title = `${brand.name} — ${t("title")}`;
+  return {
+    title: { absolute: title },
+    description: t("subtitle"),
+    alternates: { canonical: "/" },
+    openGraph: { type: "website", siteName: brand.name, title, description: t("subtitle") },
+    twitter: { card: "summary_large_image", title, description: t("subtitle") },
+  };
 }
 
 const STEPS = [

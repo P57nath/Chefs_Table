@@ -1,7 +1,8 @@
 "use client";
 
 import { Check } from "lucide-react";
-import { AnimatePresence, motion } from "motion/react";
+import { AnimatePresence } from "motion/react";
+import * as m from "motion/react-m";
 import { useLocale, useTranslations } from "next-intl";
 
 import { localizeDigits } from "@/lib/digits";
@@ -48,7 +49,7 @@ export function StagePanel({ order }: { order: GuestOrder }) {
       <StageScene stage={stage} label={caption} />
       <div aria-live="polite" className="space-y-1 text-center">
         <AnimatePresence mode="wait" initial={false}>
-          <motion.h2
+          <m.h2
             key={stage}
             id="stage-caption"
             initial={{ opacity: 0, y: 8 }}
@@ -58,7 +59,7 @@ export function StagePanel({ order }: { order: GuestOrder }) {
             className="font-display text-2xl font-semibold"
           >
             {caption}
-          </motion.h2>
+          </m.h2>
         </AnimatePresence>
         {eta ? (
           <p className="text-muted-foreground tabular-nums">

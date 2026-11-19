@@ -1,7 +1,8 @@
 "use client";
 
 import { CircleCheck, CircleX, Clock3, Hourglass, Undo2, type LucideIcon } from "lucide-react";
-import { motion, useReducedMotion } from "motion/react";
+import { useReducedMotion } from "motion/react";
+import * as m from "motion/react-m";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
@@ -68,7 +69,7 @@ export function PaymentResultScreen({
     const waiting = view === "confirming";
     body = (
       <section className="flex flex-col items-center gap-5 pt-10 text-center">
-        <motion.div
+        <m.div
           className={cn("grid size-24 place-items-center rounded-full", tone)}
           initial={reduce ? false : { scale: 0.7, opacity: 0 }}
           animate={
@@ -79,7 +80,7 @@ export function PaymentResultScreen({
           }
         >
           <Icon className="size-11" aria-hidden />
-        </motion.div>
+        </m.div>
         <div aria-live="polite" className="max-w-sm space-y-2">
           <h2 className="font-display text-3xl font-semibold">{t(`${view}Title`)}</h2>
           <p className="text-muted-foreground">{t(`${view}Body`)}</p>

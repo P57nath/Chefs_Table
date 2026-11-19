@@ -1,6 +1,6 @@
 "use client";
 
-import { motion } from "motion/react";
+import * as m from "motion/react-m";
 import { useId, useRef, type KeyboardEvent, type ReactNode } from "react";
 
 import { spring } from "@/lib/motion";
@@ -82,7 +82,7 @@ export function SegmentedControl<T extends string>({
             )}
           >
             {selected ? (
-              <motion.span
+              <m.span
                 layoutId={`seg-${id}`}
                 transition={spring.snappy}
                 className="surface-raised absolute inset-0 rounded-full bg-surface shadow-sm"

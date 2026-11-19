@@ -1,7 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { z } from "zod";
+import { z } from "@/lib/zod";
 
 import { layoutSchema, tableSchema, zoneSchema, type TableInput } from "../schemas";
 import { failure, requireManager, type ActionResult } from "./guard";

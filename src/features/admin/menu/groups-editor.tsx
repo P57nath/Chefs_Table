@@ -2,7 +2,7 @@
 
 import { ChevronDown, ChevronUp, Plus, Trash2 } from "lucide-react";
 import { useTranslations } from "next-intl";
-import type { z } from "zod";
+import type { z } from "@/lib/zod";
 
 import { IconButton } from "@/components/common/icon-button";
 import { Button } from "@/components/ui/button";

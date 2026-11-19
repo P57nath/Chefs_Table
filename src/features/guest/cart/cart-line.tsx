@@ -1,7 +1,8 @@
 "use client";
 
 import { Trash2 } from "lucide-react";
-import { animate, motion, useMotionValue, useReducedMotion, useTransform } from "motion/react";
+import { animate, useMotionValue, useReducedMotion, useTransform } from "motion/react";
+import * as m from "motion/react-m";
 import { useLocale, useTranslations } from "next-intl";
 
 import { IconButton } from "@/components/common/icon-button";
@@ -34,14 +35,14 @@ export function CartLineRow({ line, soldOut, frozen, onQuantity, onRemove }: Car
 
   return (
     <li className="relative overflow-hidden rounded-2xl">
-      <motion.div
+      <m.div
         aria-hidden
         style={{ opacity: revealOpacity }}
         className="absolute inset-0 flex items-center justify-end rounded-2xl bg-ember pr-5 text-white"
       >
         <Trash2 className="size-5" />
-      </motion.div>
-      <motion.div
+      </m.div>
+      <m.div
         drag={frozen || reduce ? false : "x"}
         dragConstraints={{ left: SWIPE_REMOVE * 1.5, right: 0 }}
         dragElastic={0.1}
@@ -87,7 +88,7 @@ export function CartLineRow({ line, soldOut, frozen, onQuantity, onRemove }: Car
         >
           <Trash2 aria-hidden />
         </IconButton>
-      </motion.div>
+      </m.div>
     </li>
   );
 }

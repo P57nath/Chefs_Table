@@ -2,15 +2,35 @@ import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
 
 import { isProtectedPath } from "@/features/auth/roles";
+import { buildCsp, createNonce } from "@/lib/csp";
 
 /**
  * Next 16 proxy (formerly middleware):
- * 1. Refreshes the Supabase auth cookie on every request (official @supabase/ssr pattern).
- * 2. Sends signed-out (or anonymous guest) visitors of /staff, /kitchen, /admin to /login.
+ * 1. Per-request CSP nonce: set on the request (Next applies it to its own
+ *    scripts; the root layout passes it to our inline pre-paint scripts) and
+ *    on the response.
+ * 2. Refreshes the Supabase auth cookie on every request (official @supabase/ssr pattern).
+ * 3. Sends signed-out (or anonymous guest) visitors of /staff, /kitchen, /admin to /login.
  * Role checks happen in each section's server layout; the database is the real guard.
  */
 export async function proxy(request: NextRequest) {
-  let response = NextResponse.next({ request });
+  const nonce = createNonce();
+  const csp = buildCsp({
+    nonce,
+    dev: process.env.NODE_ENV === "development",
+    supabaseUrl: process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    https: (process.env.NEXT_PUBLIC_APP_URL ?? "").startsWith("https:"),
+  });
+  const requestHeaders = new Headers(request.headers);
+  requestHeaders.set("x-nonce", nonce);
+  requestHeaders.set("Content-Security-Policy", csp);
+
+  const next = () => {
+    const res = NextResponse.next({ request: { headers: requestHeaders } });
+    res.headers.set("Content-Security-Policy", csp);
+    return res;
+  };
+  let response = next();
 
   const supabase = createServerClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -20,7 +40,9 @@ export async function proxy(request: NextRequest) {
         getAll: () => request.cookies.getAll(),
         setAll: (toSet, headers) => {
           toSet.forEach(({ name, value }) => request.cookies.set(name, value));
-          response = NextResponse.next({ request });
+          // Forward the refreshed cookies to the render as well.
+          requestHeaders.set("cookie", request.cookies.toString());
+          response = next();
           toSet.forEach(({ name, value, options }) => response.cookies.set(name, value, options));
           Object.entries(headers ?? {}).forEach(([k, v]) => response.headers.set(k, v));
         },
@@ -48,7 +70,7 @@ export async function proxy(request: NextRequest) {
 
 export const config = {
   matcher: [
-    // Everything except static assets, images and API routes (payment callbacks never need auth cookies).
-    "/((?!api/|_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp|avif|ico|txt|xml|webmanifest)$).*)",
+    // Everything except static assets, public files and API routes (payment callbacks never need auth cookies).
+    "/((?!api/|_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp|avif|ico|txt|xml|webmanifest|js|html|json)$).*)",
   ],
 };

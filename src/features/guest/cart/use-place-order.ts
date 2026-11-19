@@ -10,7 +10,7 @@ import { useGuestSession } from "@/features/guest/session/guest-session";
 import { AppErrorException, reportError, toAppError, type AppError } from "@/lib/errors";
 import { qk } from "@/lib/query-keys";
 import { unlockAudio } from "@/lib/sound";
-import { getBrowserSupabase } from "@/lib/supabase/client";
+import { loadSupabase } from "@/lib/supabase/lazy";
 
 import { toOrderItems, useCart } from "./cart-store";
 
@@ -39,7 +39,9 @@ export function usePlaceOrder() {
     let data: string | null = null;
     let rpcError: unknown = null;
     try {
-      const res = await getBrowserSupabase().rpc("place_order", {
+      const res = await (
+        await loadSupabase()
+      ).rpc("place_order", {
         p_session_id: sessionId,
         p_items: toOrderItems(cart.lines),
         p_client_request_id: requestId,

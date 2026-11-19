@@ -1,7 +1,8 @@
 "use client";
 
 import { PartyPopper } from "lucide-react";
-import { motion, useReducedMotion } from "motion/react";
+import { useReducedMotion } from "motion/react";
+import * as m from "motion/react-m";
 import { useTranslations } from "next-intl";
 
 const SPARKS = Array.from({ length: 14 }, (_, i) => {
@@ -22,7 +23,7 @@ export function PaidCelebration() {
       {!reduce ? (
         <div aria-hidden className="pointer-events-none absolute top-12 left-1/2">
           {SPARKS.map((s, i) => (
-            <motion.span
+            <m.span
               key={i}
               className="absolute size-2 rounded-full"
               style={{ background: SPARK_COLORS[s.hue] }}
@@ -33,14 +34,14 @@ export function PaidCelebration() {
           ))}
         </div>
       ) : null}
-      <motion.div
+      <m.div
         className="mx-auto grid size-16 place-items-center rounded-full bg-success/20 text-success"
         initial={reduce ? false : { scale: 0.6, rotate: -12 }}
         animate={{ scale: 1, rotate: 0 }}
         transition={{ type: "spring", stiffness: 300, damping: 14 }}
       >
         <PartyPopper className="size-8" aria-hidden />
-      </motion.div>
+      </m.div>
       <h2 className="mt-3 font-display text-2xl font-semibold">{t("allPaidTitle")}</h2>
       <p className="text-muted-foreground">{t("allPaidBody")}</p>
     </section>

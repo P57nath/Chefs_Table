@@ -95,6 +95,11 @@ Card, Internet banking) open a *test checkout* page — press **Pay now** (or tr
 **Verify payment** on the floor; sign in as `manager@demo.local` to approve it. **Cash** asks the
 waiter to bring the bill. Once nothing is due, the guest can leave a rating.
 
+**Install as an app (staff tablets / kitchen screen):** in a production build (`pnpm build && pnpm
+start`, or the deployed site), open `/staff` or `/kitchen` in Chrome/Edge and choose *Install app*
+(Android: *Add to Home screen*). Without a connection the app shows a "Reconnecting…" screen that comes
+back by itself.
+
 Tip: to be a guest and staff at the same time, use a normal window for one and a
 private/incognito window for the other.
 

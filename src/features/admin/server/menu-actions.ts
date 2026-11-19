@@ -1,7 +1,7 @@
 "use server";
 
 import { revalidatePath, revalidateTag } from "next/cache";
-import { z } from "zod";
+import { z } from "@/lib/zod";
 
 import { MENU_TAG } from "@/features/guest/server/table-data";
 

@@ -240,7 +240,8 @@
     "wrongCredentials": "Email or password is incorrect",
     "tooManyAttempts": "Too many attempts. Please wait a minute and try again.",
     "notStaff": "This account isn’t set up as staff. Ask your manager.",
-    "backHome": "Back to home"
+    "backHome": "Back to home",
+    "sessionExpired": "Your session has ended. Please sign in again — you’ll go straight back to where you were."
   },
   "staff": {
     "navFloor": "Floor",

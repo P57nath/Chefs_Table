@@ -1,6 +1,6 @@
-import { parsePublicEnv, type PublicEnv } from "./env-schema";
+import { parsePublicEnv, type PublicEnv } from "./env-public";
 
-export type { Locale, PublicEnv } from "./env-schema";
+export type { Locale, PublicEnv } from "./env-public";
 
 /**
  * Public (browser-safe) environment, validated at module load. Server-only

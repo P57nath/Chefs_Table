@@ -1,6 +1,6 @@
 "use server";
 
-import { z } from "zod";
+import { z } from "@/lib/zod";
 
 import { MANAGEMENT_ROLES, canUse } from "@/features/auth/roles";
 import { getCurrentStaff } from "@/features/auth/staff-server";

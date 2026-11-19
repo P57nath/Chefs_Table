@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 
+import { ServiceWorkerRegister } from "@/components/providers/service-worker";
 import { SurfaceTheme } from "@/components/providers/surface-theme";
 import { ALL_STAFF_ROLES } from "@/features/auth/roles";
 import { requireStaff } from "@/features/auth/staff-server";
@@ -10,6 +11,9 @@ import { StaffShell } from "@/features/staff/staff-shell";
 export const metadata: Metadata = {
   title: "Staff",
   robots: { index: false, follow: false },
+  manifest: "/staff.webmanifest",
+  appleWebApp: { capable: true, title: "Floor", statusBarStyle: "black-translucent" },
+  icons: { apple: "/icons/apple-touch-icon.png" },
 };
 
 /** Any active staff member gets the shell; each page checks its own roles. */
@@ -20,6 +24,7 @@ export default async function StaffLayout({ children }: LayoutProps<"/staff">) {
 
   return (
     <SurfaceTheme surface="staff">
+      <ServiceWorkerRegister />
       <StaffProvider
         staff={{
           userId: staff.userId,

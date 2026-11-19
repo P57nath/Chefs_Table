@@ -1,7 +1,8 @@
 "use client";
 
 import { ShoppingBag, TriangleAlert } from "lucide-react";
-import { AnimatePresence, motion, useReducedMotion } from "motion/react";
+import { AnimatePresence, useReducedMotion } from "motion/react";
+import * as m from "motion/react-m";
 import { useLocale, useTranslations } from "next-intl";
 
 import { MoneyText } from "@/components/common/money-text";
@@ -26,7 +27,7 @@ export function CartBar({ onOpen }: { onOpen: () => void }) {
     <div className="pb-safe pointer-events-none fixed inset-x-0 bottom-0 z-40 px-4">
       <AnimatePresence>
         {count > 0 ? (
-          <motion.div
+          <m.div
             initial={{ y: 96, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             exit={{ y: 96, opacity: 0 }}
@@ -42,7 +43,7 @@ export function CartBar({ onOpen }: { onOpen: () => void }) {
                 awaitingRetry ? "border-ember" : "border-primary/40",
               )}
             >
-              <motion.span
+              <m.span
                 key={landings}
                 initial={reduce ? false : { scale: 1.35 }}
                 animate={{ scale: 1 }}
@@ -60,7 +61,7 @@ export function CartBar({ onOpen }: { onOpen: () => void }) {
                 <span className="absolute -top-1.5 -right-1.5 grid min-w-5 place-items-center rounded-full bg-foreground px-1 text-[0.6875rem] font-bold text-background tabular-nums">
                   {localizeDigits(count, locale)}
                 </span>
-              </motion.span>
+              </m.span>
               <span className="flex flex-1 flex-col items-start leading-tight">
                 <span className="font-semibold">
                   {awaitingRetry ? t("retrySend") : t("viewCart")}
@@ -69,7 +70,7 @@ export function CartBar({ onOpen }: { onOpen: () => void }) {
               </span>
               <MoneyText minor={cartSubtotalPreview(lines)} className="text-lg font-semibold" />
             </button>
-          </motion.div>
+          </m.div>
         ) : null}
       </AnimatePresence>
     </div>

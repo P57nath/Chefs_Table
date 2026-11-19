@@ -1,5 +1,5 @@
 import { NextResponse, type NextRequest } from "next/server";
-import { z } from "zod";
+import { z } from "@/lib/zod";
 
 import { publicEnv } from "@/lib/env";
 import { reportError } from "@/lib/errors";

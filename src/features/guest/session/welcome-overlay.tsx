@@ -1,7 +1,8 @@
 "use client";
 
 import { ArrowRight } from "lucide-react";
-import { AnimatePresence, motion, useReducedMotion } from "motion/react";
+import { AnimatePresence, useReducedMotion } from "motion/react";
+import * as m from "motion/react-m";
 import { useTranslations } from "next-intl";
 import { useEffect, useState, useSyncExternalStore } from "react";
 
@@ -71,7 +72,7 @@ export function WelcomeOverlay({
   return (
     <AnimatePresence>
       {open ? (
-        <motion.div
+        <m.div
           data-welcome-overlay
           role="dialog"
           aria-modal="true"
@@ -89,7 +90,7 @@ export function WelcomeOverlay({
           <div className="absolute top-4 right-4">
             <LanguageToggle />
           </div>
-          <motion.div
+          <m.div
             initial={reduce ? false : { scale: 0.6, opacity: 0, rotate: -12 }}
             animate={{ scale: 1, opacity: 1, rotate: 0 }}
             transition={spring.soft}
@@ -99,8 +100,8 @@ export function WelcomeOverlay({
               logoPath={logoPath}
               className="text-7xl drop-shadow-[0_0_30px_rgba(245,165,36,0.45)]"
             />
-          </motion.div>
-          <motion.h1
+          </m.div>
+          <m.h1
             id="welcome-title"
             initial={reduce ? false : { y: 16, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
@@ -108,8 +109,8 @@ export function WelcomeOverlay({
             className="relative mt-6 text-center font-display text-[2.25rem] leading-tight font-semibold"
           >
             {t("welcome", { name: restaurantName })}
-          </motion.h1>
-          <motion.p
+          </m.h1>
+          <m.p
             initial={reduce ? false : { y: 12, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             transition={{ ...spring.soft, delay: 0.18 }}
@@ -119,8 +120,8 @@ export function WelcomeOverlay({
               table: tableLabel,
               b: (chunks) => <strong className="font-semibold text-[#F5A524]">{chunks}</strong>,
             })}
-          </motion.p>
-          <motion.div
+          </m.p>
+          <m.div
             initial={reduce ? false : { y: 12, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             transition={{ ...spring.soft, delay: 0.26 }}
@@ -130,8 +131,8 @@ export function WelcomeOverlay({
               {t("viewMenu")}
               <ArrowRight aria-hidden />
             </Button>
-          </motion.div>
-        </motion.div>
+          </m.div>
+        </m.div>
       ) : null}
     </AnimatePresence>
   );

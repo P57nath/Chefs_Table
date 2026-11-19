@@ -1,7 +1,8 @@
 "use client";
 
 import { Check, ChevronsRight, Loader2 } from "lucide-react";
-import { animate, motion, useMotionValue, useReducedMotion, useTransform } from "motion/react";
+import { animate, useMotionValue, useReducedMotion, useTransform } from "motion/react";
+import * as m from "motion/react-m";
 import { useRef, useState, type MouseEvent } from "react";
 
 import { spring } from "@/lib/motion";
@@ -107,19 +108,19 @@ export function SlideToConfirm({
         className,
       )}
     >
-      <motion.div
+      <m.div
         aria-hidden
         style={{ width: fill }}
         className="absolute inset-y-1 left-1 rounded-full bg-primary/20"
       />
-      <motion.span
+      <m.span
         aria-hidden
         style={{ opacity: phase === "idle" ? labelOpacity : 1 }}
         className="pointer-events-none absolute inset-0 flex items-center justify-center pl-12 text-[0.9375rem] font-semibold text-foreground"
       >
         {statusText}
-      </motion.span>
-      <motion.button
+      </m.span>
+      <m.button
         type="button"
         aria-label={label}
         aria-disabled={disabled || busy || undefined}
@@ -142,7 +143,7 @@ export function SlideToConfirm({
         ) : (
           <ChevronsRight className="size-6" aria-hidden />
         )}
-      </motion.button>
+      </m.button>
       <span className="sr-only" aria-live="polite">
         {phase !== "idle" ? statusText : ""}
       </span>

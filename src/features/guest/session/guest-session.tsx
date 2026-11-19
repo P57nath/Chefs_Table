@@ -9,7 +9,7 @@ import type { TableInfo } from "@/features/guest/menu/types";
 import { asAppError, type AppError } from "@/lib/errors";
 import { qk } from "@/lib/query-keys";
 import { pollingInterval, useRealtimeInvalidate } from "@/lib/realtime";
-import { getBrowserSupabase } from "@/lib/supabase/client";
+import { loadSupabase } from "@/lib/supabase/lazy";
 
 import { joinTable, type JoinResult } from "./bootstrap";
 
@@ -47,11 +47,10 @@ export function GuestSessionProvider({
   children: ReactNode;
 }) {
   const qc = useQueryClient();
-  const supabase = getBrowserSupabase();
 
   const joinQuery = useQuery({
     queryKey: qk.guestJoin(token),
-    queryFn: () => joinTable(supabase, token),
+    queryFn: async () => joinTable(await loadSupabase(), token),
     staleTime: Infinity,
     gcTime: Infinity,
     refetchOnWindowFocus: false,
@@ -82,7 +81,9 @@ export function GuestSessionProvider({
     enabled: sessionId !== null,
     refetchInterval: poll,
     queryFn: async () => {
-      const { data, error } = await supabase
+      const { data, error } = await (
+        await loadSupabase()
+      )
         .from("table_sessions")
         .select("status")
         .eq("id", sessionId!)

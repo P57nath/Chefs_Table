@@ -35,7 +35,15 @@ export default defineConfig({
     },
     {
       name: "staff-tablet",
-      testMatch: [/smoke\.spec\.ts/, /staff\.spec\.ts/, /floor\.spec\.ts/, /admin\.spec\.ts/],
+      testMatch: [
+        /smoke\.spec\.ts/,
+        /staff\.spec\.ts/,
+        /floor\.spec\.ts/,
+        /admin\.spec\.ts/,
+        /security\.spec\.ts/,
+        /edge\.spec\.ts/,
+        /flow\.spec\.ts/,
+      ],
       use: { ...devices["Desktop Chrome"], viewport: { width: 1180, height: 820 }, hasTouch: true },
     },
     {

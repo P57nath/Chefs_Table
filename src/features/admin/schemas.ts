@@ -1,4 +1,4 @@
-import { z } from "zod";
+import { z } from "@/lib/zod";
 
 import { ACCENTS } from "@/config/accents";
 import { toMinor } from "@/lib/money";

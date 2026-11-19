@@ -17,7 +17,9 @@ export const metadata: Metadata = {
 };
 
 export default async function LoginPage({ searchParams }: PageProps<"/login">) {
-  const raw = (await searchParams).next;
+  const sp = await searchParams;
+  const raw = sp.next;
+  const expired = sp.expired === "1";
   const next = safeNext(typeof raw === "string" ? raw : null);
   const staff = await getCurrentStaff();
   if (staff && staff !== "not-staff" && staff.isActive) redirect(next ?? homeFor(staff.role));
@@ -44,6 +46,11 @@ export default async function LoginPage({ searchParams }: PageProps<"/login">) {
               <h1 className="font-display text-3xl font-semibold">{t("title")}</h1>
               <p className="text-muted-foreground">{t("subtitle")}</p>
             </div>
+            {expired ? (
+              <p role="status" className="rounded-xl bg-muted p-3 text-sm">
+                {t("sessionExpired")}
+              </p>
+            ) : null}
             <LoginForm next={next} />
             <Link
               href="/"

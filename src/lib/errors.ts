@@ -93,6 +93,17 @@ function isNetworkError(err: unknown, message: string): boolean {
   );
 }
 
+/** PostgREST / Supabase signals that the JWT is missing, expired or invalid. */
+function isAuthExpired(err: unknown, message: string): boolean {
+  const code =
+    err && typeof err === "object" && "code" in err ? String((err as { code: unknown }).code) : "";
+  return (
+    code === "PGRST301" ||
+    code === "PGRST303" ||
+    /jwt expired|invalid jwt|refresh token not found|session not found/i.test(message)
+  );
+}
+
 export function toAppError(err: unknown): AppError {
   const raw = messageOf(err).trim();
   const base = { params: {}, network: false, raw };
@@ -105,6 +116,7 @@ export function toAppError(err: unknown): AppError {
   if (code === "INVALID_TRANSITION") return { ...base, key: "alreadyUpdated", params: {} };
   const exact = EXACT[raw] ?? EXACT[code];
   if (exact) return { ...base, key: exact };
+  if (isAuthExpired(err, raw)) return { ...base, key: "authRequired" };
 
   if (isNetworkError(err, raw)) return { ...base, key: "network", network: true };
   return { ...base, key: "unknown" };

@@ -1,4 +1,4 @@
-import { z } from "zod";
+import { z } from "@/lib/zod";
 
 /**
  * Pure, side-effect-free environment schemas. Instances are created in
@@ -14,14 +14,8 @@ const optionalString = z.preprocess(
 export const localeSchema = z.enum(["en", "bn"]);
 export type Locale = z.infer<typeof localeSchema>;
 
-export const publicEnvSchema = z.object({
-  NEXT_PUBLIC_APP_URL: z.url(),
-  NEXT_PUBLIC_DEFAULT_LOCALE: localeSchema.default("en"),
-  NEXT_PUBLIC_SUPABASE_URL: z.url(),
-  NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY: z.string().trim().min(1),
-  NEXT_PUBLIC_TURNSTILE_SITE_KEY: optionalString,
-});
-export type PublicEnv = z.infer<typeof publicEnvSchema>;
+// Public env is parsed without zod (env-public.ts) to keep zod out of client bundles.
+export { parsePublicEnv, type PublicEnv } from "./env-public";
 
 export const serverEnvSchema = z
   .object({
@@ -69,9 +63,6 @@ function parseWith<S extends z.ZodType>(schema: S, source: EnvSource, label: str
   }
   return result.data;
 }
-
-export const parsePublicEnv = (source: EnvSource): PublicEnv =>
-  parseWith(publicEnvSchema, source, "public");
 
 export const parseServerEnv = (source: EnvSource): ServerEnv =>
   parseWith(serverEnvSchema, source, "server");

@@ -1,7 +1,8 @@
 "use client";
 
 import { Wifi, WifiOff } from "lucide-react";
-import { AnimatePresence, motion } from "motion/react";
+import { AnimatePresence } from "motion/react";
+import * as m from "motion/react-m";
 import { useTranslations } from "next-intl";
 
 import { spring } from "@/lib/motion";
@@ -28,7 +29,7 @@ export function ConnectionBanner({
     <div aria-live="polite" className={cn("pointer-events-none", className)}>
       <AnimatePresence>
         {visible ? (
-          <motion.div
+          <m.div
             key={status}
             initial={{ y: -40, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
@@ -51,7 +52,7 @@ export function ConnectionBanner({
               : status === "offline"
                 ? t("networkError")
                 : t("reconnecting")}
-          </motion.div>
+          </m.div>
         ) : null}
       </AnimatePresence>
     </div>

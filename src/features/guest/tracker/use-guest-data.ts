@@ -5,7 +5,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useGuestSession } from "@/features/guest/session/guest-session";
 import { AppErrorException, toAppError } from "@/lib/errors";
 import { qk } from "@/lib/query-keys";
-import { getBrowserSupabase } from "@/lib/supabase/client";
+import { loadSupabase } from "@/lib/supabase/lazy";
 
 import type { GuestOrder, GuestRequest } from "./types";
 
@@ -25,7 +25,9 @@ export function useSessionOrders() {
     enabled: !!sessionId,
     refetchInterval: poll,
     queryFn: async (): Promise<GuestOrder[]> => {
-      const { data, error } = await getBrowserSupabase()
+      const { data, error } = await (
+        await loadSupabase()
+      )
         .from("orders")
         .select(ORDER_COLUMNS)
         .eq("session_id", sessionId!)
@@ -46,7 +48,9 @@ export function useSessionRequests() {
     enabled: !!sessionId,
     refetchInterval: poll,
     queryFn: async (): Promise<GuestRequest[]> => {
-      const { data, error } = await getBrowserSupabase()
+      const { data, error } = await (
+        await loadSupabase()
+      )
         .from("service_requests")
         .select("id, type, status, created_at")
         .eq("session_id", sessionId!)
@@ -63,7 +67,9 @@ export function useCancelOrder() {
   const qc = useQueryClient();
   return useMutation({
     mutationFn: async (orderId: string) => {
-      const { error } = await getBrowserSupabase().rpc("cancel_my_order", { p_order_id: orderId });
+      const { error } = await (
+        await loadSupabase()
+      ).rpc("cancel_my_order", { p_order_id: orderId });
       if (error) throw new AppErrorException(toAppError(error));
     },
     // Success or "already confirmed": either way the list must reflect the server.
@@ -79,7 +85,9 @@ export function useCreateRequest() {
       const sessionId = join?.session_id;
       if (!sessionId) throw new AppErrorException(toAppError({ message: "AUTH_REQUIRED" }));
       // Server de-duplicates open requests per type, so double taps are harmless.
-      const { error } = await getBrowserSupabase().rpc("create_service_request", {
+      const { error } = await (
+        await loadSupabase()
+      ).rpc("create_service_request", {
         p_session_id: sessionId,
         p_type: input.type,
         ...(input.note?.trim() ? { p_note: input.note.trim() } : {}),

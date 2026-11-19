@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 
+import { ServiceWorkerRegister } from "@/components/providers/service-worker";
 import { SurfaceTheme } from "@/components/providers/surface-theme";
 import { KITCHEN_ROLES } from "@/features/auth/roles";
 import { requireStaff } from "@/features/auth/staff-server";
@@ -9,6 +10,9 @@ import { StaffProvider } from "@/features/staff/staff-context";
 export const metadata: Metadata = {
   title: "Kitchen",
   robots: { index: false, follow: false },
+  manifest: "/kitchen.webmanifest",
+  appleWebApp: { capable: true, title: "Kitchen", statusBarStyle: "black-translucent" },
+  icons: { apple: "/icons/apple-touch-icon.png" },
 };
 
 /** Kitchen display: kitchen, manager, owner only. Always dark. */
@@ -18,6 +22,7 @@ export default async function KitchenLayout({ children }: LayoutProps<"/kitchen"
   const { staff } = access;
   return (
     <SurfaceTheme surface="kitchen">
+      <ServiceWorkerRegister />
       <StaffProvider
         surface="kitchen"
         staff={{

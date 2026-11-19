@@ -24,7 +24,16 @@ const eslintConfig = defineConfig([
       ],
       "@typescript-eslint/consistent-type-imports": ["error", { fixStyle: "inline-type-imports" }],
       "no-console": ["warn", { allow: ["warn", "error", "info"] }],
+      // Zod must be imported from @/lib/zod (jitless config for the strict CSP).
+      "no-restricted-imports": [
+        "error",
+        { paths: [{ name: "zod", message: "Import { z } from '@/lib/zod' instead." }] },
+      ],
     },
+  },
+  {
+    files: ["src/lib/zod.ts", "tests/**", "scripts/**"],
+    rules: { "no-restricted-imports": "off" },
   },
   {
     // Node scripts run outside the app and log progress.

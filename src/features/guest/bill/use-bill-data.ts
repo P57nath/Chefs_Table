@@ -6,7 +6,7 @@ import { useGuestSession } from "@/features/guest/session/guest-session";
 import { AppErrorException, toAppError } from "@/lib/errors";
 import type { PaymentChannel } from "@/lib/payments/types";
 import { qk } from "@/lib/query-keys";
-import { getBrowserSupabase } from "@/lib/supabase/client";
+import { loadSupabase } from "@/lib/supabase/lazy";
 
 import type { BillData, GuestPayment } from "./bill-model";
 
@@ -21,7 +21,9 @@ export function useGuestBill() {
     enabled: !!sessionId,
     refetchInterval: poll,
     queryFn: async (): Promise<BillData> => {
-      const { data, error } = await getBrowserSupabase().rpc("session_bill", {
+      const { data, error } = await (
+        await loadSupabase()
+      ).rpc("session_bill", {
         p_session_id: sessionId!,
       });
       if (error) throw new AppErrorException(toAppError(error));
@@ -39,7 +41,9 @@ export function useSessionPayments() {
     enabled: !!sessionId,
     refetchInterval: poll,
     queryFn: async (): Promise<GuestPayment[]> => {
-      const { data, error } = await getBrowserSupabase()
+      const { data, error } = await (
+        await loadSupabase()
+      )
         .from("payments")
         .select(PAYMENT_COLUMNS)
         .eq("session_id", sessionId!)
@@ -62,7 +66,9 @@ export function usePayment(tranId: string | null, polling: boolean) {
     enabled: !!sessionId && !!tranId,
     refetchInterval: (q) => (polling && q.state.data?.status === "initiated" ? 2_000 : false),
     queryFn: async (): Promise<GuestPayment | null> => {
-      const { data, error } = await getBrowserSupabase()
+      const { data, error } = await (
+        await loadSupabase()
+      )
         .from("payments")
         .select(PAYMENT_COLUMNS)
         .eq("session_id", sessionId!)
@@ -113,7 +119,9 @@ export function useMyFeedback() {
     enabled: !!sessionId,
     queryFn: async () => {
       // RLS returns only this guest's own feedback row.
-      const { data, error } = await getBrowserSupabase()
+      const { data, error } = await (
+        await loadSupabase()
+      )
         .from("feedback")
         .select("rating, comment")
         .eq("session_id", sessionId!)
@@ -131,7 +139,9 @@ export function useSubmitFeedback() {
     mutationFn: async (input: { rating: number; comment: string }) => {
       const sessionId = join?.session_id;
       if (!sessionId) throw new AppErrorException(toAppError({ message: "AUTH_REQUIRED" }));
-      const { error } = await getBrowserSupabase().rpc("submit_feedback", {
+      const { error } = await (
+        await loadSupabase()
+      ).rpc("submit_feedback", {
         p_session_id: sessionId,
         p_rating: input.rating,
         ...(input.comment.trim() ? { p_comment: input.comment.trim() } : {}),

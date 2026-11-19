@@ -16,8 +16,8 @@ Gate per phase: `pnpm gate` = typecheck · lint · format:check · check:secrets
 | 7 | Bill & payments | ✅ done (sandbox pending credentials) | Guest bill (itemised, split/custom amount, tiles, cash → waiter), SSLCommerz + mock gateways, init/IPN/return routes, result page polling 30 s, pending-review badge + manager approve/reject, feedback, `/api/health`. 178 unit, 80 pgTAP, 61 e2e |
 | 8 | Admin | ✅ done | `/admin`: overview, menu editor (photos crop→WebP, modifiers, drag/▲▼ reorder, duplicate, archive), tables/zones + 2D layout editor with 3D preview, QR (PNG/SVG, A4 tents, rotate), staff (create, role, deactivate, reset password), orders history + timeline, payments + review + CSV, settings (brand, logo, accent presets, taxes, default language). 201 unit, 96 pgTAP, 69 e2e |
 | 9 | Reports | ✅ done | `/admin` dashboard: Today / 7 / 30 days / custom (Dhaka days), KPIs with change vs previous period, revenue-by-day line, orders-by-hour columns, payment-method and top-dish ranked bars, table view per chart, report CSV. 211 unit, 101 pgTAP, 70 e2e |
-| 10 | Hardening | ⏳ next | |
-| 11 | Deploy | ☐ | |
+| 10 | Hardening | ✅ done (JS budget gap noted) | Nonce CSP (0 violations across all surfaces), error/404/global-error pages, robots + OG, installable staff/kitchen PWA with offline page, expired-session redirect, guest first-load JS 431 → ~260 KB, 15 new e2e (3-device full flow, offline, slow 3G, long Bangla, 14-line ticket, upload failure, expired session, CSP, PWA, budget). 219 unit, 101 pgTAP, 85 e2e |
+| 11 | Deploy | ⏳ next | |
 
 ## Toolchain (installed 2026-11-19)
 Node 22.21 · pnpm 11.5.2 · Next 16.4.6 (Turbopack, Cache Components + Partial Prefetching on) ·
@@ -138,6 +138,7 @@ CLI 3.2 · R3F 9.8 / drei 10.7 · motion 14 · next-intl 4.15 · TanStack Query 
 
 ## Open issues / blocked
 - Local Supabase (Docker Desktop) must be running for `db:*`, `seed:staff`, and e2e from Phase 3 on.
+- **Guest first-load JS is ~255–275 KB gzip, not the spec's < 200 KB** (Phase 10) — see below.
 - **SSLCommerz sandbox test** (Phase 7 acceptance) waits for sandbox credentials + a public HTTPS URL —
   see "Phase 7" below. The mock gateway covers the same code paths in e2e.
 
@@ -306,3 +307,50 @@ CLI 3.2 · R3F 9.8 / drei 10.7 · motion 14 · next-intl 4.15 · TanStack Query 
 - **Report CSV** `/admin/reports/export?from&to`: one file with a `section` column (summary, by_day,
   by_hour, payment_split, top_items), amounts in BDT decimals, same BOM / formula protection as payments.
 - "Tables in use" counts only live sessions on **active** tables.
+
+### Phase 10 (hardening)
+- **CSP** (`src/lib/csp.ts`, set in `src/proxy.ts`): per-request nonce + `'strict-dynamic'` for scripts
+  (Next applies the nonce to its own scripts; our two pre-paint inline scripts get it via
+  `NonceProvider`), no `'unsafe-eval'` in production, `frame-ancestors 'none'`, `object-src 'none'`,
+  `form-action 'self' https://*.sslcommerz.com`, connect/img to the Supabase origin (+ wss), Turnstile
+  allowed, `upgrade-insecure-requests` only when the app URL is https. **Styles allow
+  `'unsafe-inline'`** (React/Radix/Motion style attributes, sonner's injected `<style>`): style injection
+  can't execute code; scripts are what the nonce protects. e2e listens for `securitypolicyviolation` on
+  every surface (guest incl. checkout, 3D floor, KDS, admin): **zero violations**.
+- **Zod v4 probes `new Function` for its JIT** (reported as a CSP violation): every import now goes
+  through `src/lib/zod.ts` with `z.config({ jitless: true })`; an ESLint `no-restricted-imports` rule
+  enforces it. The browser env is parsed without zod (`env-public.ts`).
+- **Error handling**: branded root `not-found.tsx` (404), root `error.tsx`, last-resort `global-error.tsx`
+  (inline styles, bilingual) in addition to the per-section boundaries.
+- **SEO**: `robots.ts` (only `/` indexable; private routes disallowed and `noindex`), canonical + Open
+  Graph/Twitter metadata and a generated OG image for the landing page.
+- **PWA (staff + kitchen only)**: `/staff.webmanifest` (standalone) and `/kitchen.webmanifest`
+  (fullscreen, landscape) linked from those layouts, icons rendered from the ember mark (incl. maskable +
+  Apple touch), `public/sw.js` registered only by staff/kitchen in production: **network-first for
+  `/staff`, `/kitchen`, `/admin` navigations, `/offline.html` ("Reconnecting…", bilingual, reloads when
+  back online) when offline; nothing else is cached** so live data is never stale. Guests stay a normal
+  web page (spec §8).
+- **Expired staff session mid-shift**: PostgREST `PGRST301/303` / "JWT expired" / missing refresh token
+  map to `authRequired`; the query/mutation caches then drop the dead session locally and send the person
+  to `/login?expired=1&next=…` with "Your session has ended…", returning them to the same screen.
+  Guests are never redirected.
+- **Guest JS** (production, gzip, measured by e2e): 431 KB → **~255–275 KB first load** by lazy-loading
+  supabase-js (`loadSupabase()` on guest screens, realtime and the root provider; staff screens keep the
+  sync client — same singleton), Motion features (`LazyMotion` + `m.*`, features fetched after paint) and
+  the item/cart sheets (prefetched on idle). **Still above the spec's 200 KB**: React 19 + Next 16
+  runtime alone is ~100 KB, plus Radix, TanStack Query, next-intl, sonner — all mandated. Further cuts
+  would mean dropping a mandated library on the guest route (e.g. Radix sheets → native `<dialog>`,
+  sonner → inline status). The e2e now guards against regressions (< 300 KB first load, no 3D code).
+  Fonts were already subset; Bangla faces are not preloaded.
+- **New e2e** (85 total): §10.1 full flow on three devices (scan → confirm → kitchen → served →
+  online part-payment → cash remainder → close → feedback, all through the UI); offline guest catches up
+  on reconnect; slow 3G (400 ms, 500 kbps) menu + order; 80-char Bangla dish name on a 360 px phone and
+  on the KDS; 14-line ticket readable on 1920×1080; empty categories hidden from guests; failed photo
+  upload message; expired session redirect; CSP headers + violations; robots/noindex; 404; PWA manifest +
+  offline page; JS budget guard. "0 tables" is covered by the floor's existing empty state.
+- **Security review (Architecture §9)**: RLS on every table with pgTAP per role ✔; secret key only in
+  `lib/supabase/admin.ts` (CI grep) and used only server-side (staff actions, payment callbacks, mock
+  checkout, staff list) ✔; headers + CSP ✔; QR tokens 32-hex random and rotatable ✔ (**the seed's
+  `demo-table-NN` tokens are guessable — rotate them or seed fresh tables before going live**, Phase 11);
+  DB anti-abuse caps ✔, Turnstile optional ✔; every staff/admin server action re-checks the role ✔;
+  uploads limited by the bucket (5 MB, image types) and re-encoded client-side ✔.

@@ -12,6 +12,8 @@ import {
   type ReactNode,
 } from "react";
 
+import { useNonce } from "./nonce";
+
 /**
  * Minimal class-based theme provider (replaces next-themes). The no-flash script
  * is injected only during server rendering via useServerInsertedHTML, so React
@@ -70,11 +72,13 @@ export function ThemeProvider({
   children: ReactNode;
 }) {
   const inserted = useRef(false);
+  const nonce = useNonce();
   useServerInsertedHTML(() => {
     if (inserted.current) return null;
     inserted.current = true;
     return (
       <script
+        nonce={nonce}
         dangerouslySetInnerHTML={{ __html: themeScript(storageKey, defaultTheme, forcedTheme) }}
       />
     );

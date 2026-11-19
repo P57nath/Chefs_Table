@@ -138,3 +138,44 @@ export async function closeSession(client: SupabaseClient<Database>, sessionId: 
   const { error } = await client.rpc("close_session", { p_session_id: sessionId, p_force: true });
   if (error) throw error;
 }
+
+/**
+ * A guest order placed through the real RPCs (anonymous sign-in → join_table
+ * → place_order), for tests that need big or unusual orders quickly.
+ * Picks available items without required options when `names` is a number.
+ */
+export async function apiGuestOrder(token: string, names: string[] | number) {
+  const guest = createClient<Database>(
+    env("NEXT_PUBLIC_SUPABASE_URL"),
+    env("NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY"),
+    { auth: { persistSession: false, autoRefreshToken: false } },
+  );
+  const { error: signErr } = await guest.auth.signInAnonymously();
+  if (signErr) throw signErr;
+  const { data: joined, error: joinErr } = await guest.rpc("join_table", { p_qr_token: token });
+  if (joinErr) throw joinErr;
+  const sessionId = (joined as { session_id: string }).session_id;
+
+  const { data: items } = await admin()
+    .from("menu_items")
+    .select("id, name, modifier_groups ( min_select )")
+    .eq("is_active", true)
+    .eq("is_available", true)
+    .order("name");
+  const simple = (items ?? []).filter((i) => i.modifier_groups.every((g) => g.min_select === 0));
+  const picked =
+    typeof names === "number"
+      ? simple.slice(0, names)
+      : names.map((n) => {
+          const hit = simple.find((i) => i.name === n);
+          if (!hit) throw new Error(`no simple menu item named ${n}`);
+          return hit;
+        });
+  const { data: orderId, error } = await guest.rpc("place_order", {
+    p_session_id: sessionId,
+    p_items: picked.map((i) => ({ menu_item_id: i.id, quantity: 1 })),
+    p_client_request_id: crypto.randomUUID(),
+  });
+  if (error) throw error;
+  return { orderId: orderId as string, sessionId, count: picked.length };
+}

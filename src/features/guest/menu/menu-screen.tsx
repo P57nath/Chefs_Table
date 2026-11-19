@@ -3,7 +3,8 @@
 import { useQuery } from "@tanstack/react-query";
 import { SearchX, UtensilsCrossed } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
-import { useMemo, useState } from "react";
+import dynamic from "next/dynamic";
+import { useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
 
 import { EmptyState } from "@/components/states/empty-state";
@@ -11,19 +12,18 @@ import { ErrorState } from "@/components/states/error-state";
 import { SkeletonList, SkeletonMenuItem } from "@/components/states/skeletons";
 import { Button } from "@/components/ui/button";
 import { CartBar } from "@/features/guest/cart/cart-bar";
-import { CartSheet } from "@/features/guest/cart/cart-sheet";
 import { useCart } from "@/features/guest/cart/cart-store";
 import { FlyToCartProvider, useFlyToCart } from "@/features/guest/cart/fly-to-cart";
 import { useGuestSession } from "@/features/guest/session/guest-session";
 import { asAppError } from "@/lib/errors";
 import { qk } from "@/lib/query-keys";
-import { getBrowserSupabase } from "@/lib/supabase/client";
+import { loadSupabase } from "@/lib/supabase/lazy";
 
 import { CategoryNav } from "./category-nav";
 import { fetchMenu } from "./fetch-menu";
 import { GuestHeader } from "./guest-header";
 import { ItemCard } from "./item-card";
-import { ItemSheet, type ItemSheetSubmit } from "./item-sheet";
+import type { ItemSheetSubmit } from "./item-sheet";
 import { MenuSections } from "./menu-sections";
 import { SpecialsCarousel } from "./specials-carousel";
 import {
@@ -39,6 +39,27 @@ import {
 import type { MenuData, MenuItem } from "./types";
 import { useScrollSpy } from "./use-scroll-spy";
 
+// Sheets aren't needed for first paint: load them on idle (JS budget, spec §8).
+const loadItemSheet = () => import("./item-sheet");
+const loadCartSheet = () => import("@/features/guest/cart/cart-sheet");
+const ItemSheet = dynamic(() => loadItemSheet().then((m) => m.ItemSheet), { ssr: false });
+const CartSheet = dynamic(() => loadCartSheet().then((m) => m.CartSheet), { ssr: false });
+
+function usePrefetchSheets() {
+  useEffect(() => {
+    const run = () => {
+      void loadItemSheet();
+      void loadCartSheet();
+    };
+    if ("requestIdleCallback" in window) {
+      const id = window.requestIdleCallback(run, { timeout: 2_000 });
+      return () => window.cancelIdleCallback(id);
+    }
+    const id = setTimeout(run, 1_000);
+    return () => clearTimeout(id);
+  }, []);
+}
+
 const NO_FILTERS: MenuFilters = { vegOnly: false, maxSpice: null };
 
 export function MenuScreen({ initialMenu }: { initialMenu: MenuData | null }) {
@@ -50,6 +71,7 @@ export function MenuScreen({ initialMenu }: { initialMenu: MenuData | null }) {
 }
 
 function MenuScreenInner({ initialMenu }: { initialMenu: MenuData | null }) {
+  usePrefetchSheets();
   const t = useTranslations("guest");
   const locale = useLocale();
   const { table, poll } = useGuestSession();
@@ -60,7 +82,7 @@ function MenuScreenInner({ initialMenu }: { initialMenu: MenuData | null }) {
 
   const menu = useQuery({
     queryKey: qk.menu(rid),
-    queryFn: () => fetchMenu(getBrowserSupabase(), rid),
+    queryFn: async () => fetchMenu(await loadSupabase(), rid),
     initialData: initialMenu ?? undefined,
     initialDataUpdatedAt: 0, // server copy may be up to 60 s old: refresh sold-out state now
     refetchInterval: poll,

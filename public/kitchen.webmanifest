@@ -1,0 +1,22 @@
+{
+  "name": "Ember & Spice — Kitchen",
+  "short_name": "Kitchen",
+  "description": "Kitchen display: tickets, timers and ready calls.",
+  "id": "/kitchen",
+  "start_url": "/kitchen",
+  "scope": "/",
+  "display": "fullscreen",
+  "orientation": "landscape",
+  "background_color": "#0E0A07",
+  "theme_color": "#0E0A07",
+  "icons": [
+    { "src": "/icons/icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "/icons/icon-512.png", "sizes": "512x512", "type": "image/png" },
+    {
+      "src": "/icons/maskable-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ]
+}

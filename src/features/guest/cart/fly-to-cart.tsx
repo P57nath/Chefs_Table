@@ -1,6 +1,7 @@
 "use client";
 
-import { AnimatePresence, motion, useReducedMotion } from "motion/react";
+import { AnimatePresence, useReducedMotion } from "motion/react";
+import * as m from "motion/react-m";
 import { createContext, use, useCallback, useRef, useState, type ReactNode } from "react";
 
 interface Flight {
@@ -72,7 +73,7 @@ export function FlyToCartProvider({ children }: { children: ReactNode }) {
             const endX = f.to.left + 28 - size / 2;
             const endY = f.to.top + f.to.height / 2 - size / 2;
             return (
-              <motion.div
+              <m.div
                 key={f.id}
                 className="absolute rounded-2xl shadow-glow"
                 style={{
