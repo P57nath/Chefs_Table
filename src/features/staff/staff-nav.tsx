@@ -1,6 +1,6 @@
 "use client";
 
-import { Ban, ChefHat, ClipboardList, Hand } from "lucide-react";
+import { Ban, ChefHat, ClipboardList, Hand, LayoutGrid } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useLocale, useTranslations } from "next-intl";
@@ -17,6 +17,14 @@ export interface NavCounts {
 }
 
 const ITEMS = [
+  {
+    href: "/staff",
+    icon: LayoutGrid,
+    label: "navFloor",
+    count: null,
+    floorOnly: true,
+    exact: true,
+  },
   {
     href: "/staff/orders",
     icon: ClipboardList,
@@ -58,7 +66,8 @@ export function StaffNav({ counts, variant }: { counts: NavCounts; variant: "rai
       )}
     >
       {items.map((item) => {
-        const active = pathname === item.href || pathname.startsWith(`${item.href}/`);
+        const active =
+          pathname === item.href || (!("exact" in item) && pathname.startsWith(`${item.href}/`));
         const count = item.count ? counts[item.count] : 0;
         return (
           <Link

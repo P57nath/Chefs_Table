@@ -554,6 +554,7 @@ export type Database = {
         Row: {
           amount_minor: number;
           channel: string | null;
+          client_request_id: string | null;
           created_at: string;
           gateway_payload: Json | null;
           gateway_val_id: string | null;
@@ -571,6 +572,7 @@ export type Database = {
         Insert: {
           amount_minor: number;
           channel?: string | null;
+          client_request_id?: string | null;
           created_at?: string;
           gateway_payload?: Json | null;
           gateway_val_id?: string | null;
@@ -587,6 +589,7 @@ export type Database = {
         Update: {
           amount_minor?: number;
           channel?: string | null;
+          client_request_id?: string | null;
           created_at?: string;
           gateway_payload?: Json | null;
           gateway_val_id?: string | null;
@@ -936,6 +939,7 @@ export type Database = {
         };
         Returns: string;
       };
+      floor_live: { Args: Record<PropertyKey, never>; Returns: Json };
       floor_snapshot: { Args: Record<PropertyKey, never>; Returns: Json };
       guest_table_info: { Args: { p_qr_token: string }; Returns: Json };
       is_session_guest: { Args: { p_session: string }; Returns: boolean };
@@ -955,6 +959,7 @@ export type Database = {
         Returns: {
           amount_minor: number;
           channel: string | null;
+          client_request_id: string | null;
           created_at: string;
           gateway_payload: Json | null;
           gateway_val_id: string | null;
@@ -982,6 +987,15 @@ export type Database = {
       };
       record_cash_payment: {
         Args: { p_amount_minor: number; p_channel?: string; p_session_id: string };
+        Returns: string;
+      };
+      record_cash_payment_once: {
+        Args: {
+          p_amount_minor: number;
+          p_channel: string;
+          p_client_request_id: string;
+          p_session_id: string;
+        };
         Returns: string;
       };
       sales_report: { Args: { p_from: string; p_to: string }; Returns: Json };

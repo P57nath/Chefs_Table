@@ -1,6 +1,13 @@
 import { describe, expect, it } from "vitest";
 
-import { formatAge, formatClock, formatElapsed, startOfDayDhaka, timerTone } from "@/lib/time";
+import {
+  formatAge,
+  formatClock,
+  formatElapsed,
+  formatElapsedShort,
+  startOfDayDhaka,
+  timerTone,
+} from "@/lib/time";
 
 describe("time helpers (Asia/Dhaka)", () => {
   it("shows clock time in Dhaka regardless of the machine time zone", () => {
@@ -22,6 +29,12 @@ describe("time helpers (Asia/Dhaka)", () => {
     expect(formatAge("2026-11-19T11:59:30Z", now, "en")).toBe("now");
     expect(formatAge("2026-11-19T11:58:00Z", now, "en")).toBe("2 min. ago");
     expect(formatAge("2026-11-19T10:00:00Z", now, "en")).toBe("2 hr. ago");
+  });
+
+  it("compacts long timers for small badges", () => {
+    expect(formatElapsedShort(125_000, "en")).toBe("2:05");
+    expect(formatElapsedShort(3_725_000, "en")).toBe("1h02");
+    expect(formatElapsedShort(40_710_000, "bn")).toBe("১১h১৮");
   });
 
   it("finds the start of the Dhaka business day", () => {

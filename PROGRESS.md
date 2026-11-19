@@ -12,8 +12,8 @@ Gate per phase: `pnpm gate` = typecheck · lint · format:check · check:secrets
 | 3 | Guest app | ✅ done | Welcome, menu (specials, scroll-spy chips, search, veg/spice filters, sold-out live), item sheet, cart (fly-to-cart, swipe remove), idempotent place order, live tracker (illustrated stages, ETA, rounds, cancel), call waiter / request bill, closed-table + invalid-QR screens. 101 unit tests, 43 pgTAP, 33 e2e incl. axe AA on menu + tracker |
 | 4 | Staff auth & orders | ✅ done | Login, proxy guard, role-checked layouts/pages, start-shift (audio unlock + wake lock), orders kanban with optimistic actions (edit lines, confirm, send, confirm & send, reject with reason, served), requests, sold-out toggle, diff-based alerts, connection banner + polling. 123 unit, 43 pgTAP, 43 e2e |
 | 5 | Kitchen display | ✅ done | `/kitchen`: New · Preparing · Ready (10 min), huge-type tickets with 10/20-min timers, tap-to-tick lines, Start / Ready, all-day panel, chime + slide-in, extra-contrast dark theme; 1920×1080 and 1280×800. 126 unit, 46 e2e |
-| 6 | Live floor (2D/list/3D) | ⏳ next | |
-| 7 | Bill & payments | ☐ | |
+| 6 | Live floor (2D/list/3D) | ✅ done | `/staff`: 3D diorama (lazy chunk), 2D map, list; zone filter, occupancy, priority states, table sheet (requests, orders + actions, bill, idempotent cash/card-machine, close / force-close). 134 unit, 53 pgTAP, 53 e2e |
+| 7 | Bill & payments | ⏳ next | |
 | 8 | Admin | ☐ | |
 | 9 | Reports | ☐ | |
 | 10 | Hardening | ☐ | |
@@ -155,3 +155,33 @@ CLI 3.2 · R3F 9.8 / drei 10.7 · motion 14 · next-intl 4.15 · TanStack Query 
   fly-to-cart animation landed (~0.5 s), so ordering immediately could drop the last item. The cart now
   updates instantly; the animation is purely visual.
 - No modal dialogs and no auto-scroll on the KDS; each column scrolls on its own.
+
+### Phase 6 (live floor)
+- **New migration 0004**: `floor_live()` (like `floor_snapshot()` + per-order timestamps, item counts and
+  each live session's `session_bill`) and **`record_cash_payment_once()`** — wraps the tested
+  `record_cash_payment()` with a per-session `client_request_id` (new nullable column + partial unique
+  index, advisory lock) so a double tap / lost response never records cash twice. The floor's cash form
+  uses it; e2e double-clicks "Record" and asserts exactly one payment. 10 pgTAP checks.
+- **State priority** (spec lists 8 states; we have 10): Call waiter > New order > Ready > **Paid** > Bill
+  requested > Cooking > **Confirmed** > Eating > Seated > Free. "Call waiter" counts only *open*
+  call/water/cutlery/other requests (acknowledged ones stop pulsing). A billing session with no open
+  request still shows "Bill requested". Paid = total > 0, due 0, nothing unconfirmed.
+- **3D** (R3F 9 + drei, `next/dynamic` with `ssr:false`, loaded only on `/staff` when 3D is shown):
+  orthographic isometric camera (35°/45°, rotation clamped ±25°, pan/zoom, double-click or button to
+  reset), procedural plank floor, low walls, kitchen pass with heat lamps / steam (cooking) / plates
+  (ready), plants, mat, evening string lights (Dhaka time), zone tints, instanced chairs, procedural
+  "bean" guests (seeded palette, breathing, blinking, hand raise for new orders, fast wave for calls,
+  eating bob), status rings with pulses, Html badges, the signed-in waiter walking (eased lerp) to the
+  selected table. `PerformanceMonitor`: lower DPR → no shadows → switch to the map with a toast.
+  No WebGL → map + notice (e2e stubs WebGL away). Keyboard/screen-reader layer: visually hidden
+  buttons in label order announce "T4: New order, 3 items, 1:42" and Enter opens the sheet.
+- **Measured**: ~56 fps for the 3D floor in *dev* mode on an integrated AMD Radeon (12 tables, many
+  guests). The production build is faster; formal throttled-device profiling is in Phase 10.
+- **Known dev-only warning**: drei `<Html>` logs "Attempted to synchronously unmount a root…" under React
+  19 StrictMode in development. Not present in the production build (e2e asserts no console errors).
+- **View choice** remembered per device (`localStorage`); default 3D on tablets, list on phones.
+- **pgTAP tests are self-contained**: they create their own tables inside the rolled-back transaction
+  (they used to depend on demo tables being free).
+- **E2E tables** are activated by the Playwright global setup and deactivated by a new global teardown,
+  so they never appear on the real floor plan.
+- Compact timers on small badges (`1h02` instead of `1:02:05`).

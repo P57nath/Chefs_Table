@@ -39,6 +39,15 @@ export function formatElapsed(ms: number, locale: Locale): string {
   return localizeDigits(text, locale);
 }
 
+/** Compact timer for small badges: "0:42", "12:05", then "1h02", "11h18". */
+export function formatElapsedShort(ms: number, locale: Locale): string {
+  const total = Math.max(0, Math.floor(ms / 1000));
+  if (total < 3600) return formatElapsed(ms, locale);
+  const h = Math.floor(total / 3600);
+  const m = Math.floor((total % 3600) / 60);
+  return localizeDigits(`${h}h${String(m).padStart(2, "0")}`, locale);
+}
+
 /** "just now", "2 min ago", "1 hr ago" — localised. */
 export function formatAge(from: DateInput, now: DateInput, locale: Locale): string {
   const seconds = Math.max(0, Math.round((toDate(now).getTime() - toDate(from).getTime()) / 1000));

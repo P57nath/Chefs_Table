@@ -27,6 +27,11 @@ insert into public.staff_members (user_id, restaurant_id, role, display_name) va
   ('55555555-5555-4555-8555-555555555555', '00000000-0000-4000-8000-000000000001', 'manager', 'RLS Manager'),
   ('77777777-7777-4777-8777-777777777777', '00000000-0000-4000-8000-000000000001', 'cashier', 'RLS Cashier');
 
+-- Dedicated tables so the test never depends on demo-table state.
+insert into public.dining_tables (restaurant_id, label, qr_token) values
+  ('00000000-0000-4000-8000-000000000001', 'PG4', 'pgtap-t4'),
+  ('00000000-0000-4000-8000-000000000001', 'PG5', 'pgtap-t5');
+
 create schema tests;
 
 -- Switch to an authenticated user for the rest of the transaction (until `reset role`).
@@ -58,7 +63,7 @@ grant execute on all functions in schema tests to anon, authenticated;
 select tests.act_as_anon();
 select is((select count(*)::int from public.dining_tables), 0, 'anon cannot read tables / QR tokens');
 select ok((select count(*) from public.menu_items) > 0, 'anon can read the menu');
-select throws_ok($$ select public.join_table('demo-table-04') $$, '42501', null,
+select throws_ok($$ select public.join_table('pgtap-t4') $$, '42501', null,
   'anon cannot call join_table');
 reset role;
 
@@ -66,7 +71,7 @@ reset role;
 -- guest1 joins T4 and orders
 -- ---------------------------------------------------------------------
 select tests.act_as('11111111-1111-4111-8111-111111111111');
-select set_config('t.s1', public.join_table('demo-table-04') ->> 'session_id', true);
+select set_config('t.s1', public.join_table('pgtap-t4') ->> 'session_id', true);
 select set_config('t.o1', public.place_order(current_setting('t.s1')::uuid, tests.lassi(2),
   'aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa')::text, true);
 
@@ -96,7 +101,7 @@ reset role;
 -- guest2 at T5 cannot touch T4
 -- ---------------------------------------------------------------------
 select tests.act_as('22222222-2222-4222-8222-222222222222');
-select set_config('t.s2', public.join_table('demo-table-05') ->> 'session_id', true);
+select set_config('t.s2', public.join_table('pgtap-t5') ->> 'session_id', true);
 select set_config('t.o2', public.place_order(current_setting('t.s2')::uuid, tests.lassi(),
   'bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb')::text, true);
 

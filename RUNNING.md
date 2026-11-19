@@ -75,10 +75,10 @@ You only do this once per computer.
 
 | Email | Role | Lands on |
 |---|---|---|
-| `waiter@demo.local`, `waiter2@demo.local` | Waiter | Orders board |
-| `cashier@demo.local` | Cashier | Orders board |
-| `manager@demo.local` | Manager | Orders board |
-| `owner@demo.local` | Owner | Orders board |
+| `waiter@demo.local`, `waiter2@demo.local` | Waiter | Live floor (3D / map / list) |
+| `cashier@demo.local` | Cashier | Live floor |
+| `manager@demo.local` | Manager | Live floor |
+| `owner@demo.local` | Owner | Live floor |
 | `kitchen@demo.local` | Kitchen | Kitchen display (`/kitchen`) |
 
 **Try the full flow:** sign in as the waiter in one browser window, open
