@@ -1,5 +1,8 @@
 # Ember & Spice Table — starter kit for Claude Code
 
+> **Run the app on your computer or phone → see [RUNNING.md](RUNNING.md)**
+> (setup, daily start/stop, demo logins, phone preview, troubleshooting).
+
 Premium QR dine-in ordering system: guests scan → order → waiter confirms on a live
 3D restaurant floor → kitchen display → serve → pay (cash, bKash, Nagad, card, bank).
 
