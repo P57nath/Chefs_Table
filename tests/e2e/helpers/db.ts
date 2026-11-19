@@ -34,6 +34,20 @@ export async function resetTable(token: string): Promise<void> {
     .single();
   if (error) throw error;
   // Mirror close_session(): unconfirmed orders of the live session are cancelled.
+  // Test-only: tickets left in the kitchen by earlier runs on this table are cancelled too.
+  const { data: past } = await admin().from("table_sessions").select("id").eq("table_id", table.id);
+  await admin()
+    .from("orders")
+    .update({
+      status: "cancelled",
+      cancelled_at: new Date().toISOString(),
+      cancel_reason: "Test reset",
+    })
+    .in(
+      "session_id",
+      (past ?? []).map((p) => p.id),
+    )
+    .in("status", ["in_kitchen", "preparing", "ready"]);
   const { data: live } = await admin()
     .from("table_sessions")
     .select("id")

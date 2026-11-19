@@ -325,6 +325,29 @@
     "toggleAvailability": "{name} পাওয়া যাচ্ছে",
     "nowSoldOut": "{name} শেষ হিসেবে চিহ্নিত",
     "nowAvailable": "{name} আবার পাওয়া যাচ্ছে",
-    "elapsedSince": "{time} আগে"
+    "elapsedSince": "{time} আগে",
+    "navKitchen": "কিচেন"
+  },
+  "kitchen": {
+    "title": "কিচেন",
+    "colNew": "নতুন",
+    "colPreparing": "রান্না হচ্ছে",
+    "colReady": "তৈরি",
+    "readyHint": "শেষ ১০ মিনিট",
+    "columnEmpty": "কোনো টিকেট নেই",
+    "emptyTitle": "কিচেন এখন শান্ত",
+    "emptyBody": "ওয়েটার পাঠালেই নতুন টিকেট শব্দসহ এখানে চলে আসবে।",
+    "errorTitle": "টিকেট লোড করা যায়নি",
+    "start": "শুরু",
+    "ready": "তৈরি",
+    "itemDone": "{name}: হয়ে গেছে — ফেরাতে চাপুন",
+    "itemTodo": "{name}: হলে চাপুন",
+    "allDay": "মোট বাকি",
+    "allDayEmpty": "কিছু রান্না হচ্ছে না",
+    "orderNo": "#{no}",
+    "guestNote": "নোট",
+    "soldOut": "শেষ আইটেম",
+    "newTicket": "নতুন টিকেট · {table}",
+    "ticketLabel": "{table}, অর্ডার {no}"
   }
 }

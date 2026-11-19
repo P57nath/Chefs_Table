@@ -33,22 +33,46 @@ export function useStaff(): StaffContextValue {
   return v;
 }
 
-/** Staff session: profile, one realtime channel for the restaurant, shift settings. */
-export function StaffProvider({ staff, children }: { staff: StaffProfile; children: ReactNode }) {
+export type StaffSurface = "floor" | "kitchen";
+
+/**
+ * Staff session: profile, one realtime channel for the restaurant, shift settings.
+ * The floor listens to everything; the kitchen display only to orders + items.
+ */
+export function StaffProvider({
+  staff,
+  surface = "floor",
+  children,
+}: {
+  staff: StaffProfile;
+  surface?: StaffSurface;
+  children: ReactNode;
+}) {
   const rid = staff.restaurantId;
   const filter = `restaurant_id=eq.${rid}`;
-  const connection = useRealtimeInvalidate({
-    channel: `floor:${rid}`,
-    listeners: [
-      { table: "orders", filter },
-      { table: "order_items", filter },
-      { table: "service_requests", filter },
-      { table: "table_sessions", filter },
-      { table: "payments", filter },
-      { table: "menu_items", filter },
-    ],
-    keys: [qk.staff(), qk.menu(rid)],
-  });
+  const connection = useRealtimeInvalidate(
+    surface === "kitchen"
+      ? {
+          channel: `kitchen:${rid}`,
+          listeners: [
+            { table: "orders", filter },
+            { table: "order_items", filter },
+          ],
+          keys: [qk.kitchen()],
+        }
+      : {
+          channel: `floor:${rid}`,
+          listeners: [
+            { table: "orders", filter },
+            { table: "order_items", filter },
+            { table: "service_requests", filter },
+            { table: "table_sessions", filter },
+            { table: "payments", filter },
+            { table: "menu_items", filter },
+          ],
+          keys: [qk.staff(), qk.menu(rid), qk.kitchen()],
+        },
+  );
   const shift = useShiftSettings();
   const value = useMemo(
     () => ({ staff, connection, poll: pollingInterval(connection), shift }),

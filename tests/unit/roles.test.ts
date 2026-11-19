@@ -38,7 +38,7 @@ describe("roles", () => {
   it("matches the permission table", () => {
     expect(canUse("waiter", FLOOR_ROLES)).toBe(true);
     expect(canUse("kitchen", FLOOR_ROLES)).toBe(false);
-    expect(homeFor("kitchen")).toBe("/staff/menu");
+    expect(homeFor("kitchen")).toBe("/kitchen");
     expect(homeFor("waiter")).toBe("/staff");
   });
 });

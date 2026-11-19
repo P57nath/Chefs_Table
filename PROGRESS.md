@@ -11,8 +11,8 @@ Gate per phase: `pnpm gate` = typecheck · lint · format:check · check:secrets
 | 2 | Design system & app shell | ✅ done | Tokens (OKLCH, dark/light), fonts, i18n en/bn, providers, custom components, `/dev/ui`, landing; 57 unit tests, e2e incl. axe AA on landing (both themes, 3 viewports) |
 | 3 | Guest app | ✅ done | Welcome, menu (specials, scroll-spy chips, search, veg/spice filters, sold-out live), item sheet, cart (fly-to-cart, swipe remove), idempotent place order, live tracker (illustrated stages, ETA, rounds, cancel), call waiter / request bill, closed-table + invalid-QR screens. 101 unit tests, 43 pgTAP, 33 e2e incl. axe AA on menu + tracker |
 | 4 | Staff auth & orders | ✅ done | Login, proxy guard, role-checked layouts/pages, start-shift (audio unlock + wake lock), orders kanban with optimistic actions (edit lines, confirm, send, confirm & send, reject with reason, served), requests, sold-out toggle, diff-based alerts, connection banner + polling. 123 unit, 43 pgTAP, 43 e2e |
-| 5 | Kitchen display | ⏳ next | Switch kitchen's post-login home to `/kitchen` |
-| 6 | Live floor (2D/list/3D) | ☐ | |
+| 5 | Kitchen display | ✅ done | `/kitchen`: New · Preparing · Ready (10 min), huge-type tickets with 10/20-min timers, tap-to-tick lines, Start / Ready, all-day panel, chime + slide-in, extra-contrast dark theme; 1920×1080 and 1280×800. 126 unit, 46 e2e |
+| 6 | Live floor (2D/list/3D) | ⏳ next | |
 | 7 | Bill & payments | ☐ | |
 | 8 | Admin | ☐ | |
 | 9 | Reports | ☐ | |
@@ -107,7 +107,7 @@ CLI 3.2 · R3F 9.8 / drei 10.7 · motion 14 · next-intl 4.15 · TanStack Query 
 - **E2E isolation**: a Playwright global setup upserts 24 dedicated tables (`e2e-01…24`, labels
   `E1…E24`) so parallel tests never share a table; `resetTable` mirrors `close_session`. These tables
   exist in the local DB only.
-- **`pnpm dev:lan`** serves the app to phones on the same Wi-Fi (Supabase URL switched to the PC's LAN
+- **`pnpm dev:lan`** serves the app to phones on the same Wi-Fi (see RUNNING.md, incl. Tailscale) (Supabase URL switched to the PC's LAN
   IP, `allowedDevOrigins` set). Development only.
 - **Env split into three files**: `lib/env-schema.ts` (pure Zod schemas, unit-tested), `lib/env.ts`
   (public, client-safe), `lib/env.server.ts` (`server-only`). Keeps the secret key's *name* out of client
@@ -138,3 +138,20 @@ CLI 3.2 · R3F 9.8 / drei 10.7 · motion 14 · next-intl 4.15 · TanStack Query 
 
 ## Open issues / blocked
 - None. Local Supabase (Docker Desktop) must be running for `db:*`, `seed:staff`, and e2e from Phase 3 on.
+
+### Phase 5 (kitchen)
+- **Recall / un-bump skipped (safer).** `advance_order` has no `ready → preparing` transition, so an
+  "undo Ready" would need a new state-machine path that also un-notifies the guest and waiter. Not worth
+  the risk for v1; a mis-bumped ticket stays visible in *Ready* for 10 minutes and the waiter can still
+  read it. Revisit with a migration if kitchens ask for it.
+- **"All day"** counts what is still to cook: open tickets (`in_kitchen`, `preparing`), non-voided,
+  not ticked done.
+- **Ready column** shows tickets bumped in the last 10 minutes (server filter + client clock, so they
+  drop off without a refetch).
+- **Kitchen staff home is `/kitchen`**; they can still 86 items via the header "Sold out" link
+  (`/staff/menu`, which also shows a "Kitchen" nav link back for kitchen roles).
+- **KDS realtime** uses its own channel (`kitchen:{rid}`, orders + order_items only).
+- **Bug fixed (caught by the kitchen e2e):** the guest cart used to add an item only when the
+  fly-to-cart animation landed (~0.5 s), so ordering immediately could drop the last item. The cart now
+  updates instantly; the animation is purely visual.
+- No modal dialogs and no auto-scroll on the KDS; each column scrolls on its own.

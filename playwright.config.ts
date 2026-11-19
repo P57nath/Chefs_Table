@@ -39,7 +39,7 @@ export default defineConfig({
     },
     {
       name: "kitchen-tv",
-      testMatch: [/smoke\.spec\.ts/],
+      testMatch: [/smoke\.spec\.ts/, /kitchen\.spec\.ts/],
       use: { ...devices["Desktop Chrome"], viewport: { width: 1920, height: 1080 } },
     },
   ],

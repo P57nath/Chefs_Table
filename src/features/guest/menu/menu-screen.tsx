@@ -105,23 +105,24 @@ function MenuScreenInner({ initialMenu }: { initialMenu: MenuData | null }) {
 
   function add(item: MenuItem, opts: Omit<ItemSheetSubmit, "item">, from: HTMLElement | null) {
     const name = itemName(item, locale);
-    fly(from, () =>
-      addLine({
-        menuItemId: item.id,
-        name: item.name,
-        nameBn: item.name_bn,
-        unitPriceMinor: unitPricePreview(item, opts.modifierOptionIds),
-        quantity: opts.quantity,
-        modifierOptionIds: opts.modifierOptionIds,
-        modifierLabels: {
-          en: modifierLabels(item, opts.modifierOptionIds, "en"),
-          bn: modifierLabels(item, opts.modifierOptionIds, "bn"),
-        },
-        note: opts.note,
-        imagePath: item.image_path,
-        categoryId: item.category_id,
-      }),
-    );
+    // The cart updates immediately (a fast "order now" must include every item);
+    // the fly animation is purely visual and only bumps the bar when it lands.
+    addLine({
+      menuItemId: item.id,
+      name: item.name,
+      nameBn: item.name_bn,
+      unitPriceMinor: unitPricePreview(item, opts.modifierOptionIds),
+      quantity: opts.quantity,
+      modifierOptionIds: opts.modifierOptionIds,
+      modifierLabels: {
+        en: modifierLabels(item, opts.modifierOptionIds, "en"),
+        bn: modifierLabels(item, opts.modifierOptionIds, "bn"),
+      },
+      note: opts.note,
+      imagePath: item.image_path,
+      categoryId: item.category_id,
+    });
+    fly(from);
     toast.success(t("added", { name }), { duration: 1600 });
   }
 

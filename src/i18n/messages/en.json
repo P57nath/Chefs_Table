@@ -325,6 +325,29 @@
     "toggleAvailability": "{name} available",
     "nowSoldOut": "{name} marked sold out",
     "nowAvailable": "{name} is available again",
-    "elapsedSince": "{time} ago"
+    "elapsedSince": "{time} ago",
+    "navKitchen": "Kitchen"
+  },
+  "kitchen": {
+    "title": "Kitchen",
+    "colNew": "New",
+    "colPreparing": "Preparing",
+    "colReady": "Ready",
+    "readyHint": "last 10 min",
+    "columnEmpty": "No tickets",
+    "emptyTitle": "All quiet in the kitchen",
+    "emptyBody": "New tickets slide in here with a chime as soon as a waiter sends them.",
+    "errorTitle": "We couldn’t load tickets",
+    "start": "Start",
+    "ready": "Ready",
+    "itemDone": "{name}: done — tap to undo",
+    "itemTodo": "{name}: tap when done",
+    "allDay": "All day",
+    "allDayEmpty": "Nothing cooking",
+    "orderNo": "#{no}",
+    "guestNote": "Note",
+    "soldOut": "Sold out",
+    "newTicket": "New ticket · {table}",
+    "ticketLabel": "{table}, order {no}"
   }
 }

@@ -67,6 +67,7 @@ You only do this once per computer.
 | Landing page | http://localhost:3000 |
 | Guest menu (a table's QR code) | http://localhost:3000/t/demo-table-01 … `demo-table-12` |
 | Staff login | http://localhost:3000/login |
+| Kitchen display (kitchen / manager / owner) | http://localhost:3000/kitchen |
 | Component showcase (dev only) | http://localhost:3000/dev/ui |
 | Database admin (Supabase Studio) | http://127.0.0.1:54323 |
 
@@ -78,12 +79,14 @@ You only do this once per computer.
 | `cashier@demo.local` | Cashier | Orders board |
 | `manager@demo.local` | Manager | Orders board |
 | `owner@demo.local` | Owner | Orders board |
-| `kitchen@demo.local` | Kitchen | Sold-out list (kitchen display comes in Phase 5) |
+| `kitchen@demo.local` | Kitchen | Kitchen display (`/kitchen`) |
 
 **Try the full flow:** sign in as the waiter in one browser window, open
 `/t/demo-table-01` in another window (or on your phone), order something, and watch it
 appear on the waiter's board with a chime. Press **Confirm & send** and the guest's
-tracker changes to "The chef is cooking".
+tracker changes to "The chef is cooking". Sign in as `kitchen@demo.local` in a third window
+to see the ticket on the kitchen display, press **Start** and **Ready**, and watch the guest's
+tracker follow along.
 
 Tip: to be a guest and staff at the same time, use a normal window for one and a
 private/incognito window for the other.

@@ -31,9 +31,9 @@ export function safeNext(next: string | null | undefined): string | null {
   return isProtectedPath(next.split(/[?#]/)[0] ?? "") ? next : null;
 }
 
-/** Where each role lands after signing in. Kitchen moves to /kitchen once the KDS exists (Phase 5). */
+/** Where each role lands after signing in. */
 export function homeFor(role: StaffRole): string {
-  return role === "kitchen" ? "/staff/menu" : "/staff";
+  return role === "kitchen" ? "/kitchen" : "/staff";
 }
 
 export function canUse(role: StaffRole, allowed: readonly StaffRole[]): boolean {

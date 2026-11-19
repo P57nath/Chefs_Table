@@ -11,8 +11,8 @@ interface Flight {
 }
 
 interface FlyApi {
-  /** Animate a thumbnail from `from` into the cart bar, then call `onLand`. */
-  fly: (from: HTMLElement | null, onLand: () => void) => void;
+  /** Animate a thumbnail from `from` into the cart bar (visual only — the cart is already updated). */
+  fly: (from: HTMLElement | null) => void;
   /** The cart bar registers its target element. */
   setTarget: (el: HTMLElement | null) => void;
   /** Increments on each landing so the bar can bump. */
@@ -40,10 +40,9 @@ export function FlyToCartProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const fly = useCallback(
-    (from: HTMLElement | null, onLand: () => void) => {
+    (from: HTMLElement | null) => {
       const to = target.current?.getBoundingClientRect();
       if (reduce || !from || !to || to.width === 0) {
-        onLand();
         setLandings((n) => n + 1);
         return;
       }
@@ -55,7 +54,6 @@ export function FlyToCartProvider({ children }: { children: ReactNode }) {
       setFlights((f) => [...f, { id, from: from.getBoundingClientRect(), to, background }]);
       setTimeout(() => {
         setFlights((f) => f.filter((x) => x.id !== id));
-        onLand();
         setLandings((n) => n + 1);
       }, 560);
     },

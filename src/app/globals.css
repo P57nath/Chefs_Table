@@ -94,6 +94,15 @@
   --input: oklch(1 0.03 80 / 12%);
 }
 
+/* Kitchen display: extra contrast, readable from 2 m (always dark). */
+.dark .kds {
+  --surface: oklch(0.215 0.016 57);
+  --surface-2: oklch(0.255 0.02 58);
+  --text-muted: oklch(0.82 0.03 70);
+  --muted-foreground: var(--text-muted);
+  --border: oklch(1 0.03 80 / 16%);
+}
+
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);

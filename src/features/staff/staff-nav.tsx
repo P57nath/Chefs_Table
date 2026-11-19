@@ -1,11 +1,11 @@
 "use client";
 
-import { Ban, ClipboardList, Hand } from "lucide-react";
+import { Ban, ChefHat, ClipboardList, Hand } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useLocale, useTranslations } from "next-intl";
 
-import { canUse, FLOOR_ROLES } from "@/features/auth/roles";
+import { canUse, FLOOR_ROLES, KITCHEN_ROLES } from "@/features/auth/roles";
 import { localizeDigits } from "@/lib/digits";
 import { cn } from "@/lib/utils";
 
@@ -26,6 +26,14 @@ const ITEMS = [
   },
   { href: "/staff/requests", icon: Hand, label: "navRequests", count: "requests", floorOnly: true },
   { href: "/staff/menu", icon: Ban, label: "navMenu", count: null, floorOnly: false },
+  {
+    href: "/kitchen",
+    icon: ChefHat,
+    label: "navKitchen",
+    count: null,
+    floorOnly: false,
+    kitchenOnly: true,
+  },
 ] as const;
 
 /** Left rail on tablets, bottom bar on phones. */
@@ -34,7 +42,11 @@ export function StaffNav({ counts, variant }: { counts: NavCounts; variant: "rai
   const locale = useLocale();
   const pathname = usePathname();
   const { staff } = useStaff();
-  const items = ITEMS.filter((i) => !i.floorOnly || canUse(staff.role, FLOOR_ROLES));
+  const items = ITEMS.filter(
+    (i) =>
+      (!i.floorOnly || canUse(staff.role, FLOOR_ROLES)) &&
+      (!("kitchenOnly" in i) || canUse(staff.role, KITCHEN_ROLES)),
+  );
 
   return (
     <nav

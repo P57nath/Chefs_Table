@@ -47,10 +47,13 @@ test.describe("staff auth & guards", () => {
     await expect(page).toHaveURL(/\/login/);
   });
 
-  test("kitchen lands on sold-out list and cannot open the orders board", async ({ page }) => {
+  test("kitchen can 86 items but cannot open the orders board", async ({ page }) => {
     await loginAs(page, "kitchen@demo.local");
-    await expect(page).toHaveURL(/\/staff\/menu$/);
+    await expect(page).toHaveURL(/\/kitchen$/);
+    await page.goto("/staff/menu");
+    await expect(page.getByRole("heading", { name: "Sold-out today" })).toBeVisible();
     await expect(page.getByRole("link", { name: /Orders/ })).toHaveCount(0);
+    await expect(page.getByRole("link", { name: "Kitchen" }).first()).toBeVisible();
     await page.goto("/staff/orders");
     await expect(
       page.getByRole("heading", { name: "You don’t have access to this page" }),
