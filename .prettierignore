@@ -4,7 +4,6 @@ pnpm-lock.yaml
 coverage
 playwright-report
 test-results
-src/types/database.ts
 supabase/.temp
 docs
 *.md

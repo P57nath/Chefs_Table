@@ -49,3 +49,15 @@ commits after every phase, so nothing is lost if you stop and continue later.
 `owner@demo.local`, `manager@demo.local`, `waiter@demo.local`, `kitchen@demo.local`,
 `cashier@demo.local` — password from `DEMO_STAFF_PASSWORD` in `.env.local`.
 Demo table links: `http://localhost:3000/t/demo-table-01` … `demo-table-12`.
+
+## Local development (while the build is in progress)
+```bash
+pnpm install
+cp .env.example .env.local      # then paste the keys printed by `pnpm db:start`
+pnpm db:start                   # Docker Desktop must be running
+pnpm db:reset                   # migrations + demo seed
+pnpm seed:staff                 # demo staff accounts (idempotent)
+pnpm dev                        # http://localhost:3000
+```
+Checks: `pnpm gate` (typecheck, lint, format, secret-key check, unit tests, DB smoke test, build),
+`pnpm db:test` (pgTAP RLS tests), `pnpm e2e` (Playwright). Build status: see `PROGRESS.md`.
