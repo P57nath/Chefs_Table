@@ -236,8 +236,8 @@
 
 @layer utilities {
   /* Subtle film grain (2 % SVG noise) — guest hero & welcome only. */
+  /* Needs a positioned element (relative/absolute/fixed) — it does not set one itself. */
   .grain {
-    position: relative;
     isolation: isolate;
   }
   .grain::after {
@@ -275,6 +275,11 @@
   .pb-safe {
     padding-bottom: max(1rem, env(safe-area-inset-bottom));
   }
+}
+
+/* Guest welcome overlay already seen in this tab (set by an inline script before paint). */
+html[data-welcomed] [data-welcome-overlay] {
+  display: none;
 }
 
 @keyframes ember-rise {

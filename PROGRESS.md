@@ -9,8 +9,8 @@ Gate per phase: `pnpm gate` = typecheck · lint · format:check · check:secrets
 | 0 | Scaffold & tooling | ✅ done | Gate green, 43/43 DB smoke checks, e2e smoke green on 3 viewports |
 | 1 | Database | ✅ done | Migrations + seed apply cleanly, types generated, 37/37 pgTAP RLS checks, demo staff seeded and can log in |
 | 2 | Design system & app shell | ✅ done | Tokens (OKLCH, dark/light), fonts, i18n en/bn, providers, custom components, `/dev/ui`, landing; 57 unit tests, e2e incl. axe AA on landing (both themes, 3 viewports) |
-| 3 | Guest app | ⏳ next | |
-| 4 | Staff auth & orders | ☐ | |
+| 3 | Guest app | ✅ done | Welcome, menu (specials, scroll-spy chips, search, veg/spice filters, sold-out live), item sheet, cart (fly-to-cart, swipe remove), idempotent place order, live tracker (illustrated stages, ETA, rounds, cancel), call waiter / request bill, closed-table + invalid-QR screens. 101 unit tests, 43 pgTAP, 33 e2e incl. axe AA on menu + tracker |
+| 4 | Staff auth & orders | ⏳ next | Add staff-login link to landing |
 | 5 | Kitchen display | ☐ | |
 | 6 | Live floor (2D/list/3D) | ☐ | |
 | 7 | Bill & payments | ☐ | |
@@ -54,6 +54,33 @@ CLI 3.2 · R3F 9.8 / drei 10.7 · motion 14 · next-intl 4.15 · TanStack Query 
   adds the server Supabase client). Staff-login link is added in Phase 4 together with `/login`
   (no dead link before then).
 - **`/dev/ui`** returns 404 in production builds (e2e asserts it).
+
+### Phase 3 (guest)
+- **New migration `guest_table_info(token)`** (anon-callable, read-only): returns table label + branding
+  for a valid, active QR token, `null` otherwise. Lets the server render the welcome + menu before
+  anonymous sign-in (fast LCP) and reject bad/rotated QR codes **without creating anonymous users**.
+  Exposes nothing beyond what `join_table` already returns to any signed-in caller. 6 pgTAP checks.
+- **Menu SSR cache**: `unstable_cache` (tag `menu`, 60 s). The client query treats that copy as stale
+  immediately (`initialDataUpdatedAt: 0`) and refetches, so sold-out state is never more than one
+  round-trip old; realtime keeps it live after that.
+- **Order submit outcome handling (money/data safety)**: only errors carrying a known server code
+  (e.g. `ITEM_UNAVAILABLE`) count as *rejected* (Postgres rolled back → new request id next time).
+  Network failures **and unknown errors** count as *unknown outcome*: the same `client_request_id`
+  is kept, the cart is frozen (no edits) and the only action is "Retry sending". This guarantees a
+  retry can never place a different cart under an id the server already accepted. e2e covers a
+  dropped response (server committed, phone saw a failure) → exactly one order.
+- **Cart scope**: one cart per tab in `sessionStorage`, bound to (table token, session id); a new
+  session (table closed and re-opened) or another table starts empty.
+- **Sold-out mid-cart**: flagged live from the menu query (realtime on `menu_items`) and from the
+  server's `ITEM_UNAVAILABLE:<name>` error; ordering is blocked until the line is removed.
+- **Welcome overlay** is server-rendered (instant paint) and auto-continues after 1.2 s; an inline
+  script hides it before paint for tabs that already saw it. **Phase 10: add a CSP nonce** for this
+  script and next-themes' script.
+- **"Request bill"** creates the `request_bill` service request and shows "Your waiter is bringing the
+  bill"; the bill sheet + online payment arrive in Phase 7.
+- **Light-mode chips** (table chip, "Required" badge) use solid saffron + dark ink: tinted saffron with
+  saffron text measured below 4.5:1 in axe.
+- **Guest JS budget** (< 200 KB gzip) is measured and enforced in Phase 10 (bundle analysis).
 - **Env split into three files**: `lib/env-schema.ts` (pure Zod schemas, unit-tested), `lib/env.ts`
   (public, client-safe), `lib/env.server.ts` (`server-only`). Keeps the secret key's *name* out of client
   bundles. `check:secrets` allows `SUPABASE_SECRET_KEY` only in these server files + `lib/supabase/admin.ts`.

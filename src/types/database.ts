@@ -937,6 +937,7 @@ export type Database = {
         Returns: string;
       };
       floor_snapshot: { Args: Record<PropertyKey, never>; Returns: Json };
+      guest_table_info: { Args: { p_qr_token: string }; Returns: Json };
       is_session_guest: { Args: { p_session: string }; Returns: boolean };
       is_staff: {
         Args: { p_restaurant: string; p_roles?: Database["public"]["Enums"]["staff_role"][] };

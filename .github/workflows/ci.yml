@@ -56,6 +56,11 @@ jobs:
         run: pnpm exec supabase start
       - name: RLS tests (pgTAP)
         run: pnpm db:test
+      - name: Demo staff accounts
+        run: pnpm exec tsx scripts/create-demo-staff.ts
+        env:
+          DEMO_RESTAURANT_ID: 00000000-0000-4000-8000-000000000001
+          DEMO_STAFF_PASSWORD: CiOnly-Pass-2026
       - name: Generated types are up to date
         run: pnpm db:types && git diff --exit-code src/types/database.ts
       - name: Use local Supabase keys
@@ -67,6 +72,8 @@ jobs:
             | grep -E '^(NEXT_PUBLIC_SUPABASE_URL|NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY|SUPABASE_SECRET_KEY)=' \
             | sed 's/"//g' >> "$GITHUB_ENV"
       - run: pnpm e2e
+        env:
+          DEMO_STAFF_PASSWORD: CiOnly-Pass-2026
       - uses: actions/upload-artifact@v4
         if: failure()
         with:
