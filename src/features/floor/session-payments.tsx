@@ -98,7 +98,7 @@ export function SessionPayments({ sessionId }: { sessionId: string }) {
 
   return (
     <section aria-labelledby="payments-title" className="space-y-2">
-      <h3 id="payments-title" className="font-semibold">
+      <h3 id="payments-title" className="font-medium">
         {t("payments")}
       </h3>
       <ul className="divide-y divide-border rounded-2xl border border-border">
@@ -114,7 +114,7 @@ export function SessionPayments({ sessionId }: { sessionId: string }) {
                     · {formatClock(p.created_at, locale)}
                   </span>
                 </span>
-                <MoneyText minor={p.amount_minor} className="font-semibold" />
+                <MoneyText minor={p.amount_minor} className="font-medium" />
               </div>
               {review_ ? (
                 <div className="space-y-2">

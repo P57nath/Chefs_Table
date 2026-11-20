@@ -18,7 +18,7 @@ function LineRow({ line, muted }: { line: BillLine; muted?: boolean }) {
   const mods = item.modifiers.map((m) => (locale === "bn" && m.name_bn ? m.name_bn : m.name));
   return (
     <li className={cn("flex gap-3 text-sm", muted && "text-muted-foreground")}>
-      <span className="w-7 shrink-0 font-semibold tabular-nums">
+      <span className="w-7 shrink-0 font-medium tabular-nums">
         {localizeDigits(item.quantity, locale)}×
       </span>
       <span className="min-w-0 flex-1">
@@ -74,18 +74,18 @@ export function BillSummary({
           {row(`${t("vat")} ${formatBps(bill.vat_bps, locale)}`, bill.vat_minor)}
         </div>
         <div className="space-y-1.5 border-t border-border pt-4">
-          <div className="flex items-baseline justify-between text-lg font-semibold">
+          <div className="flex items-baseline justify-between text-lg font-medium">
             <span>{t("total")}</span>
             <MoneyText minor={bill.total_minor} />
           </div>
           {bill.paid_minor > 0 ? row(t("paid"), bill.paid_minor) : null}
           <div className="flex items-baseline justify-between pt-1">
-            <span className="font-display text-2xl font-semibold">{t("due")}</span>
+            <span className="font-display text-2xl font-medium">{t("due")}</span>
             <MoneyText
               minor={bill.due_minor}
               data-testid="bill-due"
               className={cn(
-                "font-display text-3xl font-semibold",
+                "font-display text-3xl font-medium",
                 bill.due_minor > 0 ? "text-primary-text" : "text-success",
               )}
             />
@@ -98,7 +98,7 @@ export function BillSummary({
           aria-labelledby="bill-waiting"
           className="space-y-3 rounded-3xl border border-dashed border-border p-5"
         >
-          <h2 id="bill-waiting" className="flex items-center gap-2 font-semibold">
+          <h2 id="bill-waiting" className="flex items-center gap-2 font-medium">
             <Hourglass className="size-4 text-primary-text" aria-hidden />
             {t("waitingTitle")}
           </h2>

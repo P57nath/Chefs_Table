@@ -50,6 +50,8 @@ const eslintConfig = defineConfig([
     "playwright-report/**",
     "test-results/**",
     "src/types/database.ts",
+    // Vendored third-party Claude skill (unslop, CC BY 4.0) — not app code.
+    ".claude/**",
     "supabase/.temp/**",
     // Kit reference material (tested SQL + smoke test) is kept verbatim.
     "docs/**",

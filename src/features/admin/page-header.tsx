@@ -13,7 +13,7 @@ export function AdminPageHeader({
   return (
     <div className="mb-6 flex flex-wrap items-end justify-between gap-4 print:hidden">
       <div className="min-w-0 space-y-1">
-        <h1 className="font-display text-3xl font-semibold">{title}</h1>
+        <h1 className="text-3xl font-medium">{title}</h1>
         {description ? <p className="max-w-2xl text-muted-foreground">{description}</p> : null}
       </div>
       {actions ? <div className="flex flex-wrap gap-2">{actions}</div> : null}

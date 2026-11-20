@@ -63,7 +63,7 @@ export function MenuEditor({
     <div className="grid gap-6 lg:grid-cols-[minmax(300px,360px)_1fr]">
       <section aria-labelledby="cat-title" className="space-y-3">
         <div className="flex items-center justify-between gap-2">
-          <h2 id="cat-title" className="font-semibold">
+          <h2 id="cat-title" className="font-medium">
             {t("categories")}
           </h2>
           <Button size="sm" variant="secondary" onClick={() => setEditing("new")}>

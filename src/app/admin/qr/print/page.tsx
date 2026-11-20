@@ -71,7 +71,7 @@ export default async function AdminQrPrintPage() {
         <section
           key={pi}
           aria-label={t("pageN", { n: pi + 1 })}
-          className="qr-sheet mx-auto mb-8 grid aspect-[210/297] w-full max-w-[210mm] grid-cols-2 grid-rows-3 gap-[4mm] bg-white p-[6mm] text-[#1C1612] shadow-lg"
+          className="qr-sheet mx-auto mb-8 grid aspect-[210/297] w-full max-w-[210mm] grid-cols-2 grid-rows-3 gap-[4mm] bg-white p-[6mm] text-[#1C1612] shadow-float"
         >
           {page.map((tb) => (
             <article
@@ -80,9 +80,7 @@ export default async function AdminQrPrintPage() {
             >
               <div className="flex items-center gap-2">
                 <BrandMark logoPath={r.logo_path} className="text-[9mm]" />
-                <span className="font-display text-[5mm] leading-tight font-semibold">
-                  {r.name}
-                </span>
+                <span className="text-[5mm] leading-tight font-medium">{r.name}</span>
               </div>
               <div
                 className="w-[38mm] [&_svg]:h-auto [&_svg]:w-full"
@@ -91,8 +89,8 @@ export default async function AdminQrPrintPage() {
                 dangerouslySetInnerHTML={{ __html: tb.svg }}
               />
               <div>
-                <p className="font-display text-[9mm] leading-none font-bold">{tb.label}</p>
-                <p className="mt-1 text-[4mm] font-semibold">
+                <p className="text-[9mm] leading-none font-medium">{tb.label}</p>
+                <p className="mt-1 text-[4mm] font-medium">
                   {t("scanToOrder")} · <span lang="bn">স্ক্যান করে অর্ডার দিন</span>
                 </p>
                 <p className="mt-1 text-[2.6mm] break-all text-[#5C5048]">{tb.url}</p>

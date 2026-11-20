@@ -166,7 +166,7 @@ export function KitchenBoard() {
                   )}
                 >
                   <span className="min-w-0 font-medium">{row.name}</span>
-                  <span className="text-3xl font-bold tabular-nums">
+                  <span className="text-3xl font-semibold tabular-nums">
                     {localizeDigits(row.quantity, locale)}
                   </span>
                 </li>

@@ -29,9 +29,7 @@ export function Kpi({
   return (
     <div className={cn("rounded-2xl border border-border bg-card p-5", hero && "sm:col-span-2")}>
       <dt className="text-sm text-muted-foreground">{label}</dt>
-      <dd className={cn("mt-1 font-sans font-semibold", hero ? "text-5xl" : "text-3xl")}>
-        {value}
-      </dd>
+      <dd className={cn("mt-1 font-sans font-medium", hero ? "text-5xl" : "text-3xl")}>{value}</dd>
       {deltaText ? (
         <dd
           className={cn(

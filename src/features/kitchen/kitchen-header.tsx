@@ -23,10 +23,13 @@ export function KitchenHeader() {
 
   return (
     <header className="flex h-20 shrink-0 items-center gap-4 border-b border-border px-6">
-      <EmberMark className="text-3xl" />
-      <h1 className="font-display text-3xl font-semibold">{t("title")}</h1>
+      <EmberMark className="text-2xl" />
+      <h1 className="text-2xl font-semibold">{t("title")}</h1>
       <span className="truncate text-lg text-muted-foreground">{staff.restaurantName}</span>
-      <time className="ml-auto text-3xl font-semibold tabular-nums" suppressHydrationWarning>
+      <time
+        className="ml-auto font-mono text-3xl font-medium tabular-nums"
+        suppressHydrationWarning
+      >
         {now === null ? "" : formatClock(now, locale)}
       </time>
       <Button asChild variant="secondary" size="lg">

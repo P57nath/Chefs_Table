@@ -60,7 +60,7 @@ test.describe("kitchen display (1920×1080)", () => {
         .locator('section[aria-labelledby="kds-ready"]')
         .locator(`article[data-order-id="${order!.id}"]`),
     ).toBeVisible();
-    await expect(guest.getByRole("heading", { name: "Ready! Coming to your table" })).toBeVisible();
+    await expect(guest.getByRole("heading", { name: "Ready, coming to your table" })).toBeVisible();
 
     await advance(waiter, order!.id, "served");
     await expect(guest.getByRole("heading", { name: "Enjoy your meal" })).toBeVisible();

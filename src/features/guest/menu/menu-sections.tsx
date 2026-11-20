@@ -24,10 +24,10 @@ export function MenuSections({ sections, onOpen, onQuickAdd }: MenuSectionsProps
           aria-labelledby={`h-${category.id}`}
           className="scroll-mt-32 space-y-3"
         >
-          <h2 id={`h-${category.id}`} className="font-display text-xl font-semibold">
+          <h2 id={`h-${category.id}`} className="font-display text-xl font-medium">
             {pick(category.name, category.name_bn, locale)}
           </h2>
-          <ul className="space-y-3">
+          <ul className="-mx-3 divide-y divide-border">
             {items.map((item, ii) => (
               <li key={item.id}>
                 <ItemCard

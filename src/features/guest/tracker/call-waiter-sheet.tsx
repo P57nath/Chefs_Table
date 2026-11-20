@@ -56,7 +56,7 @@ export function CallWaiterSheet({ open, onOpenChange, openRequests }: Props) {
     <Drawer open={open} onOpenChange={onOpenChange}>
       <DrawerContent className="mx-auto max-w-xl">
         <div className="pb-safe space-y-4 px-4 pt-2">
-          <DrawerTitle className="font-display text-2xl font-semibold">
+          <DrawerTitle className="font-display text-2xl font-medium">
             {t("callOptionsTitle")}
           </DrawerTitle>
           <DrawerDescription className="sr-only">{t("callOptionsTitle")}</DrawerDescription>
@@ -71,7 +71,7 @@ export function CallWaiterSheet({ open, onOpenChange, openRequests }: Props) {
                   aria-pressed={o.type === "other" ? otherOpen : undefined}
                   onClick={() => (o.type === "other" ? setOtherOpen((v) => !v) : void send(o.type))}
                   className={cn(
-                    "flex min-h-24 flex-col items-start justify-between gap-2 rounded-2xl border p-4 text-left font-semibold transition-colors outline-none focus-visible:ring-3 focus-visible:ring-ring/50",
+                    "flex min-h-24 flex-col items-start justify-between gap-2 rounded-2xl border p-4 text-left font-medium transition-colors outline-none focus-visible:ring-3 focus-visible:ring-ring/50",
                     pending
                       ? "border-success/50 bg-success/10"
                       : "border-border bg-surface hover:bg-muted",

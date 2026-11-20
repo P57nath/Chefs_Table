@@ -49,7 +49,7 @@ export function QrCard({
       data-qr-table={label}
     >
       <div className="flex items-center justify-between">
-        <h2 className="font-display text-xl font-semibold">{t("table", { label })}</h2>
+        <h2 className="text-xl font-medium">{t("table", { label })}</h2>
       </div>
       <div
         className="mx-auto w-40 rounded-xl bg-white p-2 [&_svg]:h-auto [&_svg]:w-full"

@@ -55,7 +55,7 @@ export function SettingsForm({ initial, gateway }: { initial: SettingsInput; gat
   return (
     <form onSubmit={submit} className="max-w-3xl space-y-8" noValidate>
       <section className="space-y-4 rounded-2xl border border-border bg-card p-5">
-        <h2 className="font-semibold">{t("brand")}</h2>
+        <h2 className="font-medium">{t("brand")}</h2>
         <Field label={t("name")} error={bad("name") ? t("invalidName") : null}>
           <Input {...text("name")} maxLength={80} />
         </Field>
@@ -86,8 +86,8 @@ export function SettingsForm({ initial, gateway }: { initial: SettingsInput; gat
                 />
                 <span
                   className={cn(
-                    "flex min-h-11 items-center gap-2 rounded-full border border-border px-3 text-sm peer-focus-visible:ring-3 peer-focus-visible:ring-ring/50",
-                    form.accent === a.key && "border-foreground font-semibold",
+                    "flex min-h-11 items-center gap-2 rounded-lg border border-border px-3 text-sm peer-focus-visible:ring-3 peer-focus-visible:ring-ring/50",
+                    form.accent === a.key && "border-foreground font-medium",
                   )}
                 >
                   <span
@@ -107,7 +107,7 @@ export function SettingsForm({ initial, gateway }: { initial: SettingsInput; gat
       </section>
 
       <section className="grid gap-4 rounded-2xl border border-border bg-card p-5 sm:grid-cols-2">
-        <h2 className="font-semibold sm:col-span-2">{t("contact")}</h2>
+        <h2 className="font-medium sm:col-span-2">{t("contact")}</h2>
         <Field label={t("address")} className="sm:col-span-2">
           <Input {...text("address")} maxLength={200} />
         </Field>
@@ -123,7 +123,7 @@ export function SettingsForm({ initial, gateway }: { initial: SettingsInput; gat
       </section>
 
       <section className="grid gap-4 rounded-2xl border border-border bg-card p-5 sm:grid-cols-2">
-        <h2 className="font-semibold sm:col-span-2">{t("billing")}</h2>
+        <h2 className="font-medium sm:col-span-2">{t("billing")}</h2>
         <Field label={t("vat")} error={bad("vat") ? t("invalidPercent") : null}>
           <Input {...text("vat")} inputMode="decimal" />
         </Field>

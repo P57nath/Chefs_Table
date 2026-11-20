@@ -58,7 +58,7 @@ export function GroupsEditor({
   return (
     <section aria-labelledby="groups-title" className="space-y-3">
       <div className="flex items-center justify-between gap-2">
-        <h3 id="groups-title" className="font-semibold">
+        <h3 id="groups-title" className="font-medium">
           {t("groups")}
         </h3>
         <Button

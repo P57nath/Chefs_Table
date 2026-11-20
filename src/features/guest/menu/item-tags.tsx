@@ -6,7 +6,7 @@ import { localizeDigits } from "@/lib/digits";
 import type { MenuItem } from "./types";
 
 const pill =
-  "inline-flex h-6 items-center gap-1 rounded-full px-2 text-xs font-semibold [&_svg]:size-3.5";
+  "inline-flex h-6 items-center gap-1 rounded-sm px-2 text-xs font-medium [&_svg]:size-3.5";
 
 /** Veg 🌿, Spicy 🌶 × level, New, Bestseller, Chef’s special. */
 export function ItemTags({ item, max = 3 }: { item: MenuItem; max?: number }) {

@@ -8,7 +8,7 @@ import { ThemeProvider, type ResolvedTheme, type ThemeChoice } from "./theme";
 
 /**
  * One theme provider per surface (each section mounts its own; the root layout has none). Defaults from docs/04-DESIGN-SYSTEM.md §1:
- *   guest  → dark "Ember Night" (light available)
+ *   guest  → dark, warm neutral ramp (light available)
  *   staff  → light (dark available) — floor + admin
  *   kitchen→ dark only
  */
@@ -30,6 +30,7 @@ export function SurfaceTheme({ surface, children }: { surface: Surface; children
       defaultTheme={config.defaultTheme}
       forcedTheme={config.forcedTheme}
       storageKey={config.storageKey}
+      surface={surface}
     >
       {children}
       <Toaster

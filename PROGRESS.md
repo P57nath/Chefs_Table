@@ -17,6 +17,7 @@ Gate per phase: `pnpm gate` = typecheck · lint · format:check · check:secrets
 | 8 | Admin | ✅ done | `/admin`: overview, menu editor (photos crop→WebP, modifiers, drag/▲▼ reorder, duplicate, archive), tables/zones + 2D layout editor with 3D preview, QR (PNG/SVG, A4 tents, rotate), staff (create, role, deactivate, reset password), orders history + timeline, payments + review + CSV, settings (brand, logo, accent presets, taxes, default language). 201 unit, 96 pgTAP, 69 e2e |
 | 9 | Reports | ✅ done | `/admin` dashboard: Today / 7 / 30 days / custom (Dhaka days), KPIs with change vs previous period, revenue-by-day line, orders-by-hour columns, payment-method and top-dish ranked bars, table view per chart, report CSV. 211 unit, 101 pgTAP, 70 e2e |
 | 10 | Hardening | ✅ done (JS budget gap noted) | Nonce CSP (0 violations across all surfaces), error/404/global-error pages, robots + OG, installable staff/kitchen PWA with offline page, expired-session redirect, guest first-load JS 431 → ~260 KB, 15 new e2e (3-device full flow, offline, slow 3G, long Bangla, 14-line ticket, upload failure, expired session, CSP, PWA, budget). 219 unit, 101 pgTAP, 85 e2e |
+| D | Design revision ("unslop") | ✅ done (e2e re-run pending Docker) | Quiet chrome, one accent, docket signature, refined + bigger 3D floor; see "Design revision" below |
 | 11 | Deploy | ⏳ next | |
 
 ## Toolchain (installed 2026-11-19)
@@ -354,3 +355,59 @@ CLI 3.2 · R3F 9.8 / drei 10.7 · motion 14 · next-intl 4.15 · TanStack Query 
   `demo-table-NN` tokens are guessable — rotate them or seed fresh tables before going live**, Phase 11);
   DB anti-abuse caps ✔, Turnstile optional ✔; every staff/admin server action re-checks the role ✔;
   uploads limited by the bucket (5 MB, image types) and re-encoded client-side ✔.
+
+### Design revision — "unslop" (2026-11-21, before Phase 11)
+User asked for a redesign that no longer looks AI-generated, using the *unslop* skill
+(heydamir/unslop, CC BY 4.0, vendored in `.claude/skills/unslop`, ignored by ESLint/Prettier).
+`docs/04-DESIGN-SYSTEM.md` §1–5, §6.1, §6.3, §8–10 rewritten to match. No flows, money logic,
+RPCs, RLS or data changed.
+- **Direction**: unhurried, exact, a little warm; world = dining room at night + paper order slips.
+  Signature = the order docket (`<Docket>` / `<DocketNumber>`, mono table/order numbers,
+  perforated edge) on the landing preview and kitchen tickets.
+- **Tokens**: warm ramp for guest, graphite ramp for staff/admin/kitchen via `data-surface` on
+  `<html>` (set by the theme pre-paint script so portals match). Three text roles (`text-subtle`
+  added), one accent (saffron). Every pair re-checked for AA with a contrast script; `--glow`,
+  grain, glass, radial washes and ember particles removed. Status hues toned, kept for status only.
+- **Type**: Inter → **Instrument Sans** (chosen for the warm character; Inter was the default
+  nobody picked) + **IBM Plex Mono** for docket figures. Fraunces at 400–500, guest/landing only.
+  Weights capped at 500 outside the KDS. No uppercase tracked labels, no italic.
+- **Shape/motion**: radius by size (6/10/14/20), pills only for status + avatars. Springs replaced
+  by one ease-out curve and three durations (`tween` in `src/lib/motion.ts`). Loops only on live
+  states. Confetti, sparkles and the gradient menu placeholder (now a quiet plate) removed.
+- **Copy**: no exclamation marks or hype ("Dine-in, made effortless" eyebrow removed, "Relax" →
+  "Pay"); e2e assertions updated with the new strings (en + bn).
+- **3D floor**: room fills the canvas (camera fits the projected footprint), taller view
+  (`100dvh − 10rem`, min 520 px) + full-screen toggle (Esc exits); oak planks, walls with trim and
+  windows, pass with heat lamps and a ticket rail (one slip per open order), rugs per zone instead
+  of colour tints, walnut tables with legs/pedestal, chairs with backs and legs, soft 2048 shadows,
+  hemisphere light, docket-style badges, rings pulse only when live, string lights removed.
+- **Bug fixed**: guests at round tables faced away from the table (`chairPositions` angle);
+  `tests/unit/layout-geometry.test.ts` covers every shape.
+- `/dev/ui` (dev only) now has the 3D floor + 2D map with seed-layout demo data, so the scene can
+  be checked without a database.
+- **Open**: e2e + `db:smoke` need Docker (`supabase start`) — not re-run for this revision. In dev
+  mode drei `<Html>` logs "synchronously unmount a root" once per badge (StrictMode remount); it is
+  pre-existing (same count on the previous scene) and absent in production builds.
+
+### Landing page — Sultan's Dine (2026-11-21)
+User confirmed the system is being built for **Sultan's Dine** (Dhaka kacchi biryani chain,
+sultansdinebd.com). Brand fallback in `src/config/brand.ts` set to "Sultan’s Dine" (official
+spelling with the apostrophe) / "সুলতান’স ডাইন". The restaurant row in the DB (seed still says
+"Ember & Spice") wins on guest pages — rename it in Admin → Settings. No logo, photos or text were
+copied from their site; copy only uses public facts (halal kacchi, Sultani mutton tehari, dum
+cooking) and the app's real flow. No prices or outlet counts on the page (they change).
+- **Hero**: a dum-sealed kacchi handi rendered on canvas entirely from the Bengali letters of
+  "কাচ্চি" (`features/landing/glyph-engine.ts` + `glyph-handi.tsx`, glyph technique from unslop
+  `effects.md`, CC BY 4.0): letters fly in and assemble, the atta seal crumbles, the lid lifts, rice
+  appears, steam curls rise; letters part around the pointer and spring back. Sprite atlas baked
+  once, 60 fps only during the intro/interaction, 30 fps idle, paused off screen. Headline words rise
+  (CSS only, paints before hydration), Mughal arch line draws in, kitchen docket prints out.
+- **Sections**: velocity marquee of dishes (speeds up, flips and skews with scroll velocity);
+  manifesto whose words light up on scroll; pinned 4-step order story (phone walks scan → menu →
+  dum → pay, docket prints from behind the phone, progress rail); Mughal-arch mask that opens into
+  a full-screen saffron jali room; footer wordmark that fills on scroll; header hides on scroll down.
+- **Reduced motion**: every effect is overridden in CSS (`motion-reduce:`), never by branching the
+  DOM on `useReducedMotion` (that caused a hydration mismatch, fixed). The handi is drawn once, open.
+- **A11y**: axe WCAG 2.2 AA clean on the landing in dark, light and reduced-motion Bangla (dimmed
+  manifesto words kept ≥ 3:1, inactive story steps use `text-subtle`, not opacity); no horizontal
+  scroll at 390 px. Decorative layers are `aria-hidden` with real text alongside.

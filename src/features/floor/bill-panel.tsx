@@ -57,7 +57,7 @@ export function BillPanel({ sessionId, tableLabel, onClosed }: BillPanelProps) {
   const isManager = canUse(staff.role, MANAGEMENT_ROLES);
 
   const row = (label: string, minor: number, strong = false) => (
-    <div className={cn("flex items-baseline justify-between", strong && "text-lg font-semibold")}>
+    <div className={cn("flex items-baseline justify-between", strong && "text-lg font-medium")}>
       <span className={strong ? undefined : "text-muted-foreground"}>{label}</span>
       <MoneyText minor={minor} />
     </div>
@@ -79,7 +79,7 @@ export function BillPanel({ sessionId, tableLabel, onClosed }: BillPanelProps) {
 
   return (
     <section aria-labelledby="bill-title" className="space-y-4">
-      <h3 id="bill-title" className="font-semibold">
+      <h3 id="bill-title" className="font-medium">
         {t("bill")}
       </h3>
       <div className="space-y-1.5 rounded-2xl border border-border p-4">
@@ -89,7 +89,7 @@ export function BillPanel({ sessionId, tableLabel, onClosed }: BillPanelProps) {
         <div className="my-2 border-t border-border" />
         {row(t("total"), b.total_minor, true)}
         {row(t("paid"), b.paid_minor)}
-        <div className="flex items-baseline justify-between text-xl font-bold">
+        <div className="flex items-baseline justify-between text-xl font-medium">
           <span>{t("due")}</span>
           <MoneyText minor={due} className={due > 0 ? "text-ember" : "text-success"} />
         </div>
@@ -104,7 +104,7 @@ export function BillPanel({ sessionId, tableLabel, onClosed }: BillPanelProps) {
 
       {due > 0 ? (
         <div className="space-y-3 rounded-2xl border border-border p-4">
-          <p className="font-semibold">{t("recordPayment")}</p>
+          <p className="font-medium">{t("recordPayment")}</p>
           <SegmentedControl<"cash" | "card">
             label={t("recordPayment")}
             size="sm"

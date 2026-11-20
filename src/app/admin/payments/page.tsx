@@ -119,7 +119,7 @@ export default async function AdminPaymentsPage({ searchParams }: PageProps<"/ad
       </FilterForm>
 
       <p className="mb-4 text-sm">
-        {t("paidTotal")}: <MoneyText minor={paidTotal} className="font-semibold" />
+        {t("paidTotal")}: <MoneyText minor={paidTotal} className="font-medium" />
       </p>
 
       {list.data.length === 0 ? (
@@ -152,7 +152,7 @@ export default async function AdminPaymentsPage({ searchParams }: PageProps<"/ad
                   <td className="px-4 py-3">
                     <span
                       className={cn(
-                        "rounded-full px-2.5 py-1 text-xs font-semibold",
+                        "rounded-sm px-2 py-0.5 text-xs font-medium",
                         STATUS_TONE[p.status],
                       )}
                     >
@@ -167,7 +167,7 @@ export default async function AdminPaymentsPage({ searchParams }: PageProps<"/ad
                   <td className="px-4 py-3 text-xs text-muted-foreground">
                     {p.tran_id ?? (p.received_by ? names.get(p.received_by) : null) ?? "—"}
                   </td>
-                  <td className="px-4 py-3 text-right font-semibold">
+                  <td className="px-4 py-3 text-right font-medium">
                     <MoneyText minor={p.amount_minor} />
                   </td>
                 </tr>

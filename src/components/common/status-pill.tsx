@@ -41,7 +41,7 @@ export function StatusPill({ size = "md", children, className, ...props }: Statu
     <span
       data-state={props.state}
       className={cn(
-        "inline-flex w-fit shrink-0 items-center rounded-full font-semibold whitespace-nowrap text-foreground",
+        "inline-flex w-fit shrink-0 items-center rounded-full font-medium whitespace-nowrap text-foreground",
         "bg-[color-mix(in_oklch,currentColor_14%,transparent)]",
         visual.tone,
         PULSE_CLASS[visual.pulse],

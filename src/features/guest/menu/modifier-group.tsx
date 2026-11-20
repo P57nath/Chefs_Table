@@ -43,10 +43,10 @@ export function ModifierGroupField({ group, selected, onToggle, invalid }: Modif
       )}
     >
       <legend className="flex w-full items-center justify-between gap-2 px-0.5">
-        <span className="font-semibold">{name}</span>
+        <span className="font-medium">{name}</span>
         <span
           className={cn(
-            "rounded-full px-2 py-0.5 text-xs font-semibold",
+            "rounded-sm px-2 py-0.5 text-xs font-medium",
             group.min_select > 0
               ? "bg-primary text-primary-foreground"
               : "bg-muted text-muted-foreground",

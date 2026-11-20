@@ -41,9 +41,9 @@ export default async function LoginPage({ searchParams }: PageProps<"/login">) {
           <LanguageToggle />
         </header>
         <main id="main" className="flex flex-1 items-center justify-center px-4 pb-16">
-          <div className="surface-raised w-full max-w-sm space-y-6 rounded-3xl border border-border bg-card p-6 sm:p-8">
+          <div className="w-full max-w-sm space-y-6 rounded-2xl border border-border bg-card p-6 sm:p-8">
             <div className="space-y-1">
-              <h1 className="font-display text-3xl font-semibold">{t("title")}</h1>
+              <h1 className="font-display text-3xl font-medium">{t("title")}</h1>
               <p className="text-muted-foreground">{t("subtitle")}</p>
             </div>
             {expired ? (

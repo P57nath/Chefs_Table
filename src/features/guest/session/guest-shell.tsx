@@ -40,10 +40,10 @@ export function GuestShell({ children }: { children: ReactNode }) {
       {phase === "error" ? (
         <div
           role="alert"
-          className="fixed inset-x-0 top-20 z-50 mx-auto flex w-[calc(100%-2rem)] max-w-md items-center gap-3 rounded-2xl border border-ember/40 bg-popover p-3 shadow-lg"
+          className="fixed inset-x-0 top-20 z-50 mx-auto flex w-[calc(100%-2rem)] max-w-md items-center gap-3 rounded-2xl border border-ember/40 bg-popover p-3 shadow-float"
         >
           <p className="flex-1 text-sm">
-            <span className="block font-semibold">{t("joinErrorTitle")}</span>
+            <span className="block font-medium">{t("joinErrorTitle")}</span>
             <span className="text-muted-foreground">
               {tErr(error?.key ?? "unknown", error?.params ?? {})}
             </span>

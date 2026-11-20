@@ -46,7 +46,7 @@ test.describe("guest app (390×844)", () => {
 
     const kitchen = await staff("kitchen@demo.local");
     await advance(kitchen, order!.id, "ready");
-    await expect(page.getByRole("heading", { name: "Ready! Coming to your table" })).toBeVisible();
+    await expect(page.getByRole("heading", { name: "Ready, coming to your table" })).toBeVisible();
 
     await advance(waiter, order!.id, "served");
     await expect(page.getByRole("heading", { name: "Enjoy your meal" })).toBeVisible();
@@ -176,7 +176,7 @@ test.describe("guest app (390×844)", () => {
 
     const manager = await staff("manager@demo.local");
     await closeSession(manager, session!.id);
-    await expect(page.getByRole("heading", { name: "Thank you for dining with us!" })).toBeVisible({
+    await expect(page.getByRole("heading", { name: "Thank you for dining with us" })).toBeVisible({
       timeout: 15_000,
     });
 

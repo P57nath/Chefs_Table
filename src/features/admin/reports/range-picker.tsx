@@ -35,7 +35,7 @@ export async function RangePicker({
             className={cn(
               "flex min-h-10 items-center gap-1.5 rounded-lg px-3 text-sm font-medium outline-none focus-visible:ring-3 focus-visible:ring-ring/50",
               preset === p.key
-                ? "bg-card font-semibold shadow-sm"
+                ? "bg-card font-medium shadow-sm"
                 : "text-foreground/80 hover:bg-card/60",
             )}
           >

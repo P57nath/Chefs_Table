@@ -134,8 +134,8 @@ function ItemForm({
                     set("tags", on ? form.tags.filter((x) => x !== tag) : [...form.tags, tag])
                   }
                   className={cn(
-                    "min-h-11 rounded-full border border-border px-4 text-sm outline-none focus-visible:ring-3 focus-visible:ring-ring/50",
-                    on && "border-primary bg-primary/15 font-semibold",
+                    "min-h-11 rounded-lg border border-border px-4 text-sm outline-none focus-visible:ring-3 focus-visible:ring-ring/50",
+                    on && "border-primary bg-primary/15 font-medium",
                   )}
                 >
                   {t(`tag_${tag}`)}
@@ -179,7 +179,7 @@ export function ItemSheet({
     <Sheet open={item !== null} onOpenChange={(o) => !o && onClose()}>
       <SheetContent className="flex w-full flex-col gap-0 p-0 sm:max-w-2xl">
         <div className="space-y-1 border-b border-border p-5 pr-14">
-          <SheetTitle className="font-display text-2xl font-semibold">
+          <SheetTitle className="text-2xl font-medium">
             {item === "new" ? t("addItem") : t("editItem")}
           </SheetTitle>
           <SheetDescription>{t("itemHint")}</SheetDescription>

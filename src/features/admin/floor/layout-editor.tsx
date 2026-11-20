@@ -200,11 +200,7 @@ export function LayoutEditor({ tables, zones }: { tables: AdminTable[]; zones: A
           </defs>
           <rect width={maxX * U} height={maxY * U} fill="url(#grid)" />
           <rect width={maxX * U} height={U * 0.4} className="fill-muted" />
-          <text
-            x={U * 0.3}
-            y={U * 0.28}
-            className="fill-muted-foreground text-[11px] font-semibold uppercase"
-          >
+          <text x={U * 0.3} y={U * 0.28} className="fill-muted-foreground text-[11px] font-medium">
             {t("kitchenPass")}
           </text>
           {active.map((tb) => {
@@ -282,7 +278,7 @@ export function LayoutEditor({ tables, zones }: { tables: AdminTable[]; zones: A
                   transform={`rotate(${-p.rotation})`}
                   textAnchor="middle"
                   dominantBaseline="central"
-                  className="fill-foreground font-display text-[15px] font-semibold"
+                  className="fill-foreground text-[15px] font-medium"
                 >
                   {tb.label}
                 </text>

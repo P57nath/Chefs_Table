@@ -64,14 +64,14 @@ export function TableSheet({ table, onClose }: { table: FloorTable | null; onClo
     >
       {!table ? null : !session ? (
         <div className="space-y-2 py-8 text-center">
-          <p className="font-display text-xl font-semibold">{t("freeTitle")}</p>
+          <p className="text-xl font-medium">{t("freeTitle")}</p>
           <p className="text-muted-foreground">{t("freeBody")}</p>
         </div>
       ) : (
         <div className="space-y-6">
           {session.open_requests.length > 0 ? (
             <section aria-labelledby="sheet-requests" className="space-y-2">
-              <h3 id="sheet-requests" className="font-semibold">
+              <h3 id="sheet-requests" className="font-medium">
                 {t("requests")}
               </h3>
               <ul className="space-y-2">
@@ -81,13 +81,13 @@ export function TableSheet({ table, onClose }: { table: FloorTable | null; onClo
                     className="flex items-center gap-3 rounded-xl border border-ember/40 bg-ember/8 p-3"
                   >
                     <div className="min-w-0 flex-1">
-                      <p className="font-semibold">{tStaff(`req_${r.type}`)}</p>
+                      <p className="font-medium">{tStaff(`req_${r.type}`)}</p>
                       {r.note ? <p className="text-sm">{r.note}</p> : null}
                       <Timer
                         since={r.created_at}
                         warnAtMin={1}
                         lateAtMin={3}
-                        className="text-sm font-semibold"
+                        className="text-sm font-medium"
                       />
                     </div>
                     <Button
@@ -105,7 +105,7 @@ export function TableSheet({ table, onClose }: { table: FloorTable | null; onClo
           ) : null}
 
           <section aria-labelledby="sheet-orders" className="space-y-3">
-            <h3 id="sheet-orders" className="font-semibold">
+            <h3 id="sheet-orders" className="font-medium">
               {t("orders")}
             </h3>
             {orders.isPending ? (
@@ -117,7 +117,7 @@ export function TableSheet({ table, onClose }: { table: FloorTable | null; onClo
                 {orders.data!.map((o) => (
                   <li key={o.id} className="space-y-3 rounded-2xl border border-border p-3">
                     <div className="flex items-center justify-between gap-2">
-                      <span className="font-semibold tabular-nums">
+                      <span className="font-medium tabular-nums">
                         #{localizeDigits(o.order_no, locale)} · {formatClock(o.placed_at, locale)}
                       </span>
                       <StatusPill kind="order" state={o.status} size="sm" />

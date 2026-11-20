@@ -102,13 +102,11 @@ export function OrdersBoard() {
             <h2
               id={`col-${c.key}`}
               className={
-                wide
-                  ? "flex items-center justify-between px-1 pt-1 text-sm font-semibold"
-                  : "sr-only"
+                wide ? "flex items-center justify-between px-1 pt-1 text-sm font-medium" : "sr-only"
               }
             >
               {t(COL_LABEL[c.key])}
-              <span className="rounded-full bg-surface px-2 py-0.5 tabular-nums">
+              <span className="rounded-sm bg-surface px-1.5 py-0.5 font-mono tabular-nums">
                 {localizeDigits(columns[c.key].length, locale)}
               </span>
             </h2>

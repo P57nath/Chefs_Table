@@ -54,7 +54,7 @@ export function OrderCard({ order, round }: { order: GuestOrder; round: number }
     >
       <header className="flex items-center justify-between gap-2">
         <div>
-          <h3 className="font-semibold">{t("roundN", { n: n(round) })}</h3>
+          <h3 className="font-medium">{t("roundN", { n: n(round) })}</h3>
           <p className="text-sm text-muted-foreground tabular-nums">
             {t("orderNo", { no: n(order.order_no) })} · {formatClock(order.placed_at, locale)}
           </p>
@@ -78,14 +78,14 @@ export function OrderCard({ order, round }: { order: GuestOrder; round: number }
                 item.is_voided && "text-muted-foreground line-through",
               )}
             >
-              <span className="w-7 shrink-0 font-semibold tabular-nums">{n(item.quantity)}×</span>
+              <span className="w-7 shrink-0 font-medium tabular-nums">{n(item.quantity)}×</span>
               <span className="flex-1">
                 {name}
                 {mods.length ? (
                   <span className="block text-muted-foreground">{mods.join(" · ")}</span>
                 ) : null}
                 {item.note ? (
-                  <span className="block text-muted-foreground italic">
+                  <span className="block text-muted-foreground">
                     {t("notesLabel", { note: item.note })}
                   </span>
                 ) : null}
@@ -101,7 +101,7 @@ export function OrderCard({ order, round }: { order: GuestOrder; round: number }
         </p>
       ) : null}
       <footer className="flex items-center justify-between gap-2 border-t border-border pt-3">
-        <MoneyText minor={order.subtotal_minor} className="font-semibold" />
+        <MoneyText minor={order.subtotal_minor} className="font-medium" />
         {order.status === "placed" ? (
           <Button size="sm" variant="destructive-soft" onClick={() => setConfirmOpen(true)}>
             {t("cancelOrder")}

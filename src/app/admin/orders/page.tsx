@@ -127,7 +127,7 @@ export default async function AdminOrdersPage({ searchParams }: PageProps<"/admi
                   <td className="px-4 py-3">
                     <Link
                       href={`/admin/orders/${o.id}`}
-                      className="font-semibold underline-offset-4 outline-none hover:underline focus-visible:ring-3 focus-visible:ring-ring/50"
+                      className="font-medium underline-offset-4 outline-none hover:underline focus-visible:ring-3 focus-visible:ring-ring/50"
                     >
                       #{localizeDigits(o.order_no, locale)}
                     </Link>

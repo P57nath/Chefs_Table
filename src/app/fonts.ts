@@ -1,6 +1,12 @@
-import { Fraunces, Inter, Noto_Sans_Bengali, Noto_Serif_Bengali } from "next/font/google";
+import {
+  Fraunces,
+  IBM_Plex_Mono,
+  Instrument_Sans,
+  Noto_Sans_Bengali,
+  Noto_Serif_Bengali,
+} from "next/font/google";
 
-/** Display: brand, hero, guest item names. Variable font with optical sizing. */
+/** Display: large headlines and guest dish names only (400–500, never labels). */
 export const fraunces = Fraunces({
   subsets: ["latin"],
   axes: ["opsz"],
@@ -8,10 +14,18 @@ export const fraunces = Fraunces({
   display: "swap",
 });
 
-/** UI / body / numbers (tabular-nums). */
-export const inter = Inter({
+/** Interface and body text. */
+export const instrumentSans = Instrument_Sans({
   subsets: ["latin"],
-  variable: "--font-inter",
+  variable: "--font-instrument",
+  display: "swap",
+});
+
+/** Docket figures: table and order numbers, timers, meta. */
+export const plexMono = IBM_Plex_Mono({
+  subsets: ["latin"],
+  weight: ["400", "500"],
+  variable: "--font-plex-mono",
   display: "swap",
 });
 
@@ -35,7 +49,8 @@ export const notoSerifBengali = Noto_Serif_Bengali({
 
 export const fontVariables = [
   fraunces.variable,
-  inter.variable,
+  instrumentSans.variable,
+  plexMono.variable,
   notoSansBengali.variable,
   notoSerifBengali.variable,
 ].join(" ");

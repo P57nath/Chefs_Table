@@ -8,3 +8,4 @@ supabase/.temp
 docs
 *.md
 ember-table-kit.zip
+.claude/skills

@@ -31,23 +31,22 @@ export function FoundationsDemo() {
       <Section title="Brand & type">
         <Logo name={brand.name} className="text-2xl" />
         <div className="space-y-2">
-          <p className="font-display text-[3.25rem] leading-none font-semibold">
-            Ember Smash Burger
-          </p>
-          <p className="font-display text-2xl font-semibold" lang="bn">
+          <p className="font-display text-[3.25rem] leading-none font-medium">Ember Smash Burger</p>
+          <p className="font-display text-2xl font-medium" lang="bn">
             এম্বার স্ম্যাশ বার্গার
           </p>
           <p className="max-w-prose text-base">
-            Body text in Inter — short, warm, human. Your order is on its way to the kitchen.
+            Body text in Instrument Sans — short, warm, human. Your order is on its way to the
+            kitchen.
           </p>
           <p className="max-w-prose text-base" lang="bn">
             আপনার অর্ডার কিচেনের পথে। খাবার তৈরি হলেই আমরা জানিয়ে দেব।
           </p>
           <p className="text-muted-foreground">Muted secondary text for hints and metadata.</p>
-          <p className="text-2xl font-semibold tabular-nums">
+          <p className="text-2xl font-medium tabular-nums">
             <MoneyText minor={123400} /> · <MoneyText minor={78343} />
           </p>
-          <p className="text-2xl font-semibold tabular-nums" lang="bn">
+          <p className="text-2xl font-medium tabular-nums" lang="bn">
             {formatMoney(123400, "bn")} · {formatMoney(78343, "bn")}
           </p>
         </div>

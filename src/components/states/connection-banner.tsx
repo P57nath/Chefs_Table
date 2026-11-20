@@ -5,7 +5,7 @@ import { AnimatePresence } from "motion/react";
 import * as m from "motion/react-m";
 import { useTranslations } from "next-intl";
 
-import { spring } from "@/lib/motion";
+import { tween } from "@/lib/motion";
 import { cn } from "@/lib/utils";
 
 export type ConnectionStatus = "online" | "reconnecting" | "offline" | "restored";
@@ -31,12 +31,12 @@ export function ConnectionBanner({
         {visible ? (
           <m.div
             key={status}
-            initial={{ y: -40, opacity: 0 }}
+            initial={{ y: -8, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
-            exit={{ y: -40, opacity: 0 }}
-            transition={spring.sheet}
+            exit={{ y: -8, opacity: 0 }}
+            transition={tween.sheet}
             className={cn(
-              "mx-auto flex w-fit items-center gap-2 rounded-full px-4 py-1.5 text-sm font-medium shadow-lg",
+              "mx-auto flex w-fit items-center gap-2 rounded-lg px-4 py-2 text-sm font-medium shadow-float",
               restored
                 ? "bg-success text-white dark:text-[var(--primary-ink)]"
                 : "bg-foreground text-background",
@@ -45,7 +45,7 @@ export function ConnectionBanner({
             {restored ? (
               <Wifi className="size-4" aria-hidden />
             ) : (
-              <WifiOff className="size-4 animate-pulse" aria-hidden />
+              <WifiOff className="size-4" aria-hidden />
             )}
             {restored
               ? t("reconnected")

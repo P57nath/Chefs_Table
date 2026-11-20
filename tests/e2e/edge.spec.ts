@@ -32,7 +32,7 @@ test.describe("edge cases (Phase 10)", () => {
     await advance(await staff("kitchen@demo.local"), order!.id, "ready");
     await guest.ctx.setOffline(false);
     await expect(
-      guest.page.getByRole("heading", { name: "Ready! Coming to your table" }),
+      guest.page.getByRole("heading", { name: "Ready, coming to your table" }),
     ).toBeVisible({
       timeout: 20_000,
     });

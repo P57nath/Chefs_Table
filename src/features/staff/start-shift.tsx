@@ -29,16 +29,16 @@ export function StartShift() {
       aria-labelledby="shift-title"
       className="fixed inset-0 z-[60] flex items-center justify-center bg-background/95 p-4 backdrop-blur"
     >
-      <div className="surface-raised w-full max-w-sm space-y-6 rounded-3xl border border-border bg-card p-6 text-center">
+      <div className="w-full max-w-sm space-y-6 rounded-2xl border border-border bg-card p-6 text-center">
         <span
           aria-hidden
-          className="mx-auto grid size-16 place-items-center rounded-full text-2xl font-semibold text-white"
+          className="mx-auto grid size-16 place-items-center rounded-full text-2xl font-medium text-white"
           style={{ background: staff.avatarColor }}
         >
           {[...staff.displayName][0]}
         </span>
         <div className="space-y-1">
-          <h1 id="shift-title" className="font-display text-2xl font-semibold">
+          <h1 id="shift-title" className="text-2xl font-medium">
             {t("shiftTitle", { name: staff.displayName })}
           </h1>
           <p className="text-sm text-muted-foreground">

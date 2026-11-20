@@ -61,7 +61,7 @@ export function FloorMap({
   };
 
   return (
-    <div className="surface-raised overflow-auto rounded-3xl border border-border bg-surface">
+    <div className="overflow-auto rounded-2xl border border-border bg-surface">
       <svg
         viewBox={`0 0 ${width} ${height}`}
         role="group"
@@ -84,15 +84,10 @@ export function FloorMap({
               y={z.y}
               width={z.w}
               height={z.h}
-              rx={24}
-              className="fill-primary/5 stroke-border"
-              strokeDasharray="6 8"
+              rx={16}
+              className="fill-surface-2 stroke-border"
             />
-            <text
-              x={z.x + 14}
-              y={z.y + 26}
-              className="fill-muted-foreground text-[18px] font-semibold"
-            >
+            <text x={z.x + 14} y={z.y + 26} className="fill-subtle text-[16px] font-medium">
               {z.zone.name}
             </text>
           </g>
@@ -149,7 +144,7 @@ export function FloorMap({
                         ? "animate-ring-pulse-fast"
                         : "animate-ring-pulse",
                     )}
-                    strokeWidth={6}
+                    strokeWidth={4}
                   />
                 ) : (
                   <rect
@@ -164,7 +159,7 @@ export function FloorMap({
                         ? "animate-ring-pulse-fast"
                         : "animate-ring-pulse",
                     )}
-                    strokeWidth={6}
+                    strokeWidth={4}
                   />
                 )
               ) : null}
@@ -172,7 +167,7 @@ export function FloorMap({
                 <circle
                   r={f.hx * U}
                   className="fill-card stroke-current"
-                  strokeWidth={selected ? 8 : 5}
+                  strokeWidth={selected ? 6 : 3}
                 />
               ) : (
                 <rect
@@ -180,9 +175,9 @@ export function FloorMap({
                   y={-f.hz * U}
                   width={f.hx * 2 * U}
                   height={f.hz * 2 * U}
-                  rx={12}
+                  rx={10}
                   className="fill-card stroke-current"
-                  strokeWidth={selected ? 8 : 5}
+                  strokeWidth={selected ? 6 : 3}
                 />
               )}
               {f.round ? (
@@ -207,7 +202,7 @@ export function FloorMap({
                   textAnchor="middle"
                   dominantBaseline="central"
                   y={elapsed ? -9 : 0}
-                  className="fill-foreground font-display text-[22px] font-semibold"
+                  className="fill-foreground font-mono text-[20px] font-medium"
                 >
                   {table.label}
                 </text>
@@ -217,7 +212,7 @@ export function FloorMap({
                     <text
                       textAnchor="middle"
                       dominantBaseline="central"
-                      className="fill-white text-[17px] font-bold"
+                      className="fill-white text-[17px] font-medium"
                     >
                       !
                     </text>
@@ -228,7 +223,7 @@ export function FloorMap({
                     textAnchor="middle"
                     dominantBaseline="central"
                     y={14}
-                    className="fill-current text-[15px] font-semibold tabular-nums"
+                    className="fill-current font-mono text-[14px] tabular-nums"
                   >
                     {elapsed}
                   </text>

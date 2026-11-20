@@ -14,6 +14,7 @@ import { Button } from "@/components/ui/button";
 import { useGuestSession } from "@/features/guest/session/guest-session";
 import { GuestPageHeader } from "@/features/guest/session/page-header";
 import { asAppError } from "@/lib/errors";
+import { tween } from "@/lib/motion";
 import { cn } from "@/lib/utils";
 
 import { resultView, type ResultView } from "./result-model";
@@ -70,25 +71,25 @@ export function PaymentResultScreen({
     body = (
       <section className="flex flex-col items-center gap-5 pt-10 text-center">
         <m.div
-          className={cn("grid size-24 place-items-center rounded-full", tone)}
-          initial={reduce ? false : { scale: 0.7, opacity: 0 }}
+          className={cn("grid size-20 place-items-center rounded-2xl", tone)}
+          initial={reduce ? false : { scale: 0.96, opacity: 0 }}
           animate={
-            waiting && !reduce ? { scale: [1, 1.06, 1], opacity: 1 } : { scale: 1, opacity: 1 }
+            waiting && !reduce ? { opacity: [1, 0.55, 1], scale: 1 } : { scale: 1, opacity: 1 }
           }
           transition={
-            waiting ? { repeat: Infinity, duration: 1.6 } : { type: "spring", damping: 12 }
+            waiting ? { repeat: Infinity, duration: 1.6, ease: "easeInOut" } : tween.enter
           }
         >
-          <Icon className="size-11" aria-hidden />
+          <Icon className="size-9" strokeWidth={1.5} aria-hidden />
         </m.div>
         <div aria-live="polite" className="max-w-sm space-y-2">
-          <h2 className="font-display text-3xl font-semibold">{t(`${view}Title`)}</h2>
+          <h2 className="font-display text-3xl font-medium">{t(`${view}Title`)}</h2>
           <p className="text-muted-foreground">{t(`${view}Body`)}</p>
         </div>
         {payment.data ? (
           <MoneyText
             minor={payment.data.amount_minor}
-            className="font-display text-4xl font-semibold"
+            className="font-display text-4xl font-medium"
           />
         ) : null}
         <div className="flex w-full max-w-sm flex-col gap-2 pt-2">

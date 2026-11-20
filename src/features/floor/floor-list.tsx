@@ -43,7 +43,7 @@ export function FloorList({
         <section key={g.state} aria-labelledby={`grp-${g.state}`} className="space-y-2">
           <h2
             id={`grp-${g.state}`}
-            className="flex items-center gap-2 text-sm font-semibold text-muted-foreground"
+            className="flex items-center gap-2 text-sm font-medium text-muted-foreground"
           >
             <span
               className={cn("size-2.5 rounded-full", STATUS_VISUALS[g.state as TableState].fill)}
@@ -65,7 +65,7 @@ export function FloorList({
                       (status.counts.toReview > 0 ? ` · ${t("toReview")}` : "")
                     }
                     className={cn(
-                      "surface-raised flex w-full items-start gap-3 rounded-2xl border bg-card p-4 text-left outline-none focus-visible:ring-3 focus-visible:ring-ring/50",
+                      "flex w-full items-start gap-3 rounded-2xl border bg-card p-4 text-left outline-none focus-visible:ring-3 focus-visible:ring-ring/50",
                       status.overdue
                         ? cn("border-ember text-ember", PULSE_CLASS.fast)
                         : "border-border",
@@ -73,7 +73,7 @@ export function FloorList({
                   >
                     <span
                       className={cn(
-                        "grid size-12 shrink-0 place-items-center rounded-xl border-2 font-display text-lg font-semibold text-foreground",
+                        "grid size-12 shrink-0 place-items-center rounded-xl border-2 text-lg font-medium text-foreground",
                         visual.tone,
                       )}
                       style={{ borderColor: "currentColor" }}
@@ -97,7 +97,7 @@ export function FloorList({
                           {table.session.bill.due_minor > 0 ? (
                             <MoneyText
                               minor={table.session.bill.due_minor}
-                              className="font-semibold text-foreground"
+                              className="font-medium text-foreground"
                             />
                           ) : null}
                         </span>

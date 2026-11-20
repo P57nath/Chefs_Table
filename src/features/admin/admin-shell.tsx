@@ -52,14 +52,14 @@ export function AdminShell({ children }: { children: ReactNode }) {
           href={item.href}
           aria-current={active ? "page" : undefined}
           className={cn(
-            "flex shrink-0 items-center gap-3 rounded-xl px-3 text-sm font-medium outline-none focus-visible:ring-3 focus-visible:ring-ring/50",
+            "flex shrink-0 items-center gap-2.5 rounded-lg border px-3 text-sm font-medium transition-colors outline-none focus-visible:ring-3 focus-visible:ring-ring/50",
             variant === "side" ? "min-h-11" : "min-h-11 whitespace-nowrap",
             active
-              ? "bg-primary/15 text-foreground"
-              : "text-muted-foreground hover:bg-muted hover:text-foreground",
+              ? "border-border bg-surface-2 text-foreground shadow-highlight"
+              : "border-transparent text-muted-foreground hover:bg-muted hover:text-foreground",
           )}
         >
-          <item.icon className={cn("size-5", active && "text-primary-text")} aria-hidden />
+          <item.icon className="size-[18px]" strokeWidth={1.5} aria-hidden />
           {t(item.key)}
         </Link>
       );
@@ -67,11 +67,11 @@ export function AdminShell({ children }: { children: ReactNode }) {
 
   return (
     <div className="flex min-h-dvh flex-col bg-background">
-      <header className="glass sticky top-0 z-30 border-b border-border print:hidden">
+      <header className="bar-surface sticky top-0 z-30 border-b border-border print:hidden">
         <div className="flex h-16 items-center gap-3 px-4 md:px-6">
-          <EmberMark className="text-2xl" />
+          <EmberMark className="text-xl" />
           <div className="min-w-0 flex-1">
-            <p className="truncate font-display text-lg leading-tight font-semibold">
+            <p className="truncate text-[0.9375rem] leading-tight font-medium">
               {user.restaurantName}
             </p>
             <p className="text-xs text-muted-foreground">{t("title")}</p>

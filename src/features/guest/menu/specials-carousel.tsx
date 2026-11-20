@@ -23,12 +23,12 @@ export function SpecialsCarousel({ items, iconFor, onOpen, onQuickAdd }: Special
   if (items.length === 0) return null;
 
   return (
-    <section aria-labelledby="specials-title" className="grain relative space-y-3 pt-5 pb-2">
+    <section aria-labelledby="specials-title" className="relative space-y-3 pt-5 pb-2">
       <h2
         id="specials-title"
-        className="mx-auto flex max-w-3xl items-center gap-2 px-4 font-display text-xl font-semibold"
+        className="mx-auto flex max-w-3xl items-center gap-2 px-4 font-display text-xl font-medium"
       >
-        <ChefHat className="size-5 text-primary-text" aria-hidden />
+        <ChefHat className="size-5 text-subtle" strokeWidth={1.5} aria-hidden />
         {t("chefsSpecials")}
       </h2>
       <ul className="mx-auto flex max-w-3xl snap-x snap-mandatory [scrollbar-width:none] gap-3 overflow-x-auto scroll-smooth px-4 pb-3 [&::-webkit-scrollbar]:hidden">
@@ -39,7 +39,7 @@ export function SpecialsCarousel({ items, iconFor, onOpen, onQuickAdd }: Special
             <li
               key={item.id}
               data-item-card
-              className="surface-raised relative w-60 shrink-0 snap-start overflow-hidden rounded-2xl border border-border bg-card"
+              className="relative w-60 shrink-0 snap-start overflow-hidden rounded-2xl border border-border bg-card"
             >
               <div data-item-image>
                 <ItemImage
@@ -53,7 +53,7 @@ export function SpecialsCarousel({ items, iconFor, onOpen, onQuickAdd }: Special
               </div>
               <div className="flex items-end gap-2 p-3">
                 <div className="min-w-0 flex-1">
-                  <h3 className="truncate font-display font-semibold">
+                  <h3 className="truncate font-display font-medium">
                     <button
                       type="button"
                       onClick={() => onOpen(item)}
@@ -63,11 +63,11 @@ export function SpecialsCarousel({ items, iconFor, onOpen, onQuickAdd }: Special
                     </button>
                   </h3>
                   {soldOut ? (
-                    <p className="text-sm font-semibold text-muted-foreground">{t("soldOut")}</p>
+                    <p className="text-sm font-medium text-muted-foreground">{t("soldOut")}</p>
                   ) : (
                     <MoneyText
                       minor={item.price_minor}
-                      className="text-sm font-semibold text-primary-text"
+                      className="text-sm font-medium tabular-nums"
                     />
                   )}
                 </div>
@@ -86,9 +86,9 @@ export function SpecialsCarousel({ items, iconFor, onOpen, onQuickAdd }: Special
                     aria-label={
                       requiresSheet(item) ? t("customise", { name }) : t("addNamed", { name })
                     }
-                    className="relative z-10 grid size-11 shrink-0 place-items-center rounded-full bg-primary text-primary-foreground shadow-glow outline-none focus-visible:ring-3 focus-visible:ring-ring/60 active:scale-90"
+                    className="relative z-10 grid size-11 shrink-0 place-items-center rounded-lg bg-primary text-primary-foreground outline-none focus-visible:ring-3 focus-visible:ring-ring/60 active:scale-[0.97]"
                   >
-                    <Plus className="size-5" strokeWidth={2.5} aria-hidden />
+                    <Plus className="size-5" strokeWidth={2} aria-hidden />
                   </button>
                 )}
               </div>

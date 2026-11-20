@@ -81,7 +81,7 @@ function Body({
   return (
     <div className="space-y-5 p-4 sm:p-6">
       <div className="space-y-2 pr-10">
-        <Title className="font-display text-2xl font-semibold">
+        <Title className="text-2xl font-medium">
           {t("orderTitle", { table, no: localizeDigits(order.order_no, locale) })}
         </Title>
         <Description className="flex flex-wrap items-center gap-2 text-sm text-muted-foreground">
@@ -93,9 +93,7 @@ function Body({
       </div>
       {order.customer_note ? (
         <div className="rounded-xl border border-primary/40 bg-primary/10 p-3">
-          <p className="text-xs font-semibold tracking-wide text-muted-foreground uppercase">
-            {t("guestNote")}
-          </p>
+          <p className="text-xs font-medium text-muted-foreground">{t("guestNote")}</p>
           <p className="font-medium">{order.customer_note}</p>
         </div>
       ) : null}
@@ -108,7 +106,7 @@ function Body({
               .reduce((n, i) => n + i.quantity, 0),
           })}
         </span>
-        <MoneyText minor={order.subtotal_minor} className="text-xl font-semibold" />
+        <MoneyText minor={order.subtotal_minor} className="text-xl font-medium" />
       </div>
       {!can.editLines && (order.status === "in_kitchen" || order.status === "preparing") ? (
         <p className="text-sm text-muted-foreground">{t("editLocked")}</p>

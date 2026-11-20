@@ -46,12 +46,12 @@ export function ItemCard({ item, categoryIcon, onOpen, onQuickAdd, priority }: I
       data-item-card
       data-sold-out={soldOut || undefined}
       className={cn(
-        "surface-raised relative flex gap-3 rounded-2xl border border-border bg-card p-3 transition-colors",
-        soldOut ? "opacity-60" : "hover:bg-[color-mix(in_oklch,var(--card),var(--foreground)_3%)]",
+        "relative flex gap-4 rounded-2xl p-3 transition-colors",
+        soldOut ? "opacity-60" : "hover:bg-surface",
       )}
     >
       <div className="flex min-w-0 flex-1 flex-col gap-1.5 py-0.5">
-        <h3 className="font-display text-[1.0625rem] leading-snug font-semibold">
+        <h3 className="font-display text-[1.0625rem] leading-snug font-medium">
           {/* Stretched button: the whole card opens the sheet. */}
           <button
             type="button"
@@ -69,9 +69,9 @@ export function ItemCard({ item, categoryIcon, onOpen, onQuickAdd, priority }: I
         ) : null}
         <ItemTags item={item} />
         <div className="mt-auto flex items-center gap-2 pt-1">
-          <MoneyText minor={item.price_minor} className="font-semibold text-primary-text" />
+          <MoneyText minor={item.price_minor} className="font-medium tabular-nums" />
           {soldOut ? (
-            <span className="rounded-full bg-muted px-2 py-0.5 text-xs font-semibold text-muted-foreground">
+            <span className="rounded-sm bg-muted px-2 py-0.5 text-xs font-medium text-muted-foreground">
               {t("soldOut")}
             </span>
           ) : null}
@@ -84,16 +84,16 @@ export function ItemCard({ item, categoryIcon, onOpen, onQuickAdd, priority }: I
           categoryIcon={categoryIcon}
           sizes="128px"
           priority={priority}
-          className={cn("rounded-xl", soldOut && "grayscale")}
+          className={cn("rounded-xl border border-border", soldOut && "grayscale")}
         />
         {soldOut ? null : (
           <button
             type="button"
             onClick={onPlus}
             aria-label={requiresSheet(item) ? t("customise", { name }) : t("addNamed", { name })}
-            className="absolute -right-1.5 -bottom-1.5 z-10 grid size-11 place-items-center rounded-full bg-primary text-primary-foreground shadow-glow ring-4 ring-card transition-transform outline-none focus-visible:ring-ring/60 active:scale-90"
+            className="absolute -right-2 -bottom-2 z-10 grid size-11 place-items-center rounded-xl bg-primary text-primary-foreground ring-4 ring-background transition-transform outline-none focus-visible:ring-ring/60 active:scale-[0.97]"
           >
-            <Plus className="size-5" strokeWidth={2.5} aria-hidden />
+            <Plus className="size-5" strokeWidth={2} aria-hidden />
           </button>
         )}
       </div>

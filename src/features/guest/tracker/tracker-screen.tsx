@@ -80,15 +80,15 @@ export function TrackerScreen() {
 
   return (
     <div className="min-h-dvh bg-background pb-32">
-      <header className="glass sticky top-0 z-30 border-b border-border">
+      <header className="bar-surface sticky top-0 z-30 border-b border-border">
         <div className="mx-auto flex h-16 max-w-3xl items-center gap-2 px-4">
           <IconButton label={t("backToMenu")} asChild>
             <Link href={menuHref}>
               <ArrowLeft aria-hidden />
             </Link>
           </IconButton>
-          <h1 className="flex-1 truncate font-display text-xl font-semibold">{t("trackTitle")}</h1>
-          <span className="rounded-full bg-primary px-2.5 py-1 text-sm font-semibold text-primary-foreground">
+          <h1 className="flex-1 truncate font-display text-xl font-medium">{t("trackTitle")}</h1>
+          <span className="rounded-sm border border-border bg-surface-2 px-2 py-0.5 font-mono text-sm font-medium tabular-nums">
             {table.table_label}
           </span>
           <LanguageToggle />

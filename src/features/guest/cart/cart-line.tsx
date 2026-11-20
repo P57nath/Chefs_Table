@@ -8,7 +8,7 @@ import { useLocale, useTranslations } from "next-intl";
 import { IconButton } from "@/components/common/icon-button";
 import { MoneyText } from "@/components/common/money-text";
 import { Stepper } from "@/components/common/stepper";
-import { spring } from "@/lib/motion";
+import { tween } from "@/lib/motion";
 import { cn } from "@/lib/utils";
 
 import type { CartLine as Line } from "./cart-store";
@@ -49,7 +49,7 @@ export function CartLineRow({ line, soldOut, frozen, onQuantity, onRemove }: Car
         style={{ x }}
         onDragEnd={() => {
           if (x.get() <= SWIPE_REMOVE) onRemove();
-          else animate(x, 0, spring.snappy);
+          else animate(x, 0, tween.quick);
         }}
         className={cn(
           "relative flex gap-3 rounded-2xl border bg-card p-3",
@@ -57,16 +57,14 @@ export function CartLineRow({ line, soldOut, frozen, onQuantity, onRemove }: Car
         )}
       >
         <div className="min-w-0 flex-1 space-y-1">
-          <p className="leading-snug font-semibold">{name}</p>
+          <p className="leading-snug font-medium">{name}</p>
           {labels.length > 0 ? (
             <p className="text-sm text-muted-foreground">{labels.join(" · ")}</p>
           ) : null}
           {line.note ? (
-            <p className="text-sm text-muted-foreground italic">
-              {t("notesLabel", { note: line.note })}
-            </p>
+            <p className="text-sm text-muted-foreground">{t("notesLabel", { note: line.note })}</p>
           ) : null}
-          {soldOut ? <p className="text-sm font-semibold text-ember">{t("soldOutLine")}</p> : null}
+          {soldOut ? <p className="text-sm font-medium text-ember">{t("soldOutLine")}</p> : null}
           <div className="flex items-center justify-between gap-2 pt-1">
             <Stepper
               size="sm"
@@ -75,7 +73,7 @@ export function CartLineRow({ line, soldOut, frozen, onQuantity, onRemove }: Car
               itemName={name}
               disabled={frozen}
             />
-            <MoneyText minor={line.unitPriceMinor * line.quantity} className="font-semibold" />
+            <MoneyText minor={line.unitPriceMinor * line.quantity} className="font-medium" />
           </div>
         </div>
         <IconButton

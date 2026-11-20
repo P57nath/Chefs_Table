@@ -108,7 +108,7 @@ function ItemSheetBody({
           className="mt-2 rounded-2xl"
         />
         <div className="space-y-2 pt-4">
-          <DrawerTitle className="font-display text-2xl font-semibold">{name}</DrawerTitle>
+          <DrawerTitle className="font-display text-2xl font-medium">{name}</DrawerTitle>
           {locale === "bn" && item.name_bn ? (
             <p className="-mt-1 text-sm text-muted-foreground">{item.name}</p>
           ) : null}
@@ -131,7 +131,7 @@ function ItemSheetBody({
         </div>
 
         <label className="mt-4 block space-y-1.5">
-          <span className="font-semibold">{t("instructions")}</span>
+          <span className="font-medium">{t("instructions")}</span>
           <Textarea
             value={note}
             maxLength={NOTE_MAX}

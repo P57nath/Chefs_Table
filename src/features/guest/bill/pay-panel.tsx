@@ -50,7 +50,7 @@ function Tile({
         "flex min-h-24 flex-col items-start justify-between gap-2 rounded-2xl border border-border bg-card p-4 text-left transition",
         "hover:border-primary/60 hover:bg-primary/5 focus-visible:ring-3 focus-visible:ring-ring focus-visible:outline-none",
         "disabled:cursor-not-allowed disabled:opacity-50",
-        busy && "animate-pulse border-primary",
+        busy && "border-primary",
         className,
       )}
     >
@@ -58,7 +58,7 @@ function Tile({
         <Icon className="size-5" aria-hidden />
       </span>
       <span>
-        <span className="block font-semibold">{label}</span>
+        <span className="block font-medium">{label}</span>
         {hint ? <span className="block text-xs text-muted-foreground">{hint}</span> : null}
       </span>
     </button>
@@ -98,7 +98,7 @@ export function PayPanel({ bill, openRequests }: { bill: BillData; openRequests:
 
   return (
     <section aria-labelledby="pay-title" className="space-y-4">
-      <h2 id="pay-title" className="font-display text-2xl font-semibold">
+      <h2 id="pay-title" className="font-display text-2xl font-medium">
         {t("payTitle")}
       </h2>
       {blocked ? (

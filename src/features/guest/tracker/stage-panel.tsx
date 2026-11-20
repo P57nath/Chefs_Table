@@ -6,7 +6,7 @@ import * as m from "motion/react-m";
 import { useLocale, useTranslations } from "next-intl";
 
 import { localizeDigits } from "@/lib/digits";
-import { spring } from "@/lib/motion";
+import { tween } from "@/lib/motion";
 import { formatClock } from "@/lib/time";
 import { useNow } from "@/lib/use-now";
 import { cn } from "@/lib/utils";
@@ -55,8 +55,8 @@ export function StagePanel({ order }: { order: GuestOrder }) {
             initial={{ opacity: 0, y: 8 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -8 }}
-            transition={spring.soft}
-            className="font-display text-2xl font-semibold"
+            transition={tween.enter}
+            className="font-display text-2xl font-medium"
           >
             {caption}
           </m.h2>

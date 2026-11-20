@@ -55,7 +55,7 @@ export function BoardCard({
     <article
       data-order-id={order.id}
       className={cn(
-        "surface-raised relative space-y-3 rounded-2xl border bg-card p-3",
+        "relative space-y-3 rounded-2xl border bg-card p-3",
         stale ? cn("border-ember text-ember", PULSE_CLASS.fast) : "border-border",
       )}
     >
@@ -65,12 +65,12 @@ export function BoardCard({
         className="block w-full space-y-1 text-left text-foreground outline-none after:absolute after:inset-0 after:rounded-2xl focus-visible:after:ring-3 focus-visible:after:ring-ring/50"
       >
         <span className="flex items-baseline justify-between gap-2">
-          <span className="font-display text-2xl font-semibold">{table}</span>
+          <span className="text-2xl font-medium">{table}</span>
           <Timer
             since={columnSince(order)}
             warnAtMin={warn}
             lateAtMin={late}
-            className="text-sm font-semibold"
+            className="text-sm font-medium"
           />
         </span>
         <span className="flex items-center justify-between gap-2 text-sm text-muted-foreground">
@@ -78,7 +78,7 @@ export function BoardCard({
             #{localizeDigits(order.order_no, locale)} ·{" "}
             {t("itemsCount", { count: liveItemCount(order) })}
           </span>
-          <MoneyText minor={order.subtotal_minor} className="font-semibold text-foreground" />
+          <MoneyText minor={order.subtotal_minor} className="font-medium text-foreground" />
         </span>
         {order.customer_note ? (
           <span className="flex items-center gap-1.5 text-sm text-foreground">

@@ -4,14 +4,14 @@
  * restaurant is loaded and on pages without restaurant context (landing, login).
  */
 export const brand = {
-  name: "Ember & Spice",
-  nameBn: "এম্বার অ্যান্ড স্পাইস",
-  tagline: "Scan, order, relax.",
-  taglineBn: "স্ক্যান করুন, অর্ডার দিন, আরাম করুন।",
+  name: "Sultan’s Dine",
+  nameBn: "সুলতান’স ডাইন",
+  tagline: "Halal kacchi, ordered from your table",
+  taglineBn: "হালাল কাচ্চি, টেবিলে বসেই অর্ডার",
   colors: {
-    primary: "#F5A524",
-    accent: "#E5533D",
-    background: "#0E0A07",
+    primary: "#E3A03C",
+    accent: "#E0664D",
+    background: "#161513",
   },
 } as const;
 

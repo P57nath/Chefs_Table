@@ -18,7 +18,9 @@ test.describe("landing", () => {
     await page.goto("/");
     await page.getByRole("radio", { name: "বাংলা" }).click();
     await expect(page.locator("html")).toHaveAttribute("lang", "bn");
-    await expect(page.getByRole("heading", { level: 1 })).toHaveText("টেবিল থেকেই অর্ডার দিন।");
+    await expect(page.getByRole("heading", { level: 1 })).toHaveText(
+      "টেবিল থেকেই অর্ডার দিন, সুবিধামতো বিল দিন",
+    );
     await page.reload();
     await expect(page.locator("html")).toHaveAttribute("lang", "bn");
   });

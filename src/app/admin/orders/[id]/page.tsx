@@ -78,7 +78,7 @@ export default async function AdminOrderDetailPage({ params }: PageProps<"/admin
       />
       <div className="grid gap-6 lg:grid-cols-[1fr_360px]">
         <section aria-labelledby="items-h" className="rounded-2xl border border-border bg-card p-5">
-          <h2 id="items-h" className="mb-3 font-semibold">
+          <h2 id="items-h" className="mb-3 font-medium">
             {t("items")}
           </h2>
           <ul className="divide-y divide-border">
@@ -89,7 +89,7 @@ export default async function AdminOrderDetailPage({ params }: PageProps<"/admin
               >
                 <div className="flex justify-between gap-3">
                   <span>
-                    <span className="font-semibold tabular-nums">
+                    <span className="font-medium tabular-nums">
                       {localizeDigits(i.quantity, locale)}×
                     </span>{" "}
                     {i.name_snapshot}
@@ -99,12 +99,12 @@ export default async function AdminOrderDetailPage({ params }: PageProps<"/admin
                 {mods(i.modifiers) ? (
                   <p className="text-sm text-muted-foreground">{mods(i.modifiers)}</p>
                 ) : null}
-                {i.note ? <p className="text-sm text-muted-foreground italic">{i.note}</p> : null}
+                {i.note ? <p className="text-sm text-muted-foreground">{i.note}</p> : null}
                 {i.is_voided ? <p className="text-sm no-underline">{t("voided")}</p> : null}
               </li>
             ))}
           </ul>
-          <div className="mt-3 flex justify-between border-t border-border pt-3 font-semibold">
+          <div className="mt-3 flex justify-between border-t border-border pt-3 font-medium">
             <span>{t("colSubtotal")}</span>
             <MoneyText minor={o.subtotal_minor} />
           </div>
@@ -119,7 +119,7 @@ export default async function AdminOrderDetailPage({ params }: PageProps<"/admin
           aria-labelledby="timeline-h"
           className="rounded-2xl border border-border bg-card p-5"
         >
-          <h2 id="timeline-h" className="mb-3 font-semibold">
+          <h2 id="timeline-h" className="mb-3 font-medium">
             {t("timeline")}
           </h2>
           <ol className="relative space-y-4 border-l-2 border-border pl-5">

@@ -33,11 +33,11 @@ export async function NoAccess({ access }: { access: Extract<StaffAccess, { ok: 
         id="main"
         className="flex min-h-dvh flex-col items-center justify-center gap-6 bg-background p-6 text-center"
       >
-        <div className="grid size-16 place-items-center rounded-full bg-ember/12 text-ember">
+        <div className="grid size-14 place-items-center rounded-2xl border border-border bg-surface-2 text-ember">
           <ShieldX className="size-8" aria-hidden />
         </div>
         <div className="max-w-sm space-y-2">
-          <h1 className="font-display text-2xl font-semibold">{title}</h1>
+          <h1 className="text-2xl font-medium">{title}</h1>
           {body ? <p className="text-muted-foreground">{body}</p> : null}
         </div>
         <div className="flex flex-wrap justify-center gap-3">

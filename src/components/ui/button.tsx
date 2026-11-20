@@ -10,16 +10,15 @@ import { Slot } from "radix-ui";
  * `loading` keeps the button's width: the label stays in the layout, invisible.
  */
 const buttonVariants = cva(
-  "group/button relative inline-flex shrink-0 items-center justify-center rounded-lg border border-transparent bg-clip-padding font-semibold whitespace-nowrap transition-[background-color,color,box-shadow,transform,opacity] duration-150 outline-none select-none focus-visible:ring-3 focus-visible:ring-ring/50 active:not-aria-[haspopup]:scale-[0.98] disabled:pointer-events-none disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-3 aria-invalid:ring-destructive/20 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-[1.15em]",
+  "group/button relative inline-flex shrink-0 items-center justify-center rounded-lg border border-transparent bg-clip-padding font-medium whitespace-nowrap transition-[background-color,color,box-shadow,transform,opacity] duration-150 outline-none select-none focus-visible:ring-3 focus-visible:ring-ring/50 active:not-aria-[haspopup]:scale-[0.98] disabled:pointer-events-none disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-3 aria-invalid:ring-destructive/20 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-[1.15em]",
   {
     variants: {
       variant: {
         default:
-          "bg-primary text-primary-foreground hover:bg-[color-mix(in_oklch,var(--primary),var(--foreground)_8%)] focus-visible:shadow-glow",
+          "bg-primary text-primary-foreground shadow-highlight hover:bg-[color-mix(in_oklch,var(--primary),var(--foreground)_8%)]",
         secondary:
           "bg-secondary text-secondary-foreground hover:bg-[color-mix(in_oklch,var(--secondary),var(--foreground)_6%)]",
-        outline:
-          "border-border bg-transparent text-foreground hover:bg-muted aria-expanded:bg-muted",
+        outline: "border-border bg-surface text-foreground hover:bg-muted aria-expanded:bg-muted",
         ghost: "text-foreground hover:bg-muted aria-expanded:bg-muted",
         destructive:
           "bg-ember text-white hover:bg-[color-mix(in_oklch,var(--ember),black_10%)] dark:text-[var(--primary-ink)] dark:hover:bg-[color-mix(in_oklch,var(--ember),white_8%)]",
@@ -30,7 +29,7 @@ const buttonVariants = cva(
         sm: "h-9 gap-1.5 px-3 text-sm after:absolute after:inset-x-0 after:-inset-y-1",
         default: "h-11 gap-2 px-5 text-[0.9375rem]",
         lg: "h-12 gap-2 px-6 text-base",
-        xl: "h-14 gap-2.5 rounded-xl px-7 text-[1.0625rem]",
+        xl: "h-14 gap-2.5 px-7 text-[1.0625rem]",
         icon: "size-11",
         "icon-sm": "size-9 after:absolute after:-inset-1",
         "icon-lg": "size-12",

@@ -6,7 +6,7 @@ import * as m from "motion/react-m";
 import { useLocale, useTranslations } from "next-intl";
 
 import { localizeDigits } from "@/lib/digits";
-import { spring } from "@/lib/motion";
+import { tween } from "@/lib/motion";
 import { cn } from "@/lib/utils";
 
 interface StepperProps {
@@ -38,14 +38,14 @@ export function Stepper({
   const canDec = !disabled && value > min;
   const canInc = !disabled && value < max;
   const btn =
-    "relative inline-flex items-center justify-center rounded-full text-foreground transition-colors outline-none hover:bg-muted focus-visible:ring-3 focus-visible:ring-ring/50 disabled:opacity-35 disabled:hover:bg-transparent";
+    "relative inline-flex items-center justify-center rounded-md text-foreground transition-colors outline-none hover:bg-muted focus-visible:ring-3 focus-visible:ring-ring/50 disabled:opacity-35 disabled:hover:bg-transparent";
 
   return (
     <div
       role="group"
       aria-label={itemName ? t("quantityOf", { name: itemName }) : t("quantity")}
       className={cn(
-        "inline-flex items-center rounded-full border border-border bg-surface-2 p-0.5",
+        "inline-flex items-center rounded-lg border border-border bg-surface-2 p-0.5",
         className,
       )}
     >
@@ -60,7 +60,7 @@ export function Stepper({
       </button>
       <span
         className={cn(
-          "relative grid place-items-center overflow-hidden font-semibold tabular-nums",
+          "relative grid place-items-center overflow-hidden font-medium tabular-nums",
           size === "md" ? "h-11 w-9 text-base" : "h-9 w-7 text-sm",
         )}
         aria-live="polite"
@@ -71,7 +71,7 @@ export function Stepper({
             initial={reduce ? { opacity: 0 } : { y: -12, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             exit={reduce ? { opacity: 0 } : { y: 12, opacity: 0 }}
-            transition={spring.snappy}
+            transition={tween.quick}
           >
             {localizeDigits(value, locale)}
           </m.span>

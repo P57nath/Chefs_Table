@@ -41,7 +41,10 @@ export interface FloorSceneProps {
   onTooSlow: () => void;
 }
 
-/** Isometric orthographic camera whose zoom fits the room to the canvas. */
+/**
+ * Isometric orthographic camera whose zoom fits the room's projected footprint
+ * (floor plus wall height) to the canvas, so the room fills the frame.
+ */
 function IsoCamera({
   position,
   width,
@@ -52,8 +55,10 @@ function IsoCamera({
   depth: number;
 }) {
   const size = useThree((s) => s.size);
-  const diag = Math.hypot(width, depth);
-  const zoom = Math.min(size.width / (diag * 1.05), size.height / (diag * 0.75));
+  const span = (width + depth) * Math.SQRT1_2;
+  const projW = span;
+  const projH = span * Math.sin(ISO_ELEVATION) + 2.2 * Math.cos(ISO_ELEVATION);
+  const zoom = Math.min(size.width / (projW * 1.04), size.height / (projH * 1.1));
   return <OrthographicCamera makeDefault position={position} zoom={zoom} near={0.1} far={200} />;
 }
 
@@ -84,8 +89,14 @@ export default function FloorScene({
     center.z + dist * Math.cos(ISO_ELEVATION) * Math.cos(ISO_AZIMUTH),
   ];
   const light = dayNight(now ?? 0);
+  const sunTarget = useMemo(() => new THREE.Object3D(), []);
+  const shadowSpan = Math.max(b.maxX - b.minX, b.maxY - b.minY) * 0.8 + 2;
   const anyCooking = rows.some((r) => r.status.counts.cooking > 0);
   const readyPlates = rows.reduce((n, r) => n + r.status.counts.ready, 0);
+  const openTickets = rows.reduce(
+    (n, r) => n + r.status.counts.cooking + r.status.counts.newOrders,
+    0,
+  );
   const selected = rows.find((r) => r.table.table_id === selectedId)?.table ?? null;
   const waiterHome = useMemo(
     () => new THREE.Vector3(center.x + 3.4, 0, b.minY + 1.4),
@@ -107,6 +118,9 @@ export default function FloorScene({
         shadows={shadows}
         dpr={[1, dpr]}
         gl={{ antialias: true, powerPreference: "high-performance" }}
+        onCreated={({ gl }) => {
+          gl.shadowMap.type = THREE.PCFSoftShadowMap;
+        }}
         style={{ background: light.sky }}
       >
         <PerformanceMonitor
@@ -137,19 +151,33 @@ export default function FloorScene({
           minPolarAngle={Math.PI / 2 - ISO_ELEVATION}
           maxPolarAngle={Math.PI / 2 - ISO_ELEVATION}
         />
-        <ambientLight intensity={light.ambient} color="#FFF1DE" />
+        <ambientLight intensity={light.ambient} color="#fff6ea" />
+        <hemisphereLight args={[light.hemiSky, light.hemiGround, light.hemi]} />
+        <primitive object={sunTarget} position={[center.x, 0, center.z]} />
         <directionalLight
-          position={[center.x - 6, 14, center.z + 8]}
+          position={[center.x + 8, 16, center.z + 6]}
+          target={sunTarget}
           intensity={light.sun}
           color={light.sunColor}
           castShadow={shadows}
-          shadow-mapSize={[1024, 1024]}
-          shadow-camera-left={-15}
-          shadow-camera-right={15}
-          shadow-camera-top={15}
-          shadow-camera-bottom={-15}
+          shadow-mapSize={[2048, 2048]}
+          shadow-bias={-0.0004}
+          shadow-normalBias={0.02}
+          shadow-radius={4}
+          shadow-camera-left={-shadowSpan}
+          shadow-camera-right={shadowSpan}
+          shadow-camera-top={shadowSpan}
+          shadow-camera-bottom={-shadowSpan}
+          shadow-camera-near={1}
+          shadow-camera-far={60}
         />
-        <Room bounds={b} cooking={anyCooking} readyPlates={readyPlates} evening={light.strings} />
+        <Room
+          bounds={b}
+          cooking={anyCooking}
+          readyPlates={readyPlates}
+          openTickets={openTickets}
+          evening={light.evening}
+        />
         <ZoneTints zones={zones} tables={tables} />
         <Chairs tables={tables} />
         {rows.map(({ table, status }) => (

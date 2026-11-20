@@ -57,7 +57,7 @@ export function CartSheet({ open, onOpenChange, soldOutIds }: CartSheetProps) {
       <DrawerContent className="mx-auto max-w-xl">
         <div className="flex max-h-[85dvh] flex-col">
           <div className="px-4 pt-2">
-            <DrawerTitle className="font-display text-2xl font-semibold">{t("cart")}</DrawerTitle>
+            <DrawerTitle className="font-display text-2xl font-medium">{t("cart")}</DrawerTitle>
             <DrawerDescription className="text-sm text-muted-foreground">
               {t("cartItems", { count: lines.reduce((n, l) => n + l.quantity, 0) })}
             </DrawerDescription>
@@ -99,7 +99,7 @@ export function CartSheet({ open, onOpenChange, soldOutIds }: CartSheetProps) {
                   ))}
                 </ul>
                 <label className="block space-y-1.5">
-                  <span className="text-sm font-semibold">{t("orderNote")}</span>
+                  <span className="text-sm font-medium">{t("orderNote")}</span>
                   <Textarea
                     value={orderNote}
                     maxLength={300}
@@ -117,7 +117,7 @@ export function CartSheet({ open, onOpenChange, soldOutIds }: CartSheetProps) {
               <div className="pb-safe space-y-3 border-t border-border bg-popover px-4 pt-3">
                 <div className="flex items-baseline justify-between">
                   <span className="text-muted-foreground">{t("subtotal")}</span>
-                  <MoneyText minor={cartSubtotalPreview(lines)} className="text-xl font-semibold" />
+                  <MoneyText minor={cartSubtotalPreview(lines)} className="text-xl font-medium" />
                 </div>
                 <p className="text-xs text-muted-foreground">{t("taxesNote")}</p>
                 {awaitingRetry ? (
@@ -125,7 +125,7 @@ export function CartSheet({ open, onOpenChange, soldOutIds }: CartSheetProps) {
                     role="alert"
                     className="space-y-3 rounded-2xl border border-ember/50 bg-ember/8 p-3"
                   >
-                    <p className="font-semibold">{t("retryTitle")}</p>
+                    <p className="font-medium">{t("retryTitle")}</p>
                     <p className="text-sm text-muted-foreground">{t("retryBody")}</p>
                     <Button size="lg" className="w-full" loading={retrying} onClick={retry}>
                       <RotateCw aria-hidden />

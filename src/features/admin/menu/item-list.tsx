@@ -56,7 +56,7 @@ export function ItemList({
   return (
     <section aria-labelledby="items-title" className="min-w-0 space-y-3">
       <div className="flex items-center justify-between gap-2">
-        <h2 id="items-title" className="truncate font-semibold">
+        <h2 id="items-title" className="truncate font-medium">
           {category.name}
         </h2>
         <Button size="sm" onClick={() => setEditing("new")}>

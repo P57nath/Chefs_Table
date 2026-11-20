@@ -45,7 +45,7 @@ export function CategoryNav({
   };
 
   return (
-    <div className="glass sticky top-16 z-20 border-b border-border">
+    <div className="bar-surface sticky top-16 z-20 border-b border-border">
       <nav
         aria-label={t("categories")}
         ref={listRef}

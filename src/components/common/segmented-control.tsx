@@ -3,7 +3,7 @@
 import * as m from "motion/react-m";
 import { useId, useRef, type KeyboardEvent, type ReactNode } from "react";
 
-import { spring } from "@/lib/motion";
+import { tween } from "@/lib/motion";
 import { cn } from "@/lib/utils";
 
 export interface SegmentOption<T extends string> {
@@ -56,7 +56,7 @@ export function SegmentedControl<T extends string>({
     <div
       role="radiogroup"
       aria-label={label}
-      className={cn("inline-flex rounded-full border border-border bg-surface-2 p-1", className)}
+      className={cn("inline-flex rounded-lg border border-border bg-surface-2 p-1", className)}
     >
       {options.map((option, index) => {
         const selected = option.value === value;
@@ -74,7 +74,7 @@ export function SegmentedControl<T extends string>({
             onClick={() => onChange(option.value)}
             onKeyDown={(e) => onKeyDown(e, index)}
             className={cn(
-              "relative inline-flex items-center justify-center gap-1.5 rounded-full font-medium transition-colors outline-none focus-visible:ring-3 focus-visible:ring-ring/50 [&_svg]:size-4",
+              "relative inline-flex items-center justify-center gap-1.5 rounded-md font-medium transition-colors outline-none focus-visible:ring-3 focus-visible:ring-ring/50 [&_svg]:size-4",
               size === "md"
                 ? "h-9 px-4 text-sm after:absolute after:inset-x-0 after:-inset-y-1"
                 : "h-8 px-3 text-[0.8125rem] after:absolute after:inset-x-0 after:-inset-y-1.5",
@@ -84,8 +84,8 @@ export function SegmentedControl<T extends string>({
             {selected ? (
               <m.span
                 layoutId={`seg-${id}`}
-                transition={spring.snappy}
-                className="surface-raised absolute inset-0 rounded-full bg-surface shadow-sm"
+                transition={tween.quick}
+                className="surface-raised absolute inset-0 rounded-md bg-surface shadow-elevation"
               />
             ) : null}
             <span className="relative z-10 inline-flex items-center gap-1.5">

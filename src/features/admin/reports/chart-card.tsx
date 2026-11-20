@@ -29,7 +29,7 @@ export function ChartCard({
     <section className="flex min-w-0 flex-col rounded-2xl border border-border bg-card p-5">
       <header className="mb-4 flex items-start justify-between gap-3">
         <div className="min-w-0">
-          <h2 className="font-semibold">{title}</h2>
+          <h2 className="font-medium">{title}</h2>
           {subtitle ? <p className="text-sm text-muted-foreground">{subtitle}</p> : null}
         </div>
         {!empty ? (

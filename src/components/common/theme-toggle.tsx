@@ -20,7 +20,7 @@ export function ThemeToggle() {
   );
 
   if (forcedTheme) return null;
-  if (!mounted) return <div className="h-11 w-[8.5rem] rounded-full bg-surface-2" aria-hidden />;
+  if (!mounted) return <div className="h-11 w-[8.5rem] rounded-lg bg-surface-2" aria-hidden />;
 
   return (
     <SegmentedControl<ThemeChoice>

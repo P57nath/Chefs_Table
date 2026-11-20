@@ -130,7 +130,7 @@ export function TablesPanel({ tables, zones }: { tables: AdminTable[]; zones: Ad
               key={tb.id}
               className="flex items-center gap-3 rounded-2xl border border-border bg-card p-3"
             >
-              <span className="grid size-11 shrink-0 place-items-center rounded-xl bg-muted font-display font-semibold">
+              <span className="grid size-11 shrink-0 place-items-center rounded-xl bg-muted font-medium">
                 {tb.label}
               </span>
               <span className="min-w-0 flex-1 text-sm">

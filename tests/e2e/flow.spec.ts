@@ -51,7 +51,7 @@ test("full flow on three devices, from scan to feedback", async ({ browser }) =>
     .locator(`article[data-order-id="${order.id}"]`)
     .getByRole("button", { name: "Ready", exact: true })
     .click();
-  await expect(guest.getByRole("heading", { name: "Ready! Coming to your table" })).toBeVisible();
+  await expect(guest.getByRole("heading", { name: "Ready, coming to your table" })).toBeVisible();
   await expect(card).toContainText("Ready");
 
   // Waiter serves.
@@ -76,10 +76,10 @@ test("full flow on three devices, from scan to feedback", async ({ browser }) =>
   await expect(waiter.getByText("E18 closed")).toBeVisible();
 
   // Guest sees the thank-you screen and leaves feedback.
-  await expect(guest.getByRole("heading", { name: "Thank you for dining with us!" })).toBeVisible();
+  await expect(guest.getByRole("heading", { name: "Thank you for dining with us" })).toBeVisible();
   await guest.locator("label", { has: guest.getByRole("radio", { name: "4 of 5 stars" }) }).click();
   await guest.getByRole("button", { name: "Send feedback" }).click();
-  await expect(guest.getByText("Thanks for your feedback!")).toBeVisible();
+  await expect(guest.getByText("Thanks for your feedback")).toBeVisible();
 
   const { data: pays } = await admin()
     .from("payments")

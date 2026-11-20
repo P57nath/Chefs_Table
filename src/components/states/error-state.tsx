@@ -43,7 +43,7 @@ export function ErrorState({
         <Icon className="size-7" />
       </div>
       <div className="max-w-xs space-y-1.5">
-        <h2 className="font-display text-xl font-semibold">{title ?? t("states.errorTitle")}</h2>
+        <h2 className="font-display text-xl font-medium">{title ?? t("states.errorTitle")}</h2>
         <p className="text-sm text-muted-foreground">
           {body ?? (variant === "offline" ? t("states.networkError") : t("states.errorBody"))}
         </p>

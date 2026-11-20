@@ -75,7 +75,7 @@ export function FlyToCartProvider({ children }: { children: ReactNode }) {
             return (
               <m.div
                 key={f.id}
-                className="absolute rounded-2xl shadow-glow"
+                className="absolute rounded-2xl"
                 style={{
                   width: size,
                   height: size * 0.75,

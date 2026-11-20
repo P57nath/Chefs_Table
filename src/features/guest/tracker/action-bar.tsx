@@ -22,7 +22,7 @@ export function ActionBar({ menuHref, openRequests, onCallWaiter }: ActionBarPro
 
   return (
     <div className="pb-safe pointer-events-none fixed inset-x-0 bottom-0 z-40 px-4">
-      <div className="glass pointer-events-auto mx-auto grid max-w-3xl grid-cols-3 gap-2 rounded-2xl border border-border p-2 shadow-lg">
+      <div className="bar-surface pointer-events-auto mx-auto grid max-w-3xl grid-cols-3 gap-2 rounded-2xl border border-border p-2 shadow-float">
         <Button
           variant={callOpen ? "secondary" : "ghost"}
           className="h-14 flex-col gap-0.5 text-xs"

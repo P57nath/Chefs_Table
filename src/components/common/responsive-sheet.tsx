@@ -33,7 +33,7 @@ export function ResponsiveSheet({
       <Sheet open={open} onOpenChange={onOpenChange}>
         <SheetContent className="flex w-full flex-col gap-0 p-0 sm:max-w-md">
           <div className="space-y-1 border-b border-border p-5 pr-14">
-            <SheetTitle className="font-display text-2xl font-semibold">{title}</SheetTitle>
+            <SheetTitle className="font-display text-2xl font-medium">{title}</SheetTitle>
             {description ? (
               <SheetDescription asChild>
                 <div className="text-sm text-muted-foreground">{description}</div>
@@ -51,7 +51,7 @@ export function ResponsiveSheet({
       <DrawerContent>
         <div className="flex max-h-[85dvh] flex-col">
           <div className="space-y-1 px-4 pt-2 pb-3">
-            <DrawerTitle className="font-display text-2xl font-semibold">{title}</DrawerTitle>
+            <DrawerTitle className="font-display text-2xl font-medium">{title}</DrawerTitle>
             {description ? (
               <DrawerDescription asChild>
                 <div className="text-sm text-muted-foreground">{description}</div>

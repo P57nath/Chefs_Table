@@ -93,7 +93,7 @@ export function SoldOutList() {
       <div className="space-y-6">
         {groups.map((g) => (
           <section key={g.title} className="space-y-2">
-            <h2 className="font-semibold text-muted-foreground">{g.title}</h2>
+            <h2 className="font-medium text-muted-foreground">{g.title}</h2>
             <ul className="divide-y divide-border overflow-hidden rounded-2xl border border-border bg-card">
               {g.items.map((item) => {
                 const name = pick(item.name, item.name_bn, locale);
@@ -111,7 +111,7 @@ export function SoldOutList() {
                     </label>
                     <span
                       className={cn(
-                        "text-sm font-semibold",
+                        "text-sm font-medium",
                         item.is_available ? "text-success" : "text-ember",
                       )}
                     >
@@ -134,7 +134,7 @@ export function SoldOutList() {
 
   return (
     <div className="mx-auto max-w-3xl space-y-4 p-4 md:p-6">
-      <h1 className="font-display text-2xl font-semibold">{t("menuTitle")}</h1>
+      <h1 className="text-2xl font-medium">{t("menuTitle")}</h1>
       <div className="relative">
         <Search
           className="pointer-events-none absolute top-1/2 left-3.5 size-5 -translate-y-1/2 text-muted-foreground"

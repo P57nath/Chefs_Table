@@ -199,7 +199,7 @@ export function StaffManager({
             >
               <span
                 aria-hidden
-                className="grid size-10 shrink-0 place-items-center rounded-full font-semibold text-white"
+                className="grid size-10 shrink-0 place-items-center rounded-full font-medium text-white"
                 style={{ background: r.avatarColor }}
               >
                 {[...r.displayName][0]}

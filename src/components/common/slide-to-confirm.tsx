@@ -5,7 +5,7 @@ import { animate, useMotionValue, useReducedMotion, useTransform } from "motion/
 import * as m from "motion/react-m";
 import { useRef, useState, type MouseEvent } from "react";
 
-import { spring } from "@/lib/motion";
+import { tween } from "@/lib/motion";
 import { cn } from "@/lib/utils";
 
 type Phase = "idle" | "pending" | "done";
@@ -60,13 +60,13 @@ export function SlideToConfirm({
     if (busy || disabled) return;
     const max = maxX || measure();
     setPhase("pending");
-    animate(x, max, reduce ? { duration: 0 } : spring.snappy);
+    animate(x, max, reduce ? { duration: 0 } : tween.quick);
     try {
       await onConfirm();
       setPhase("done");
     } catch {
       setPhase("idle");
-      animate(x, 0, spring.sheet);
+      animate(x, 0, tween.sheet);
     }
   }
 
@@ -81,7 +81,7 @@ export function SlideToConfirm({
   function onDragEnd() {
     const max = maxX || measure();
     if (max > 0 && x.get() / max >= THRESHOLD) void confirm();
-    else animate(x, 0, spring.sheet);
+    else animate(x, 0, tween.sheet);
     passedThreshold.current = false;
   }
 
@@ -103,7 +103,7 @@ export function SlideToConfirm({
       ref={trackRef}
       onPointerEnter={measure}
       className={cn(
-        "relative h-16 w-full touch-pan-y overflow-hidden rounded-full border border-border bg-surface-2 p-1 select-none",
+        "relative h-16 w-full touch-pan-y overflow-hidden rounded-xl border border-border bg-surface-2 p-1 select-none",
         disabled && "opacity-50",
         className,
       )}
@@ -111,12 +111,12 @@ export function SlideToConfirm({
       <m.div
         aria-hidden
         style={{ width: fill }}
-        className="absolute inset-y-1 left-1 rounded-full bg-primary/20"
+        className="absolute inset-y-1 left-1 rounded-lg bg-primary/20"
       />
       <m.span
         aria-hidden
         style={{ opacity: phase === "idle" ? labelOpacity : 1 }}
-        className="pointer-events-none absolute inset-0 flex items-center justify-center pl-12 text-[0.9375rem] font-semibold text-foreground"
+        className="pointer-events-none absolute inset-0 flex items-center justify-center pl-12 text-[0.9375rem] font-medium text-foreground"
       >
         {statusText}
       </m.span>
@@ -134,7 +134,7 @@ export function SlideToConfirm({
         onDragEnd={onDragEnd}
         onClick={onClick}
         style={{ x, width: HANDLE }}
-        className="relative z-10 flex h-14 cursor-grab items-center justify-center rounded-full bg-primary text-primary-foreground shadow-glow outline-none focus-visible:ring-3 focus-visible:ring-ring/60 active:cursor-grabbing"
+        className="relative z-10 flex h-14 cursor-grab items-center justify-center rounded-lg bg-primary text-primary-foreground outline-none focus-visible:ring-3 focus-visible:ring-ring/60 active:cursor-grabbing"
       >
         {phase === "pending" ? (
           <Loader2 className="size-6 animate-spin" aria-hidden />

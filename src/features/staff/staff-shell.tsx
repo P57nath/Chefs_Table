@@ -34,11 +34,17 @@ function Counter({
   const locale = useLocale();
   return (
     <div
-      className="flex items-center gap-2 rounded-full border border-border bg-surface px-3 py-1.5"
+      className="flex h-9 items-center gap-2 rounded-lg border border-border bg-surface px-3"
       title={label}
     >
-      <Icon className={cn("size-4", value > 0 ? tone : "text-muted-foreground")} aria-hidden />
-      <span className="text-sm font-semibold tabular-nums">{localizeDigits(value, locale)}</span>
+      <Icon
+        className={cn("size-4", value > 0 ? tone : "text-subtle")}
+        strokeWidth={1.75}
+        aria-hidden
+      />
+      <span className="font-mono text-sm font-medium tabular-nums">
+        {localizeDigits(value, locale)}
+      </span>
       <span className="sr-only">{label}</span>
       <span className="hidden text-sm text-muted-foreground lg:inline">{label}</span>
     </div>
@@ -59,11 +65,11 @@ export function StaffShell({ children }: { children: ReactNode }) {
 
   return (
     <div className="flex min-h-dvh flex-col bg-background">
-      <header className="glass sticky top-0 z-30 border-b border-border">
+      <header className="bar-surface sticky top-0 z-30 border-b border-border">
         <div className="flex h-16 items-center gap-3 px-4 md:px-6">
           <div className="flex min-w-0 items-center gap-2">
-            <EmberMark className="text-2xl" />
-            <span className="hidden truncate font-display text-lg font-semibold sm:inline">
+            <EmberMark className="text-xl" />
+            <span className="hidden truncate text-[0.9375rem] font-medium sm:inline">
               {staff.restaurantName}
             </span>
           </div>
@@ -104,7 +110,7 @@ export function StaffShell({ children }: { children: ReactNode }) {
           </div>
           <span
             aria-hidden
-            className="hidden size-9 shrink-0 place-items-center rounded-full text-sm font-semibold text-white sm:grid"
+            className="hidden size-8 shrink-0 place-items-center rounded-full text-xs font-medium text-white sm:grid"
             style={{ background: staff.avatarColor }}
             title={`${staff.displayName} · ${t(`role_${staff.role}`)}`}
           >

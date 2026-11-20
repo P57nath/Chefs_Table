@@ -128,7 +128,7 @@ export function LineChart({
                 x={x(last) - 8}
                 y={y(lastDatum.value) - 10}
                 textAnchor="end"
-                className="fill-foreground stroke-card text-[12px] font-semibold tabular-nums [paint-order:stroke]"
+                className="fill-foreground stroke-card text-[12px] font-medium tabular-nums [paint-order:stroke]"
                 strokeWidth={4}
                 strokeLinejoin="round"
               >

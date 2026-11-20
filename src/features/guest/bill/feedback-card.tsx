@@ -60,7 +60,7 @@ export function FeedbackCard({ className }: { className?: string }) {
       aria-labelledby="feedback-title"
       className={cn("space-y-4 rounded-3xl border border-border bg-card p-5", className)}
     >
-      <h2 id="feedback-title" className="font-display text-xl font-semibold">
+      <h2 id="feedback-title" className="font-display text-xl font-medium">
         {t("title")}
       </h2>
       <fieldset>

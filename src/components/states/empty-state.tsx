@@ -12,7 +12,7 @@ interface EmptyStateProps {
   className?: string;
 }
 
-/** Friendly empty state: soft illustration (icon in layered rings) + one action. */
+/** Quiet empty state: one line icon on a raised tile, a plain title and one action. */
 export function EmptyState({ icon: Icon, title, body, action, className }: EmptyStateProps) {
   return (
     <div
@@ -21,15 +21,14 @@ export function EmptyState({ icon: Icon, title, body, action, className }: Empty
         className,
       )}
     >
-      <div aria-hidden className="relative grid size-24 place-items-center">
-        <span className="absolute inset-0 rounded-full bg-primary/8" />
-        <span className="absolute inset-3 rounded-full bg-primary/12" />
-        <span className="relative grid size-12 place-items-center rounded-full bg-surface text-primary-text shadow-glow">
-          <Icon className="size-6" />
-        </span>
-      </div>
+      <span
+        aria-hidden
+        className="grid size-14 place-items-center rounded-2xl border border-border bg-surface-2 text-subtle"
+      >
+        <Icon className="size-6" strokeWidth={1.5} />
+      </span>
       <div className="max-w-xs space-y-1.5">
-        <h2 className="font-display text-xl font-semibold">{title}</h2>
+        <h2 className="font-display text-xl font-normal">{title}</h2>
         {body ? <p className="text-sm text-muted-foreground">{body}</p> : null}
       </div>
       {action}

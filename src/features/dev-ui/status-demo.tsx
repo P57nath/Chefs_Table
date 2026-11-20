@@ -33,9 +33,9 @@ export function StatusDemo() {
         </StatusPill>
       </Row>
       <Row label="KDS timers (green < 10 min, amber < 20, red ≥ 20)">
-        <Timer since={new Date(base - 4 * 60_000)} className="text-3xl font-semibold" />
-        <Timer since={new Date(base - 12 * 60_000)} className="text-3xl font-semibold" />
-        <Timer since={new Date(base - 26 * 60_000)} className="text-3xl font-semibold" />
+        <Timer since={new Date(base - 4 * 60_000)} className="text-3xl font-medium" />
+        <Timer since={new Date(base - 12 * 60_000)} className="text-3xl font-medium" />
+        <Timer since={new Date(base - 26 * 60_000)} className="text-3xl font-medium" />
       </Row>
     </Section>
   );

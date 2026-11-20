@@ -48,7 +48,7 @@ export function LinesEditor({ order, editable }: { order: BoardOrder; editable: 
               )}
             >
               <div className="min-w-0 flex-1">
-                <p className={cn("font-semibold", removed && "line-through")}>
+                <p className={cn("font-medium", removed && "line-through")}>
                   {!editable || item.is_voided
                     ? `${localizeDigits(item.quantity, locale)}× `
                     : null}

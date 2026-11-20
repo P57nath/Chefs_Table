@@ -101,7 +101,7 @@ export function RequestsList() {
             <li
               key={r.id}
               className={cn(
-                "surface-raised flex items-start gap-3 rounded-2xl border bg-card p-4",
+                "flex items-start gap-3 rounded-2xl border bg-card p-4",
                 open
                   ? cn("border-ember/60 text-ember", r.type === "call_waiter" && PULSE_CLASS.fast)
                   : "border-border",
@@ -109,7 +109,7 @@ export function RequestsList() {
             >
               <span
                 className={cn(
-                  "grid size-11 shrink-0 place-items-center rounded-full",
+                  "grid size-11 shrink-0 place-items-center rounded-xl",
                   open ? "bg-ember/15" : "bg-muted text-muted-foreground",
                 )}
               >
@@ -117,10 +117,8 @@ export function RequestsList() {
               </span>
               <div className="min-w-0 flex-1 space-y-1 text-foreground">
                 <p className="flex items-baseline gap-2">
-                  <span className="font-display text-xl font-semibold">
-                    {r.dining_tables?.label}
-                  </span>
-                  <span className="font-semibold">{t(`req_${r.type}`)}</span>
+                  <span className="text-xl font-medium">{r.dining_tables?.label}</span>
+                  <span className="font-medium">{t(`req_${r.type}`)}</span>
                 </p>
                 {r.note ? <p className="text-sm">{r.note}</p> : null}
                 <p className="text-sm text-muted-foreground">
@@ -151,7 +149,7 @@ export function RequestsList() {
 
   return (
     <div className="space-y-4 p-4 md:p-6">
-      <h1 className="font-display text-2xl font-semibold">{t("requestsTitle")}</h1>
+      <h1 className="text-2xl font-medium">{t("requestsTitle")}</h1>
       {body}
     </div>
   );

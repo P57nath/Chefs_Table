@@ -55,18 +55,29 @@ function isChoice(v: unknown): v is ThemeChoice {
 }
 
 /** Same logic as the provider, as a string for the pre-paint inline script. */
-export function themeScript(storageKey: string, defaultTheme: ThemeChoice, forced?: ResolvedTheme) {
-  const args = JSON.stringify([storageKey, defaultTheme, forced ?? null]).replace(/</g, "\\u003c");
-  return `(function(a){try{var t=a[2]||localStorage.getItem(a[0])||a[1];if(t!=="light"&&t!=="dark"&&t!=="system")t=a[1];if(t==="system")t=matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light";var d=document.documentElement;d.classList.remove("light","dark");d.classList.add(t);d.style.colorScheme=t}catch(e){}})(${args})`;
+export function themeScript(
+  storageKey: string,
+  defaultTheme: ThemeChoice,
+  forced?: ResolvedTheme,
+  surface?: string,
+) {
+  const args = JSON.stringify([storageKey, defaultTheme, forced ?? null, surface ?? null]).replace(
+    /</g,
+    "\\u003c",
+  );
+  return `(function(a){try{if(a[3])document.documentElement.setAttribute("data-surface",a[3]);var t=a[2]||localStorage.getItem(a[0])||a[1];if(t!=="light"&&t!=="dark"&&t!=="system")t=a[1];if(t==="system")t=matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light";var d=document.documentElement;d.classList.remove("light","dark");d.classList.add(t);d.style.colorScheme=t}catch(e){}})(${args})`;
 }
 
 export function ThemeProvider({
   storageKey,
   defaultTheme,
   forcedTheme,
+  surface,
   children,
 }: {
   storageKey: string;
+  /** Sets `data-surface` on <html> so each surface can pick its neutral ramp. */
+  surface?: string;
   defaultTheme: ThemeChoice;
   forcedTheme?: ResolvedTheme;
   children: ReactNode;
@@ -79,7 +90,9 @@ export function ThemeProvider({
     return (
       <script
         nonce={nonce}
-        dangerouslySetInnerHTML={{ __html: themeScript(storageKey, defaultTheme, forcedTheme) }}
+        dangerouslySetInnerHTML={{
+          __html: themeScript(storageKey, defaultTheme, forcedTheme, surface),
+        }}
       />
     );
   });
@@ -106,6 +119,9 @@ export function ThemeProvider({
     forcedTheme ?? (theme === "system" ? (systemDark ? "dark" : "light") : theme);
 
   // Keep <html> in sync (also covers client navigation between surfaces).
+  useEffect(() => {
+    if (surface) document.documentElement.setAttribute("data-surface", surface);
+  }, [surface]);
   useEffect(() => {
     const root = document.documentElement;
     root.classList.remove("light", "dark");

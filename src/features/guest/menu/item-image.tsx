@@ -3,9 +3,10 @@ import Image from "next/image";
 import { menuImageUrl } from "@/lib/storage";
 import { cn } from "@/lib/utils";
 
-import { CategoryIcon, categoryGradient, initials, placeholderInk } from "./category-style";
+import { CategoryIcon } from "./category-style";
 
 interface ItemImageProps {
+  /** Dish name (kept for callers; the image itself is decorative, alt=""). */
   name: string;
   imagePath: string | null;
   categoryIcon: string | null;
@@ -17,11 +18,11 @@ interface ItemImageProps {
 }
 
 /**
- * Menu photo from Supabase Storage, or the designed placeholder: category
- * gradient, category icon at 40 % opacity, subtle grain and Fraunces initials.
+ * Menu photo from Supabase Storage, or the designed placeholder: an empty
+ * plate seen from above on the raised surface, with the category's line icon
+ * in the well. Quiet on purpose, so real photos stay the richest thing on screen.
  */
 export function ItemImage({
-  name,
   imagePath,
   categoryIcon: iconName,
   sizes,
@@ -36,30 +37,25 @@ export function ItemImage({
       {url ? (
         <Image src={url} alt="" fill sizes={sizes} priority={priority} className="object-cover" />
       ) : (
-        <div
-          aria-hidden
-          className="grain absolute inset-0 flex items-center justify-center"
-          style={{ background: categoryGradient(iconName), color: placeholderInk(iconName) }}
-        >
+        <div aria-hidden className="absolute inset-0 grid place-items-center text-subtle">
+          <svg
+            viewBox="0 0 100 100"
+            className={cn(
+              "absolute h-[82%] w-auto",
+              variant === "thumb" ? "h-[88%]" : variant === "hero" ? "h-[72%]" : "",
+            )}
+          >
+            <circle cx="50" cy="50" r="48" className="fill-surface stroke-foreground/10" />
+            <circle cx="50" cy="50" r="33" className="fill-none stroke-foreground/8" />
+          </svg>
           <CategoryIcon
             icon={iconName}
             className={cn(
-              "absolute opacity-40",
-              variant === "hero" ? "size-40" : variant === "thumb" ? "size-8" : "size-16",
-              variant === "thumb" ? "" : "-right-2 -bottom-2 rotate-[-12deg]",
+              "relative",
+              variant === "hero" ? "size-14" : variant === "thumb" ? "size-5" : "size-7",
             )}
             strokeWidth={1.5}
           />
-          {variant === "thumb" ? null : (
-            <span
-              className={cn(
-                "relative font-display font-semibold tracking-tight drop-shadow-sm",
-                variant === "hero" ? "text-6xl" : "text-3xl",
-              )}
-            >
-              {initials(name)}
-            </span>
-          )}
         </div>
       )}
     </div>

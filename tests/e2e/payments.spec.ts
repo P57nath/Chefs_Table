@@ -44,12 +44,12 @@ test.describe("bill & payments (390×844, mock gateway)", () => {
     await expect(page.getByRole("heading", { name: "Payment received" })).toBeVisible();
 
     await page.getByRole("link", { name: "View bill" }).click();
-    await expect(page.getByRole("heading", { name: "All paid — thank you!" })).toBeVisible();
+    await expect(page.getByRole("heading", { name: "All paid, thank you" })).toBeVisible();
     await page.locator("label", { has: page.getByRole("radio", { name: "5 of 5 stars" }) }).click();
     await expect(page.getByRole("radio", { name: "5 of 5 stars" })).toBeChecked();
     await page.getByLabel(/Anything you’d like to tell us/).fill("Lovely doi");
     await page.getByRole("button", { name: "Send feedback" }).click();
-    await expect(page.getByText("Thanks for your feedback!")).toBeVisible();
+    await expect(page.getByText("Thanks for your feedback")).toBeVisible();
 
     const session = await liveSession(token);
     const { data: fb } = await admin()
@@ -89,7 +89,7 @@ test.describe("bill & payments (390×844, mock gateway)", () => {
     });
     expect(error).toBeNull();
     // Live: the guest's bill flips without a reload.
-    await expect(page.getByRole("heading", { name: "All paid — thank you!" })).toBeVisible();
+    await expect(page.getByRole("heading", { name: "All paid, thank you" })).toBeVisible();
     await guest.ctx.close();
   });
 

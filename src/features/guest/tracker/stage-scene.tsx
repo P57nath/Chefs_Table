@@ -201,40 +201,13 @@ export function StageScene({ stage, label }: { stage: Stage; label: string }) {
             transition={
               stage === "served"
                 ? { duration: 0.8, ease: "easeOut" }
-                : { type: "spring", stiffness: 180, damping: 18 }
+                : { duration: 0.4, ease: [0.22, 1, 0.36, 1] as const }
             }
           >
             <ellipse cx="260" cy="160" rx="30" ry="7" fill="#FFFFFF" />
             <path d="M240 158a20 14 0 0 1 40 0Z" fill="#C97A06" />
             <circle cx="252" cy="150" r="3" fill="#3FB37F" />
             <circle cx="266" cy="148" r="2.5" fill="#E5533D" />
-          </m.g>
-        ) : null}
-      </AnimatePresence>
-
-      {/* sparkles (served) */}
-      <AnimatePresence>
-        {stage === "served" ? (
-          <m.g
-            key="sparkle"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-          >
-            {[
-              [232, 168],
-              [290, 176],
-              [262, 196],
-            ].map(([x, y], i) => (
-              <m.path
-                key={i}
-                d={`M${x} ${(y ?? 0) - 7}l2 5 5 2-5 2-2 5-2-5-5-2 5-2Z`}
-                fill="#F5A524"
-                animate={reduce ? undefined : { scale: [0.6, 1.2, 0.6], opacity: [0.4, 1, 0.4] }}
-                transition={{ ...loop(1.6), delay: i * 0.3 }}
-                style={{ originX: `${x}px`, originY: `${y}px` }}
-              />
-            ))}
           </m.g>
         ) : null}
       </AnimatePresence>

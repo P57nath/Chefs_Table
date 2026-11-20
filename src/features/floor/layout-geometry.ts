@@ -19,7 +19,10 @@ export function footprint(table: Pick<FloorTable, "shape" | "seats">): TableFoot
   return { hx: 0.5, hz: 0.5, round: false };
 }
 
-/** Chair positions (local, before rotation) spaced evenly around the table. */
+/**
+ * Chair positions (local, before rotation) spaced evenly around the table.
+ * `angle` is a Y rotation that turns local +z (a seated guest's front) toward the table.
+ */
 export function chairPositions(
   table: Pick<FloorTable, "shape" | "seats">,
 ): { x: number; z: number; angle: number }[] {
@@ -30,7 +33,8 @@ export function chairPositions(
     const r = f.hx + gap;
     return Array.from({ length: n }, (_, i) => {
       const a = (i / n) * Math.PI * 2;
-      return { x: Math.cos(a) * r, z: Math.sin(a) * r, angle: -a + Math.PI / 2 };
+      // Facing the table centre: local +z rotated by `angle` must point at -(cos a, sin a).
+      return { x: Math.cos(a) * r, z: Math.sin(a) * r, angle: -a - Math.PI / 2 };
     });
   }
   if (table.shape === "rect" && n > 2) {

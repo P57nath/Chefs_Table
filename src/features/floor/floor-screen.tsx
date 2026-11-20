@@ -1,12 +1,13 @@
 "use client";
 
-import { Box, LayoutGrid, List, Map as MapIcon } from "lucide-react";
+import { Box, LayoutGrid, List, Map as MapIcon, Maximize2, Minimize2 } from "lucide-react";
 import dynamic from "next/dynamic";
 import { useLocale, useTranslations } from "next-intl";
-import { useMemo, useState, useSyncExternalStore } from "react";
+import { useEffect, useMemo, useState, useSyncExternalStore } from "react";
 import { toast } from "sonner";
 
 import { Chip } from "@/components/common/chip";
+import { IconButton } from "@/components/common/icon-button";
 import { SegmentedControl } from "@/components/common/segmented-control";
 import { EmptyState } from "@/components/states/empty-state";
 import { ErrorState } from "@/components/states/error-state";
@@ -28,7 +29,7 @@ import { hasWebGL, useFloorView, type FloorView } from "./use-floor-view";
 // The whole three.js bundle loads only here, only when the 3D view is shown.
 const FloorScene = dynamic(() => import("./floor-3d/floor-scene"), {
   ssr: false,
-  loading: () => <SkeletonBlock className="h-full w-full rounded-3xl" />,
+  loading: () => <SkeletonBlock className="h-full w-full rounded-2xl" />,
 });
 
 const noop = () => () => {};
@@ -50,6 +51,16 @@ export function FloorScreen() {
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [focusedId, setFocusedId] = useState<string | null>(null);
   const [announce, setAnnounce] = useState("");
+  const [expanded, setExpanded] = useState(false);
+
+  useEffect(() => {
+    if (!expanded) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape" && !selectedId) setExpanded(false);
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [expanded, selectedId]);
 
   const wanted: FloorView = storedView ?? (narrow ? "list" : "3d");
   const view: FloorView = wanted === "3d" && (!webglOk || tooSlow) ? "2d" : wanted;
@@ -77,7 +88,8 @@ export function FloorScreen() {
   }
 
   let body: React.ReactNode;
-  if (floor.isPending) body = <SkeletonBlock className="h-[60dvh] w-full rounded-3xl" />;
+  if (floor.isPending)
+    body = <SkeletonBlock className="h-[calc(100dvh-10rem)] min-h-[520px] w-full rounded-2xl" />;
   else if (floor.isError)
     body = (
       <ErrorState
@@ -101,7 +113,13 @@ export function FloorScreen() {
     );
   else
     body = (
-      <div className="relative h-[calc(100dvh-13rem)] min-h-[420px] overflow-hidden rounded-3xl border border-border">
+      <div
+        className={
+          expanded
+            ? "fixed inset-0 z-40 bg-background"
+            : "relative h-[calc(100dvh-10rem)] min-h-[520px] overflow-hidden rounded-2xl border border-border"
+        }
+      >
         <FloorScene
           rows={rows}
           zones={zones.data ?? []}
@@ -114,6 +132,15 @@ export function FloorScreen() {
             toast(t("slowFallback"));
           }}
         />
+        <div className="absolute top-3 right-3">
+          <IconButton
+            label={expanded ? t("collapseFloor") : t("expandFloor")}
+            variant="secondary"
+            onClick={() => setExpanded((v) => !v)}
+          >
+            {expanded ? <Minimize2 aria-hidden /> : <Maximize2 aria-hidden />}
+          </IconButton>
+        </div>
         {/* Keyboard & screen-reader layer: Tab cycles tables in label order, Enter opens. */}
         <ul aria-label={t("tablesLabel")} className="sr-only">
           {sortedRows.map((r) => (
@@ -138,8 +165,8 @@ export function FloorScreen() {
   return (
     <div className="space-y-4 p-4 md:p-6">
       <div className="flex flex-wrap items-center gap-3">
-        <h1 className="font-display text-2xl font-semibold">{t("title")}</h1>
-        <span className="rounded-full bg-muted px-3 py-1 text-sm font-semibold tabular-nums">
+        <h1 className="text-2xl font-medium">{t("title")}</h1>
+        <span className="font-mono text-sm text-muted-foreground tabular-nums">
           {t("occupied", {
             occupied: localizeDigits(occ.occupied, locale),
             total: localizeDigits(occ.total, locale),

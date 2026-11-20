@@ -20,15 +20,15 @@ export function GuestPageHeader({
 }) {
   const { table } = useGuestSession();
   return (
-    <header className="glass sticky top-0 z-30 border-b border-border">
+    <header className="bar-surface sticky top-0 z-30 border-b border-border">
       <div className="mx-auto flex h-16 max-w-3xl items-center gap-2 px-4">
         <IconButton label={backLabel} asChild>
           <Link href={backHref}>
             <ArrowLeft aria-hidden />
           </Link>
         </IconButton>
-        <h1 className="flex-1 truncate font-display text-xl font-semibold">{title}</h1>
-        <span className="rounded-full bg-primary px-2.5 py-1 text-sm font-semibold text-primary-foreground">
+        <h1 className="flex-1 truncate font-display text-xl font-medium">{title}</h1>
+        <span className="rounded-sm border border-border bg-surface-2 px-2 py-0.5 font-mono text-sm font-medium tabular-nums">
           {table.table_label}
         </span>
         <LanguageToggle />

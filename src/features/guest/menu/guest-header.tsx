@@ -20,7 +20,7 @@ interface GuestHeaderProps {
   onSearchClose: () => void;
 }
 
-/** Sticky glass header: brand, table chip, language, search (turns into the search field). */
+/** Sticky header: brand, table docket number, language, search (turns into the search field). */
 export function GuestHeader({
   restaurantName,
   tableLabel,
@@ -39,7 +39,7 @@ export function GuestHeader({
   }, [searching]);
 
   return (
-    <header className="glass sticky top-0 z-30 border-b border-border">
+    <header className="bar-surface sticky top-0 z-30 border-b border-border">
       <div className="mx-auto flex h-16 max-w-3xl items-center gap-2 px-4">
         {searching ? (
           <>
@@ -64,8 +64,8 @@ export function GuestHeader({
           <>
             <div className="flex min-w-0 flex-1 items-center gap-2">
               <BrandMark logoPath={table.logo_path} className="text-2xl" />
-              <span className="truncate font-display text-lg font-semibold">{restaurantName}</span>
-              <span className="shrink-0 rounded-full bg-primary px-2.5 py-1 text-sm font-semibold text-primary-foreground tabular-nums">
+              <span className="truncate font-display text-lg font-medium">{restaurantName}</span>
+              <span className="shrink-0 rounded-sm border border-border bg-surface-2 px-2 py-0.5 font-mono text-sm font-medium tabular-nums">
                 <span className="sr-only">{t("table", { table: tableLabel })}</span>
                 <span aria-hidden>{tableLabel}</span>
               </span>

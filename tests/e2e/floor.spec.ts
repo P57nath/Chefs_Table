@@ -79,7 +79,7 @@ test.describe("live floor (1180×820)", () => {
     await sheet.getByRole("button", { name: "Close table" }).click();
     await expect(page.getByText("E21 closed")).toBeVisible();
     await expect(
-      guest.page.getByRole("heading", { name: "Thank you for dining with us!" }),
+      guest.page.getByRole("heading", { name: "Thank you for dining with us" }),
     ).toBeVisible();
     await guest.ctx.close();
   });
